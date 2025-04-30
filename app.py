@@ -3,13 +3,14 @@ import json
 import os
 from openai import OpenAI
 
+# 初始化 OpenAI 客户端
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# 加载 shared_prompt.txt
+# 读取 shared prompt
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
 
-# 加载所有 prompts（拼接 shared + individual）
+# 加载每个学生的完整 prompt
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
@@ -22,21 +23,42 @@ def load_prompts():
 
 all_prompts = load_prompts()
 
-# 当前选择的 student_id
+# 学生编号对应名字
+name_dict = {
+    "student001": "Emma",
+    "student002": "Liam",
+    "student003": "Ava",
+    "student004": "Noah",
+    "student005": "Sophia",
+    "student006": "James",
+    "student007": "Isabella",
+    "student008": "Lucas",
+    "student009": "Mia",
+    "student010": "Elijah"
+}
+
+# 学生编号对应头像路径
+avatar_dict = {
+    student_id: f"avatars/{student_id}.png" for student_id in name_dict.keys()
+}
+
+# 当前选中的 student ID
 selected_id = gr.State("student001")
 
+# 切换学生时清空聊天框并更新头像
 def select_student(student_id):
-    return student_id, [], ""  # 清空聊天记录
+    return student_id, [], "", ("user.png", avatar_dict.get(student_id, "avatars/default.png"))
 
+# 聊天函数
 def chat(message, history, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
-    
+
     messages = [{"role": "system", "content": system_prompt}]
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
-        messages.append({"role": "assistant", "content": bot_reply})
+        messages.append({"role": "assistant", "content": bot_reply])
     messages.append({"role": "user", "content": message})
-    
+
     try:
         response = client.chat.completions.create(
             model="gpt-4",
@@ -45,28 +67,40 @@ def chat(message, history, student_id):
         )
         reply = response.choices[0].message.content.strip()
         history.append((message, reply))
-        return "", history
+        return "", history, ("user.png", avatar_dict.get(student_id, "avatars/default.png"))
     except Exception as e:
-        return "", history + [(message, f"⚠️ Error: {str(e)}")]
+        return "", history + [(message, f"⚠️ Error: {str(e)}")], ("user.png", avatar_dict.get(student_id, "avatars/default.png"))
 
+# UI 构建
 with gr.Blocks() as demo:
     gr.Markdown("## 🎓 Digital Twin Chat Demo")
+
     with gr.Row():
         with gr.Column(scale=1):
             student_selector = gr.Radio(
-                choices=[f"student{i:03d}" for i in range(1, 11)],
+                choices=[(name_dict[student_id], student_id) for student_id in name_dict.keys()],
                 label="Select a Student",
                 value="student001"
             )
         with gr.Column(scale=3):
-            chatbot = gr.Chatbot()
+            chatbot = gr.Chatbot(
+                avatar_images=("user.png", avatar_dict["student001"])  # 初始头像
+            )
             msg = gr.Textbox(placeholder="Type a message and press Enter...")
             clear = gr.Button("Clear")
 
     selected_id_state = gr.State("student001")
 
-    student_selector.change(select_student, student_selector, [selected_id_state, chatbot, msg])
-    msg.submit(chat, [msg, chatbot, selected_id_state], [msg, chatbot])
+    student_selector.change(
+        select_student,
+        student_selector,
+        [selected_id_state, chatbot, msg, chatbot]
+    )
+    msg.submit(
+        chat,
+        [msg, chatbot, selected_id_state],
+        [msg, chatbot, chatbot]
+    )
     clear.click(lambda: [], None, chatbot, queue=False)
 
 if __name__ == "__main__":
