@@ -5,7 +5,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# 加载所有 prompts（假设位于 ./prompt_10/1.json, ..., 10.json）
+# 加载 shared_prompt.txt
+with open("shared_prompt.txt", "r") as f:
+    shared_prompt = f.read().strip()
+
+# 加载所有 prompts（拼接 shared + individual）
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
@@ -13,7 +17,7 @@ def load_prompts():
         if os.path.exists(path):
             with open(path, "r") as f:
                 data = json.load(f)
-                prompts[f"student{i:03d}"] = data["prompt"]  # 保证 key 是 student001 ~ student010
+                prompts[f"student{i:03d}"] = shared_prompt + "\n\n" + data["prompt"]
     return prompts
 
 all_prompts = load_prompts()
