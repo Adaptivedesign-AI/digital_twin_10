@@ -75,9 +75,23 @@ with gr.Blocks(title="Digital Twin Chat Demo") as demo:
             msg = gr.Textbox(placeholder="Type a message and press Enter...")
             clear = gr.Button("Clear")
 
-    radio.change(fn=switch_student, inputs=radio, outputs=chatbot)
-    msg.submit(fn=chat, inputs=[msg, chatbot, radio], outputs=[msg, chatbot])
+    # 切换学生时更新聊天记录
+    radio.change(
+        fn=switch_student,
+        inputs=radio,
+        outputs=chatbot
+    )
+    
+    # 提交消息时调用 chat 函数，并清空 msg
+    msg.submit(
+        chat,
+        inputs=[msg, chatbot, radio],
+        outputs=[msg, chatbot]
+    )
     clear.click(fn=lambda: None, inputs=None, outputs=chatbot)
+
+
+
 
 # 本地或 Render 启动服务
 if __name__ == "__main__":
