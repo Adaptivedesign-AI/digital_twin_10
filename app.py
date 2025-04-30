@@ -3,7 +3,7 @@ import json
 import gradio as gr
 from openai import OpenAI
 
-# 初始化 OpenAI 客户端（记得设置 OPENAI_API_KEY 环境变量）
+# 初始化 OpenAI 客户端（记得设置环境变量 OPENAI_API_KEY）
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 # 加载 shared_prompt.txt
@@ -20,9 +20,6 @@ for i in range(1, 11):
 
 # 初始化每个角色的聊天记录
 chat_histories = {sid: [] for sid in student_prompts}
-
-# 当前选中的角色（默认 student001）
-selected_student = gr.State("student001")
 
 # 拼接完整的 system prompt
 def get_full_prompt(student_id):
@@ -52,15 +49,18 @@ def chat(message, history, student_id):
     except Exception as e:
         error_msg = f"Sorry, an error occurred: {str(e)}"
         history.append((message, error_msg))
+        chat_histories[student_id] = history
         return "", history
 
 # 切换角色时加载对应历史
 def switch_student(student_id):
-    return chat_histories[student_id]
+    return chat_histories[student_id], student_id
 
-# UI
+# UI 界面
 with gr.Blocks(title="Digital Twin Chat Demo") as demo:
     gr.Markdown("🎓 **Digital Twin Chat Demo**")
+
+    selected_student = gr.State("student001")
 
     with gr.Row():
         with gr.Column(scale=1):
@@ -73,40 +73,39 @@ with gr.Blocks(title="Digital Twin Chat Demo") as demo:
         with gr.Column(scale=3):
             chatbot = gr.Chatbot(label="Chatbot", height=500)
             with gr.Row():
-                msg = gr.Textbox(
-                    placeholder="Type a message...",
-                    show_label=False,
-                    lines=2
-                )
-                send = gr.Button("Send", size="sm")
-
+                msg = gr.Textbox(placeholder="Type a message...", show_label=False, lines=2)
+                send = gr.Button("Send")
             clear = gr.Button("Clear")
 
-    # 切换角色：加载该学生的历史记录
+    # 切换角色时加载聊天记录，并更新状态
     radio.change(
         fn=switch_student,
         inputs=radio,
-        outputs=chatbot
+        outputs=[chatbot, selected_student]
     )
 
-    # 发送消息：调用 chat 并清空 msg，同时更新聊天窗口
+    # Send 按钮点击发送消息
     send.click(
         fn=chat,
-        inputs=[msg, chatbot, radio],
+        inputs=[msg, chatbot, selected_student],
         outputs=[msg, chatbot]
     )
 
-    # 清空聊天记录（只清 UI，保留 chat_histories）
+    # 按 Enter 提交消息
+    msg.submit(
+        fn=chat,
+        inputs=[msg, chatbot, selected_student],
+        outputs=[msg, chatbot]
+    )
+
+    # 清空对话
     clear.click(
         fn=lambda: [],
         inputs=None,
         outputs=chatbot
     )
 
-
-
-
-# 本地或 Render 启动服务
+# 启动服务
 if __name__ == "__main__":
     demo.queue(api_open=True).launch(
         server_name="0.0.0.0",
