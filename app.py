@@ -55,7 +55,8 @@ def chat(message, history, student_id):
             temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
-        history.append([message, reply])
+        history.append({"role": "user", "content": message})
+        history.append({"role": "assistant", "content": reply})
         return "", history
     except Exception as e:
         history.append([message, f"\u26a0\ufe0f Error: {str(e)}"])
@@ -77,15 +78,6 @@ with gr.Blocks(
 ) as demo:
 
     with gr.Row():
-        with gr.Column(scale=0.1):
-            gr.Image(value="avatar/user.png", width=56, show_label=False)
-        with gr.Column():
-            gr.Markdown("""
-            ## 🎓 Digital Twin Chat Demo
-            Select a student from the left and begin chatting. Each twin resets when switched.
-            """)
-
-    with gr.Row():
         with gr.Column(scale=1):
             student_selector = gr.Radio(
                 choices=[(name_dict[sid], sid) for sid in name_dict.keys()],
@@ -97,7 +89,8 @@ with gr.Blocks(
             chatbot = gr.Chatbot(
                 label="Conversation",
                 avatar_images=("avatar/user.png", avatar_dict["student001"]),
-                elem_classes="chat-area"
+                elem_classes="chat-area",
+                type="messages"
             )
             msg = gr.Textbox(placeholder="Type your message and press Enter...")
             clear = gr.Button("Clear")
