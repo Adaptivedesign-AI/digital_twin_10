@@ -38,14 +38,16 @@ selected_id = gr.State("student001")
 def select_student(student_id):
     return student_id, [], gr.update(avatar_images=("avatar/user.png", avatar_dict.get(student_id, "avatar/default.png")))
 
-# 聊天功能
 
+# 聊天函数
 def chat(message, history, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
     messages = [{"role": "system", "content": system_prompt}]
+    
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
         messages.append({"role": "assistant", "content": bot_reply})
+    
     messages.append({"role": "user", "content": message})
 
     try:
@@ -55,11 +57,11 @@ def chat(message, history, student_id):
             temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
-        history.append({"role": "user", "content": message})
-        history.append({"role": "assistant", "content": reply})
+        # 确保返回的数据是长度为 2 的元组
+        history.append((message, reply))  # 确保是 (message, reply) 这个格式
         return "", history
     except Exception as e:
-        history.append([message, f"\u26a0\ufe0f Error: {str(e)}"])
+        history.append((message, f"⚠️ Error: {str(e)}"))  # 继续以元组形式添加
         return "", history
 
 # 构建 UI
