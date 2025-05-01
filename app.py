@@ -5,14 +5,29 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
+# 加载 shared_prompt.txt
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
+
+# 显示名字映射
+name_dict = {
+    "student001": "Jaden",
+    "student002": "Elijah",
+    "student003": "Caleb",
+    "student004": "Aiden",
+    "student005": "Ava",
+    "student006": "Brooklyn",
+    "student007": "Zoe",
+    "student008": "Kayla",
+    "student009": "Maya",
+    "student010": "Isaiah"
+}
 
 # 加载每个学生的完整 prompt
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
-        path = f"json_prompts/{i}.json"
+        path = f"prompts/{i}.json"
         if os.path.exists(path):
             with open(path, "r") as f:
                 data = json.load(f)
@@ -21,35 +36,23 @@ def load_prompts():
 
 all_prompts = load_prompts()
 
-# 学生编号对应名字
-name_dict = {
-    "student001": "Liam",
-    "student002": "Noah",
-    "student003": "James",
-    "student004": "Lucas",
-    "student005": "Emma",
-    "student006": "Ava",
-    "student007": "Sophia",
-    "student008": "Isabella",
-    "student009": "Mia",
-    "student010": "Elijah"
-}
-
-# 学生编号对应头像路径
+# 加载头像路径（用户和 chatbot）
 avatar_dict = {
-    student_id: f"avatar/{student_id}.png" for student_id in name_dict.keys()
+    f"student{i:03d}": f"avatar/student{i:03d}.png" for i in range(1, 11)
 }
+user_avatar = "avatar/default.png"
 
-# 切换学生时保留历史记录，不清空
-def select_student(student_id, history):
-    if not isinstance(history, list):
-        history = []
-    return student_id, history, "", ("avatar/default.png", avatar_dict.get(student_id, "avatar/default.png"))
+# 存储每个 student 的聊天记录
+memory_dict = {f"student{i:03d}": [] for i in range(1, 11)}
+
+# 切换 student：加载记忆 + 设置头像
+def select_student(student_id):
+    return student_id, memory_dict[student_id], "", (user_avatar, avatar_dict.get(student_id, user_avatar))
 
 # 聊天函数
 def chat(message, history, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
-
+    
     messages = [{"role": "system", "content": system_prompt}]
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
@@ -63,45 +66,33 @@ def chat(message, history, student_id):
             temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
-        history.append((message, reply))
-        return "", history, ("avatar/default.png", avatar_dict.get(student_id, "avatar/default.png"))
+        history.append([message, reply])
+        memory_dict[student_id] = history.copy()  # 更新记忆
+        return "", history, (user_avatar, avatar_dict.get(student_id, user_avatar))
     except Exception as e:
-        history.append((message, f"\u26a0\ufe0f Error: {str(e)}"))
-        return "", history, ("avatar/default.png", avatar_dict.get(student_id, "avatar/default.png"))
+        history.append([message, f"⚠️ Error: {str(e)}"])
+        return "", history, (user_avatar, avatar_dict.get(student_id, user_avatar))
 
-# UI 构建
+# 构建 UI
 with gr.Blocks() as demo:
     gr.Markdown("## 🎓 Digital Twin Chat Demo")
 
     with gr.Row():
         with gr.Column(scale=1):
             student_selector = gr.Radio(
-                choices=[(name_dict[student_id], student_id) for student_id in name_dict.keys()],
+                choices=[(name, student_id) for student_id, name in name_dict.items()],
                 label="Select a Student",
                 value="student001"
             )
         with gr.Column(scale=3):
-            chatbot = gr.Chatbot(
-                avatar_images=("avatar/default.png", avatar_dict["student001"])
-            )
+            chatbot = gr.Chatbot(avatar_images=(user_avatar, avatar_dict["student001"]))
             msg = gr.Textbox(placeholder="Type a message and press Enter...")
             clear = gr.Button("Clear")
 
     selected_id_state = gr.State("student001")
-    history_state = gr.State([])
 
-    student_selector.change(
-        select_student,
-        [student_selector, history_state],
-        [selected_id_state, chatbot, msg, chatbot]
-    )
-
-    msg.submit(
-        chat,
-        [msg, chatbot, selected_id_state],
-        [msg, chatbot, chatbot]
-    )
-
+    student_selector.change(select_student, student_selector, [selected_id_state, chatbot, msg, chatbot])
+    msg.submit(chat, [msg, chatbot, selected_id_state], [msg, chatbot, chatbot])
     clear.click(lambda: [], None, chatbot, queue=False)
 
 if __name__ == "__main__":
