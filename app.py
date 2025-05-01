@@ -70,46 +70,72 @@ def chat(message, history, student_id):
     except Exception as e:
         history.append((message, f"⚠️ Error: {str(e)}"))
         return "", history
-
-        
-# 构建 UI
+# --------------------------------------------
+# ＝ UI 构建 ＝
+# --------------------------------------------
 with gr.Blocks(
     theme=gr.themes.Soft(primary_hue="orange"),
     css="""
-    .student-radio label {
-        display: block !important;
-        margin-bottom: 8px;
-        font-size: 16px;
+    .student-radio label{
+        display:block!important;
+        margin-bottom:8px;
+        font-size:16px;
     }
-    .chat-area {
-        min-height: 400px;
-    }
+    .chat-area{min-height:400px;}
     """
 ) as demo:
 
+    # ── 顶栏 ───────────────────────────
     with gr.Row():
+        gr.Markdown(
+            "## 🎓 **Digital-Twin Chat Demo**  \n"
+            "Select a student on the left and start chatting.",
+            elem_id="title",
+        )
+
+    # ── 主体 ───────────────────────────
+    with gr.Row():
+
+        # 左侧：学生选择器
         with gr.Column(scale=1):
             student_selector = gr.Radio(
-                choices=[(name_dict[sid], sid) for sid in name_dict.keys()],
-                label="Select a Student",
+                choices=[(name_dict[sid], sid) for sid in name_dict],
                 value="student001",
-                elem_classes=["student-radio"]
+                label="Select a Student",
+                elem_classes=["student-radio"],
             )
+
+        # 右侧：聊天 + 输入
         with gr.Column(scale=3):
-            chatbot = gr.Chatbot(
+            chatbot = gr.Chatbot(                # ← 保持默认 tuple-list 格式
                 label="Conversation",
                 avatar_images=("avatar/user.png", avatar_dict["student001"]),
                 elem_classes="chat-area",
-                type="messages"
             )
-            msg = gr.Textbox(placeholder="Type your message and press Enter...")
-            clear = gr.Button("Clear")
+            msg   = gr.Textbox(placeholder="Type a message and press Enter…")
+            clear = gr.Button("Clear", variant="secondary")
 
+    # ── 状态：当前选中学生 ───────────────
     selected_id_state = gr.State("student001")
 
-    student_selector.change(select_student, student_selector, [selected_id_state, chatbot, chatbot])
-    msg.submit(chat, [msg, chatbot, selected_id_state], [msg, chatbot])
+    # ── 交互绑定 ─────────────────────────
+    student_selector.change(
+        select_student,                  # → 返回 (student_id, history, avatar_update)
+        inputs=student_selector,
+        outputs=[selected_id_state, chatbot, chatbot],
+    )
+
+    msg.submit(
+        chat,                            # → 返回 (“”, history)
+        inputs=[msg, chatbot, selected_id_state],
+        outputs=[msg, chatbot],
+    )
+
     clear.click(lambda: [], None, chatbot, queue=False)
 
+# ── 运行 ───────────────────────────────
 if __name__ == "__main__":
-    demo.queue().launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))
+    demo.queue().launch(
+        server_name="0.0.0.0",
+        server_port=int(os.environ.get("PORT", 7860)),
+    )
