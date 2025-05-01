@@ -5,11 +5,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# 加载 shared_prompt.txt
+# 读取 shared prompt
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
 
-# 加载所有 prompts（拼接 shared + individual）
+# 读取各个学生的特定 prompt
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
@@ -22,29 +22,23 @@ def load_prompts():
 
 all_prompts = load_prompts()
 
-# 学生 ID 和名字映射
+# 名字和头像
 name_dict = {
-    "student001": "Jaden",
-    "student002": "Elijah",
-    "student003": "Caleb",
-    "student004": "Aiden",
-    "student005": "Ava",
-    "student006": "Brooklyn",
-    "student007": "Zoe",
-    "student008": "Kayla",
-    "student009": "Maya",
+    "student001": "Jaden",    "student002": "Elijah",   "student003": "Caleb",
+    "student004": "Aiden",    "student005": "Ava",      "student006": "Brooklyn",
+    "student007": "Zoe",      "student008": "Kayla",    "student009": "Maya",
     "student010": "Isaiah"
 }
+avatar_dict = {sid: f"avatar/{sid}.png" for sid in name_dict.keys()}
 
-# 学生 ID 和头像文件映射
-avatar_dict = {
-    sid: f"avatar/{sid}.png" for sid in name_dict.keys()
-}
-
+# 当前选择的 student id
 selected_id = gr.State("student001")
 
+# 切换学生
 def select_student(student_id):
     return student_id, [], gr.update(avatar_images=("avatar/user.png", avatar_dict.get(student_id, "avatar/default.png")))
+
+# 聊天功能
 
 def chat(message, history, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
@@ -64,12 +58,34 @@ def chat(message, history, student_id):
         history.append([message, reply])
         return "", history
     except Exception as e:
-        history.append([message, f"⚠️ Error: {str(e)}"])
+        history.append([message, f"\u26a0\ufe0f Error: {str(e)}"])
         return "", history
 
-with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue")) as demo:
-    gr.Markdown("## 🎓 Digital Twin Chat Demo")
-    gr.Markdown("Select a student from the left and begin chatting. Each twin will reset when switched.")
+# 自定义主题 (Gradio 系统颜色)
+theme = gr.themes.Base(
+    primary_hue="amber",       # 主色: 米色
+    secondary_hue="stone",    # 添色: 灰色
+    neutral_hue="slate",      # 中性色
+    font=["ui-sans-serif", "Arial"],
+    radius_size="lg"
+)
+
+# 构建 UI
+with gr.Blocks(theme=theme, css="""
+.student-selector label {
+    display: block;
+    margin-bottom: 6px;
+}
+.chat-area {
+    min-height: 400px;
+}
+""") as demo:
+    with gr.Row():
+        gr.Image(value="avatar/user.png", shape="circle", width=64, show_label=False)
+        gr.Markdown("""
+        ## \ud83c\udf93 Digital Twin Chat Demo
+        Select a student from the left and begin chatting. Each twin resets when switched.
+        """)
 
     with gr.Row():
         with gr.Column(scale=1):
@@ -77,24 +93,20 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue")) as demo:
                 choices=[(name_dict[sid], sid) for sid in name_dict.keys()],
                 label="Select a Student",
                 value="student001",
-                elem_id="student-select"
+                elem_classes="student-selector"
             )
         with gr.Column(scale=3):
             chatbot = gr.Chatbot(
                 label="Conversation",
                 avatar_images=("avatar/user.png", avatar_dict["student001"]),
-                height=500
+                elem_classes="chat-area"
             )
-            msg = gr.Textbox(placeholder="Type a message and press Enter...", show_label=False)
-            clear = gr.Button("Clear", variant="stop")
+            msg = gr.Textbox(placeholder="Type your message and press Enter...")
+            clear = gr.Button("Clear")
 
     selected_id_state = gr.State("student001")
 
-    student_selector.change(
-        select_student,
-        student_selector,
-        [selected_id_state, chatbot, chatbot]
-    )
+    student_selector.change(select_student, student_selector, [selected_id_state, chatbot, chatbot])
     msg.submit(chat, [msg, chatbot, selected_id_state], [msg, chatbot])
     clear.click(lambda: [], None, chatbot, queue=False)
 
