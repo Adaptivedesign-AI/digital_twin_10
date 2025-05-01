@@ -3,10 +3,8 @@ import json
 import os
 from openai import OpenAI
 
-# 初始化 OpenAI 客户端
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# 读取 shared prompt
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
 
@@ -14,7 +12,7 @@ with open("shared_prompt.txt", "r") as f:
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
-        path = f"prompts/{i}.json"
+        path = f"json_prompts/{i}.json"
         if os.path.exists(path):
             with open(path, "r") as f:
                 data = json.load(f)
