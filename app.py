@@ -13,7 +13,7 @@ with open("shared_prompt.txt", "r") as f:
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
-        path = f"json_prompts/{i}.json"
+        path = f"prompts/{i}.json"
         if os.path.exists(path):
             with open(path, "r") as f:
                 data = json.load(f)
