@@ -5,11 +5,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# 读取 shared prompt
+# 加载 shared_prompt.txt
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
 
-# 读取各个学生的特定 prompt
+# 加载所有 prompts（拼接 shared + individual）
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
@@ -22,39 +22,40 @@ def load_prompts():
 
 all_prompts = load_prompts()
 
-# 名字和头像
+# 学生 ID 和名字映射
 name_dict = {
-    "student001": "Jaden",    "student002": "Elijah",   "student003": "Caleb",
-    "student004": "Aiden",    "student005": "Ava",      "student006": "Brooklyn",
-    "student007": "Zoe",      "student008": "Kayla",    "student009": "Maya",
+    "student001": "Jaden",
+    "student002": "Elijah",
+    "student003": "Caleb",
+    "student004": "Aiden",
+    "student005": "Ava",
+    "student006": "Brooklyn",
+    "student007": "Zoe",
+    "student008": "Kayla",
+    "student009": "Maya",
     "student010": "Isaiah"
 }
-avatar_dict = {sid: f"avatar/{sid}.png" for sid in name_dict.keys()}
 
-# 当前选择的 student id
+# 学生 ID 和头像文件映射
+avatar_dict = {
+    sid: f"avatar/{sid}.png" for sid in name_dict.keys()
+}
+
+# 当前选中的 student ID
 selected_id = gr.State("student001")
 
-# 切换学生
+# 切换学生，重置聊天历史，更新头像
 def select_student(student_id):
     return student_id, [], gr.update(avatar_images=("avatar/user.png", avatar_dict.get(student_id, "avatar/default.png")))
 
-# 存储所有学生的历史记录
-student_histories = {sid: [] for sid in name_dict.keys()}
-
 # 聊天函数
-def chat(message, student_id):
+def chat(message, history, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
+
     messages = [{"role": "system", "content": system_prompt}]
-    
-    # 获取对应学生的聊天记录
-    history = student_histories.get(student_id, [])
-    
-    # 添加历史记录
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
         messages.append({"role": "assistant", "content": bot_reply})
-    
-    # 添加新的用户消息
     messages.append({"role": "user", "content": message})
 
     try:
@@ -64,14 +65,12 @@ def chat(message, student_id):
             temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
-
-        # 更新学生的聊天历史
-        student_histories[student_id].append({"role": "user", "content": message})
-        student_histories[student_id].append({"role": "assistant", "content": reply})
-        
-        return reply
+        history.append([message, reply])
+        return "", history
     except Exception as e:
-        return f"⚠️ Error: {str(e)}"
+        history.append((message, f"⚠️ Error: {str(e)}"))
+        return "", history
+
         
 # 构建 UI
 with gr.Blocks(
