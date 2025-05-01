@@ -41,15 +41,17 @@ avatar_dict = {
     sid: f"avatar/{sid}.png" for sid in name_dict.keys()
 }
 
-# 当前选中的 student ID
-selected_id = gr.State("student001")
+# 保存所有学生的聊天历史
+def get_empty_history_dict():
+    return {student_id: [] for student_id in name_dict.keys()}
 
-# 切换学生，重置聊天历史，更新头像
-def select_student(student_id):
-    return student_id, [], gr.update(avatar_images=("avatar/user.png", avatar_dict.get(student_id, "avatar/default.png")))
+# 切换学生，保持各自聊天历史
+def select_student(student_id, history_dict):
+    # 返回选定学生的历史记录
+    return student_id, history_dict, history_dict.get(student_id, []), gr.update(avatar_images=("avatar/user.png", avatar_dict.get(student_id, "avatar/default.png")))
 
 # 聊天函数
-def chat(message, history, student_id):
+def chat(message, history, student_id, history_dict):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
 
     messages = [{"role": "system", "content": system_prompt}]
@@ -66,10 +68,18 @@ def chat(message, history, student_id):
         )
         reply = response.choices[0].message.content.strip()
         history.append([message, reply])
-        return "", history
+        # 更新历史记录字典
+        history_dict[student_id] = history
+        return "", history, history_dict
     except Exception as e:
         history.append((message, f"⚠️ Error: {str(e)}"))
-        return "", history
+        history_dict[student_id] = history
+        return "", history, history_dict
+
+# 清除当前学生的聊天历史
+def clear_current_chat(student_id, history_dict):
+    history_dict[student_id] = []
+    return [], history_dict
 
 # 自定义CSS
 custom_css = """
@@ -202,6 +212,9 @@ with gr.Blocks(
     css=custom_css
 ) as demo:
 
+    # ── 历史记录状态（所有学生） ──────────
+    history_dict_state = gr.State(get_empty_history_dict())
+
     # ── 顶栏 ───────────────────────────
     with gr.Row(elem_classes="header-container"):
         gr.Markdown("# 🎓 Digital-Twin Chat Demo")
@@ -247,23 +260,28 @@ with gr.Blocks(
     # ── 交互绑定 ─────────────────────────
     student_selector.change(
         select_student,
-        inputs=student_selector,
-        outputs=[selected_id_state, chatbot, chatbot],
+        inputs=[student_selector, history_dict_state],
+        outputs=[selected_id_state, history_dict_state, chatbot, chatbot],
     )
 
     msg.submit(
         chat,
-        inputs=[msg, chatbot, selected_id_state],
-        outputs=[msg, chatbot],
+        inputs=[msg, chatbot, selected_id_state, history_dict_state],
+        outputs=[msg, chatbot, history_dict_state],
     )
     
     send_btn.click(
         chat,
-        inputs=[msg, chatbot, selected_id_state],
-        outputs=[msg, chatbot],
+        inputs=[msg, chatbot, selected_id_state, history_dict_state],
+        outputs=[msg, chatbot, history_dict_state],
     )
 
-    clear_btn.click(lambda: [], None, chatbot, queue=False)
+    clear_btn.click(
+        clear_current_chat,
+        inputs=[selected_id_state, history_dict_state],
+        outputs=[chatbot, history_dict_state],
+        queue=False
+    )
 
 # ── 运行 ───────────────────────────────
 if __name__ == "__main__":
