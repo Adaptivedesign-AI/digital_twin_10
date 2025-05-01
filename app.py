@@ -70,68 +70,200 @@ def chat(message, history, student_id):
     except Exception as e:
         history.append((message, f"⚠️ Error: {str(e)}"))
         return "", history
+
+# 自定义CSS
+custom_css = """
+/* 全局样式 */
+body {
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 顶部橙色栏 */
+.header-container {
+    background: linear-gradient(90deg, #f7931e, #ff8c00);
+    border-radius: 8px 8px 0 0;
+    padding: 16px 24px;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-container h1 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.header-icon {
+    margin-right: 10px;
+    font-size: 28px;
+}
+
+/* 主容器 */
+.main-container {
+    display: flex;
+    border: 1px solid #e0e0e0;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* 学生选择器 */
+.student-radio {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #e0e0e0;
+}
+
+.student-radio label {
+    display: flex !important;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.student-radio label:hover {
+    background-color: #f0f0f0;
+}
+
+.student-radio input:checked + label {
+    background-color: #fff3e0;
+    border-left: 3px solid #f7931e;
+    font-weight: 500;
+}
+
+/* 聊天区域 */
+.chat-area {
+    min-height: 450px !important;
+    border: none !important;
+    background-color: #fafafa !important;
+}
+
+.chat-area > div {
+    padding: 16px !important;
+}
+
+/* 输入框和按钮 */
+.input-container {
+    padding: 16px;
+    border-top: 1px solid #e0e0e0;
+    background-color: white;
+}
+
+.input-box {
+    border-radius: 20px !important;
+    border: 1px solid #e0e0e0 !important;
+    padding: 10px 16px !important;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.send-btn {
+    background-color: #f7931e !important;
+    color: white !important;
+    border-radius: 20px !important;
+    font-weight: 500 !important;
+    flex-grow: 1;
+}
+
+.clear-btn {
+    background-color: #f5f5f5 !important;
+    color: #666 !important;
+    border-radius: 20px !important;
+    border: 1px solid #ddd !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+    
+    .student-radio {
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+}
+"""
+
 # --------------------------------------------
 # ＝ UI 构建 ＝
 # --------------------------------------------
 with gr.Blocks(
     theme=gr.themes.Soft(primary_hue="orange"),
-    css="""
-    .student-radio label{
-        display:block!important;
-        margin-bottom:8px;
-        font-size:16px;
-    }
-    .chat-area{min-height:400px;}
-    """
+    css=custom_css
 ) as demo:
 
     # ── 顶栏 ───────────────────────────
-    with gr.Row():
-        gr.Markdown(
-            "## 🎓 **Digital-Twin Chat Demo**  \n"
-            "Select a student on the left and start chatting.",
-            elem_id="title",
-        )
+    with gr.Row(elem_classes="header-container"):
+        gr.Markdown("# 🎓 Digital-Twin Chat Demo")
 
     # ── 主体 ───────────────────────────
-    with gr.Row():
-
+    with gr.Row(elem_classes="main-container"):
         # 左侧：学生选择器
-        with gr.Column(scale=1):
+        with gr.Column(scale=1, elem_classes="student-radio"):
+            gr.Markdown("### Select a Student")
             student_selector = gr.Radio(
                 choices=[(name_dict[sid], sid) for sid in name_dict],
                 value="student001",
-                label="Select a Student",
+                label="",
                 elem_classes=["student-radio"],
             )
 
         # 右侧：聊天 + 输入
         with gr.Column(scale=3):
-            chatbot = gr.Chatbot(                # ← 保持默认 tuple-list 格式
+            # 聊天区域
+            chatbot = gr.Chatbot(
                 label="Conversation",
                 avatar_images=("avatar/user.png", avatar_dict["student001"]),
                 elem_classes="chat-area",
+                height=450,
             )
-            msg   = gr.Textbox(placeholder="Type a message and press Enter…")
-            clear = gr.Button("Clear", variant="secondary")
+            
+            # 输入区域
+            with gr.Row(elem_classes="input-container"):
+                with gr.Column():
+                    msg = gr.Textbox(
+                        placeholder="Type a message and press Enter...",
+                        label="",
+                        elem_classes="input-box",
+                    )
+                    
+                    with gr.Row(elem_classes="action-buttons"):
+                        send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
+                        clear_btn = gr.Button("Clear", variant="secondary", elem_classes="clear-btn")
 
     # ── 状态：当前选中学生 ───────────────
     selected_id_state = gr.State("student001")
 
     # ── 交互绑定 ─────────────────────────
     student_selector.change(
-        select_student,                  # → 返回 (student_id, history, avatar_update)
+        select_student,
         inputs=student_selector,
         outputs=[selected_id_state, chatbot, chatbot],
     )
 
     msg.submit(
-        chat,                            # → 返回 (“”, history)
+        chat,
+        inputs=[msg, chatbot, selected_id_state],
+        outputs=[msg, chatbot],
+    )
+    
+    send_btn.click(
+        chat,
         inputs=[msg, chatbot, selected_id_state],
         outputs=[msg, chatbot],
     )
 
-    clear.click(lambda: [], None, chatbot, queue=False)
+    clear_btn.click(lambda: [], None, chatbot, queue=False)
 
 # ── 运行 ───────────────────────────────
 if __name__ == "__main__":
