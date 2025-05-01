@@ -40,23 +40,20 @@ avatar_dict = {
     student_id: f"avatar/{student_id}.png" for student_id in name_dict.keys()
 }
 
-# 默认头像路径 fallback
-default_avatar = "avatar/default.png"
-
-# 切换学生时不清空聊天记录
+# 切换学生时保留历史记录，不清空
 def select_student(student_id, history):
-    return student_id, history, "", ("user.png", avatar_dict.get(student_id, default_avatar))
+    if not isinstance(history, list):
+        history = []
+    return student_id, history, "", ("avatar/default.png", avatar_dict.get(student_id, "avatar/default.png"))
 
 # 聊天函数
 def chat(message, history, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
-    messages = [{"role": "system", "content": system_prompt}]
 
-    # 构造历史记录
+    messages = [{"role": "system", "content": system_prompt}]
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
         messages.append({"role": "assistant", "content": bot_reply})
-
     messages.append({"role": "user", "content": message})
 
     try:
@@ -67,10 +64,10 @@ def chat(message, history, student_id):
         )
         reply = response.choices[0].message.content.strip()
         history.append((message, reply))
-        return "", history, ("user.png", avatar_dict.get(student_id, default_avatar))
+        return "", history, ("avatar/default.png", avatar_dict.get(student_id, "avatar/default.png"))
     except Exception as e:
-        history.append((message, f"⚠️ Error: {str(e)}"))
-        return "", history, ("user.png", avatar_dict.get(student_id, default_avatar))
+        history.append((message, f"\u26a0\ufe0f Error: {str(e)}"))
+        return "", history, ("avatar/default.png", avatar_dict.get(student_id, "avatar/default.png"))
 
 # UI 构建
 with gr.Blocks() as demo:
@@ -79,30 +76,32 @@ with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column(scale=1):
             student_selector = gr.Radio(
-                choices=[(name_dict[student_id], student_id) for student_id in name_dict],
+                choices=[(name_dict[student_id], student_id) for student_id in name_dict.keys()],
                 label="Select a Student",
                 value="student001"
             )
         with gr.Column(scale=3):
             chatbot = gr.Chatbot(
-                value=[],  # ✅ 初始化为空列表
-                avatar_images=("user.png", avatar_dict.get("student001", default_avatar))
+                avatar_images=("avatar/default.png", avatar_dict["student001"])
             )
             msg = gr.Textbox(placeholder="Type a message and press Enter...")
             clear = gr.Button("Clear")
 
     selected_id_state = gr.State("student001")
+    history_state = gr.State([])
 
     student_selector.change(
         select_student,
-        [student_selector, chatbot],  # ✅ 传入当前 history
+        [student_selector, history_state],
         [selected_id_state, chatbot, msg, chatbot]
     )
+
     msg.submit(
         chat,
         [msg, chatbot, selected_id_state],
         [msg, chatbot, chatbot]
     )
+
     clear.click(lambda: [], None, chatbot, queue=False)
 
 if __name__ == "__main__":
