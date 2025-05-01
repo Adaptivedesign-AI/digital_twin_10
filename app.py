@@ -1,5 +1,3 @@
-还是不对，你还是在原来的基础上先改名字吧
-
 import gradio as gr
 import json
 import os
