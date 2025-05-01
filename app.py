@@ -65,7 +65,7 @@ def chat(message, history, student_id):
             temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
-        history.append((message, reply))
+        history.append([message, reply])
         return "", history
     except Exception as e:
         history.append((message, f"⚠️ Error: {str(e)}"))
