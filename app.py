@@ -61,31 +61,29 @@ def chat(message, history, student_id):
         history.append([message, f"\u26a0\ufe0f Error: {str(e)}"])
         return "", history
 
-# 自定义主题 (Gradio 系统颜色)
-theme = gr.themes.Base(
-    primary_hue="amber",       # 主色: 米色
-    secondary_hue="stone",    # 添色: 灰色
-    neutral_hue="slate",      # 中性色
-    font=["ui-sans-serif", "Arial"],
-    radius_size="lg"
-)
-
 # 构建 UI
-with gr.Blocks(theme=theme, css="""
-.student-selector label {
-    display: block;
-    margin-bottom: 6px;
-}
-.chat-area {
-    min-height: 400px;
-}
-""") as demo:
+with gr.Blocks(
+    theme=gr.themes.Soft(primary_hue="orange"),
+    css="""
+    .student-radio label {
+        display: block !important;
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+    .chat-area {
+        min-height: 400px;
+    }
+    """
+) as demo:
+
     with gr.Row():
-        gr.Image(value="avatar/user.png", shape="circle", width=64, show_label=False)
-        gr.Markdown("""
-        ## \ud83c\udf93 Digital Twin Chat Demo
-        Select a student from the left and begin chatting. Each twin resets when switched.
-        """)
+        with gr.Column(scale=0.1):
+            gr.Image(value="avatar/user.png", width=56, show_label=False)
+        with gr.Column():
+            gr.Markdown("""
+            ## 🎓 Digital Twin Chat Demo
+            Select a student from the left and begin chatting. Each twin resets when switched.
+            """)
 
     with gr.Row():
         with gr.Column(scale=1):
@@ -93,7 +91,7 @@ with gr.Blocks(theme=theme, css="""
                 choices=[(name_dict[sid], sid) for sid in name_dict.keys()],
                 label="Select a Student",
                 value="student001",
-                elem_classes="student-selector"
+                elem_classes=["student-radio"]
             )
         with gr.Column(scale=3):
             chatbot = gr.Chatbot(
