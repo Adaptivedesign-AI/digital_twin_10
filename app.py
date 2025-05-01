@@ -23,16 +23,16 @@ all_prompts = load_prompts()
 
 # 学生编号对应名字
 name_dict = {
-    "student001": "Emma",
-    "student002": "Liam",
-    "student003": "Ava",
-    "student004": "Noah",
-    "student005": "Sophia",
-    "student006": "James",
-    "student007": "Isabella",
-    "student008": "Lucas",
-    "student009": "Mia",
-    "student010": "Elijah"
+    "student001": "Liam",       # 男
+    "student002": "Noah",       # 男
+    "student003": "James",      # 男
+    "student004": "Lucas",      # 男
+    "student005": "Emma",       # 女
+    "student006": "Ava",        # 女
+    "student007": "Sophia",     # 女
+    "student008": "Isabella",   # 女
+    "student009": "Mia",        # 女
+    "student010": "Elijah"      # 男
 }
 
 # 学生编号对应头像路径
