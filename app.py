@@ -5,11 +5,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# 加载 shared_prompt.txt
+# Load shared_prompt.txt
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
 
-# 加载所有 prompts（拼接 shared + individual）
+# Load all prompts (combining shared + individual)
 def load_prompts():
     prompts = {}
     for i in range(1, 11):
@@ -22,7 +22,7 @@ def load_prompts():
 
 all_prompts = load_prompts()
 
-# 学生 ID 和名字映射
+# Student ID to name mapping
 name_dict = {
     "student001": "Jaden",
     "student002": "Elijah",
@@ -36,21 +36,21 @@ name_dict = {
     "student010": "Isaiah"
 }
 
-# 学生描述信息（可以添加更多信息，比如性格、背景等）
+# Student descriptions (personality, background, etc.)
 student_descriptions = {
-    "student001": "16岁，擅长科学与数学，性格内向但乐于助人",
-    "student002": "15岁，热爱运动特别是篮球，外向活泼",
-    "student003": "17岁，喜欢音乐和艺术，有创意但有些敏感",
-    "student004": "16岁，擅长辩论和写作，思维敏捷",
-    "student005": "15岁，热爱自然科学，好奇心强",
-    "student006": "17岁，社交能力强，喜欢时尚和设计",
-    "student007": "16岁，喜欢阅读和写作，有些害羞但思想深刻",
-    "student008": "15岁，有领导力，参与多项校园活动",
-    "student009": "17岁，数学天才，喜欢解决复杂问题",
-    "student010": "16岁，有体育特长，乐观开朗"
+    "student001": "16 years old, excels in science and math, introverted but helpful",
+    "student002": "15 years old, loves sports especially basketball, outgoing and energetic",
+    "student003": "17 years old, enjoys music and art, creative but somewhat sensitive",
+    "student004": "16 years old, good at debate and writing, quick thinker",
+    "student005": "15 years old, passionate about natural sciences, very curious",
+    "student006": "17 years old, strong social skills, interested in fashion and design",
+    "student007": "16 years old, loves reading and writing, shy but thoughtful",
+    "student008": "15 years old, has leadership qualities, involved in many school activities",
+    "student009": "17 years old, math genius, enjoys solving complex problems",
+    "student010": "16 years old, athletic, optimistic and cheerful"
 }
 
-# 学生使用的模型信息
+# Models used by each student
 model_info = {
     "student001": "GPT-4",
     "student002": "GPT-4",
@@ -64,16 +64,16 @@ model_info = {
     "student010": "GPT-4"
 }
 
-# 学生 ID 和头像文件映射
+# Student ID to avatar file mapping
 avatar_dict = {
     sid: f"avatar/{sid}.png" for sid in name_dict.keys()
 }
 
-# 保存所有学生的聊天历史
+# Initialize empty chat history for all students
 def get_empty_history_dict():
     return {student_id: [] for student_id in name_dict.keys()}
 
-# 聊天函数
+# Chat function
 def chat(message, history, student_id, history_dict):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
 
@@ -91,7 +91,7 @@ def chat(message, history, student_id, history_dict):
         )
         reply = response.choices[0].message.content.strip()
         history.append([message, reply])
-        # 更新历史记录字典
+        # Update history dictionary
         history_dict[student_id] = history
         return "", history, history_dict
     except Exception as e:
@@ -99,43 +99,43 @@ def chat(message, history, student_id, history_dict):
         history_dict[student_id] = history
         return "", history, history_dict
 
-# 清除当前学生的聊天历史
+# Clear chat history for current student
 def clear_current_chat(student_id, history_dict):
     history_dict[student_id] = []
     return [], history_dict
 
-# 从选择页面切换到聊天页面
+# Switch from selection page to chat page
 def start_chat_with_student(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_avatar = avatar_dict.get(student_id, "avatar/default.png")
     student_history = history_dict.get(student_id, [])
     
-    # 返回选定学生信息和历史记录以更新聊天界面
+    # Return selected student info and history to update chat interface
     return (
-        gr.update(visible=False),  # 隐藏选择页面
-        gr.update(visible=True),   # 显示聊天页面
+        gr.update(visible=False),  # Hide selection page
+        gr.update(visible=True),   # Show chat page
         student_id,
         student_name,
         student_avatar,
         student_history
     )
 
-# 返回到选择页面
+# Return to selection page
 def return_to_selection():
     return (
-        gr.update(visible=True),   # 显示选择页面
-        gr.update(visible=False)   # 隐藏聊天页面
+        gr.update(visible=True),   # Show selection page
+        gr.update(visible=False)   # Hide chat page
     )
 
-# 自定义CSS
+# Custom CSS
 custom_css = """
-/* 全局样式 */
+/* Global styles */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
     background-color: #f9f9f9;
 }
 
-/* 顶部橙色栏 */
+/* Top orange bar */
 .header-container {
     background: linear-gradient(90deg, #f7931e, #ff8c00);
     border-radius: 8px 8px 0 0;
@@ -156,7 +156,7 @@ body {
     font-size: 28px;
 }
 
-/* 主容器 */
+/* Main container */
 .main-container {
     display: flex;
     border: 1px solid #e0e0e0;
@@ -166,7 +166,7 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-/* 聊天区域 */
+/* Chat area */
 .chat-area {
     min-height: 450px !important;
     border: none !important;
@@ -177,7 +177,7 @@ body {
     padding: 16px !important;
 }
 
-/* 输入框和按钮 */
+/* Input box and buttons */
 .input-container {
     padding: 16px;
     border-top: 1px solid #e0e0e0;
@@ -219,7 +219,7 @@ body {
     margin-right: auto;
 }
 
-/* Character Card Styles - 学生选择页面 */
+/* Character Card Styles - Student selection page */
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -258,6 +258,7 @@ body {
     object-fit: cover;
     border: 3px solid white;
     box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    background-color: #f0f0f0;  /* Fallback background */
 }
 
 .card-body {
@@ -306,7 +307,7 @@ body {
     background-color: #e67e00;
 }
 
-/* 聊天界面样式 */
+/* Chat interface styles */
 .chat-header {
     display: flex;
     align-items: center;
@@ -333,7 +334,7 @@ body {
     margin-left: 10px;
 }
 
-/* 响应式调整 */
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .character-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -341,7 +342,7 @@ body {
 }
 """
 
-# 创建角色卡片HTML
+# Create character card HTML
 def create_character_card_html(student_id):
     name = name_dict.get(student_id, "Unknown")
     description = student_descriptions.get(student_id, "No description available")
@@ -353,87 +354,88 @@ def create_character_card_html(student_id):
         <div class="card-header">
             <span>Digital Twin</span>
         </div>
-        <img class="card-avatar" src="{avatar}">
+        <img class="card-avatar" src="{avatar}" onerror="this.src='https://via.placeholder.com/120?text={name[0]}'" alt="{name}">
         <div class="card-body">
             <div class="character-name">{name}</div>
             <div class="character-description">{description}</div>
             <div class="model-tag">Powered by {model}</div>
+            <button class="chat-btn">Start Chat</button>
         </div>
     </div>
     """
 
 # --------------------------------------------
-# ＝ UI 构建 ＝
+# = UI BUILDING =
 # --------------------------------------------
 with gr.Blocks(
     theme=gr.themes.Soft(primary_hue="orange"),
     css=custom_css
 ) as demo:
 
-    # ── 历史记录状态（所有学生） ──────────
+    # ── History state (all students) ──────────
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
     
-    # ── 选择页面 ───────────────────────────
+    # ── Selection page ───────────────────────────
     with gr.Group(visible=True) as selection_page:
         with gr.Row(elem_classes="header-container"):
             gr.Markdown("# 🎓 Digital-Twin Chat Demo")
         
         with gr.Column():
-            gr.Markdown("### 选择一个学生进行对话")
+            gr.Markdown("### Choose a student to chat with")
             
-            # 使用HTML生成角色卡片网格
+            # Generate character card grid using HTML
             character_grid_html = ""
             for student_id in name_dict.keys():
                 character_grid_html += create_character_card_html(student_id)
             
             character_grid = gr.HTML(f'<div class="character-grid">{character_grid_html}</div>')
             
-            # 隐藏的按钮，用于JavaScript调用
+            # Hidden buttons for JavaScript interaction
             select_student_btn = gr.Button("Select", visible=False)
             student_id_input = gr.Textbox("", visible=False)
     
-    # ── 聊天页面 ───────────────────────────
+    # ── Chat page ───────────────────────────
     with gr.Group(visible=False) as chat_page:
-        # 聊天头部信息
+        # Chat header information
         with gr.Row(elem_classes="chat-header"):
             student_avatar_display = gr.Image(value="avatar/default.png", elem_classes="chat-avatar", show_label=False, height=40, width=40)
             with gr.Column():
                 student_name_display = gr.Markdown("Student Name")
                 student_model_display = gr.Markdown("Powered by GPT-4", elem_classes="chat-model")
-            back_button = gr.Button("← 返回", elem_classes="back-btn")
+            back_button = gr.Button("← Back", elem_classes="back-btn")
         
-        # 聊天区域
+        # Chat area
         chatbot = gr.Chatbot(
             label="Conversation",
-            avatar_images=("avatar/user.png", "avatar/default.png"),
+            avatar_images=("avatar/user.png", None),  # Will be set dynamically
             elem_classes="chat-area",
             height=450,
         )
         
-        # 输入区域
+        # Input area
         with gr.Row(elem_classes="input-container"):
             with gr.Column():
                 msg = gr.Textbox(
-                    placeholder="输入你的消息...",
+                    placeholder="Type your message...",
                     label="",
                     elem_classes="input-box",
                 )
                 
                 with gr.Row(elem_classes="action-buttons"):
-                    send_btn = gr.Button("发送", variant="primary", elem_classes="send-btn")
-                    clear_btn = gr.Button("清除聊天记录", variant="secondary", elem_classes="clear-btn")
+                    send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
+                    clear_btn = gr.Button("Clear Chat", variant="secondary", elem_classes="clear-btn")
     
-    # ── 页面切换逻辑 ─────────────────────────
-    # JavaScript函数，用于通过卡片选择学生
+    # ── Page switching logic ─────────────────────────
+    # JavaScript function for student selection via cards
     demo.load(js="""
     function selectStudent(studentId) {
-        document.getElementById('student_id_input').value = studentId;
+        document.getElementById('student_id_input').querySelector('input').value = studentId;
         document.getElementById('select_student_btn').click();
     }
     """)
     
-    # 切换到聊天页面
+    # Switch to chat page
     select_student_btn.click(
         start_chat_with_student,
         inputs=[student_id_input, history_dict_state],
@@ -447,14 +449,14 @@ with gr.Blocks(
         ]
     )
     
-    # 返回选择页面
+    # Return to selection page
     back_button.click(
         return_to_selection,
         inputs=[],
         outputs=[selection_page, chat_page]
     )
     
-    # 发送消息
+    # Send message
     msg.submit(
         chat,
         inputs=[msg, chatbot, selected_id_state, history_dict_state],
@@ -467,7 +469,7 @@ with gr.Blocks(
         outputs=[msg, chatbot, history_dict_state],
     )
     
-    # 清除聊天记录
+    # Clear chat history
     clear_btn.click(
         clear_current_chat,
         inputs=[selected_id_state, history_dict_state],
@@ -475,7 +477,7 @@ with gr.Blocks(
         queue=False
     )
 
-# ── 运行 ───────────────────────────────
+# ── Run ───────────────────────────────
 if __name__ == "__main__":
     demo.queue().launch(
         server_name="0.0.0.0",
