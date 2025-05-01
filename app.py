@@ -38,16 +38,23 @@ selected_id = gr.State("student001")
 def select_student(student_id):
     return student_id, [], gr.update(avatar_images=("avatar/user.png", avatar_dict.get(student_id, "avatar/default.png")))
 
+# 存储所有学生的历史记录
+student_histories = {sid: [] for sid in name_dict.keys()}
 
 # 聊天函数
-def chat(message, history, student_id):
+def chat(message, student_id):
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
     messages = [{"role": "system", "content": system_prompt}]
     
+    # 获取对应学生的聊天记录
+    history = student_histories.get(student_id, [])
+    
+    # 添加历史记录
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
         messages.append({"role": "assistant", "content": bot_reply})
     
+    # 添加新的用户消息
     messages.append({"role": "user", "content": message})
 
     try:
@@ -57,13 +64,15 @@ def chat(message, history, student_id):
             temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
-        # 确保返回的数据是长度为 2 的元组
-        history.append((message, reply))  # 确保是 (message, reply) 这个格式
-        return "", history
-    except Exception as e:
-        history.append((message, f"⚠️ Error: {str(e)}"))  # 继续以元组形式添加
-        return "", history
 
+        # 更新学生的聊天历史
+        student_histories[student_id].append({"role": "user", "content": message})
+        student_histories[student_id].append({"role": "assistant", "content": reply})
+        
+        return reply
+    except Exception as e:
+        return f"⚠️ Error: {str(e)}"
+        
 # 构建 UI
 with gr.Blocks(
     theme=gr.themes.Soft(primary_hue="orange"),
