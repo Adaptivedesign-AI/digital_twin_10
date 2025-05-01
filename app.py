@@ -37,7 +37,7 @@ name_dict = {
 
 # 学生编号对应头像路径
 avatar_dict = {
-    student_id: f"avatars/{student_id}.png" for student_id in name_dict.keys()
+    student_id: f"avatar/{student_id}.png" for student_id in name_dict.keys()
 }
 
 # 当前选中的 student ID
@@ -54,7 +54,7 @@ def chat(message, history, student_id):
     messages = [{"role": "system", "content": system_prompt}]
     for user_msg, bot_reply in history:
         messages.append({"role": "user", "content": user_msg})
-        messages.append({"role": "assistant", "content": bot_reply])
+        messages.append({"role": "assistant", "content": bot_reply})
     messages.append({"role": "user", "content": message})
 
     try:
