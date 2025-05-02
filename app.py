@@ -111,7 +111,7 @@ def clear_current_chat(student_id, history_dict):
 def get_student_model(student_id):
     return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
-# Direct student selection function - simplified for better compatibility
+# Direct student selection function
 def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_avatar = avatar_dict.get(student_id, "avatar/default.png")
@@ -137,7 +137,7 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Custom CSS with improved character.ai style and better cross-device support
+# Custom CSS with improved character.ai style
 custom_css = """
 /* Global styles */
 body {
@@ -149,7 +149,7 @@ body {
 .header-container {
     background: linear-gradient(90deg, #f7931e, #ff8c00);
     border-radius: 8px 8px 0 0;
-    padding: 16px 24px;
+    padding: 12px 20px;
     margin: 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -157,13 +157,8 @@ body {
 .header-container h1 {
     color: white;
     margin: 0;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
-}
-
-.header-icon {
-    margin-right: 10px;
-    font-size: 28px;
 }
 
 /* Main container */
@@ -232,99 +227,88 @@ body {
 /* Character Card Styles - Student selection page */
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 15px;
 }
 
 .character-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     border: 1px solid #e0e0e0;
-    position: relative; /* For card click */
 }
 
 .character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-
-/* Add transparent overlay for better click experience */
-.card-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    z-index: 10;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
 
 .card-header {
-    padding: 15px;
+    padding: 10px;
     background-color: #f7931e;
     color: white;
     text-align: center;
+    font-size: 14px;
 }
 
+/* 优化头像样式 */
 .card-avatar {
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
+    margin: 12px auto;
     border-radius: 50%;
-    margin: 15px auto;
+    overflow: hidden;
     display: block;
     object-fit: cover;
     border: 3px solid white;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    background-color: #f0f0f0;  /* Fallback background */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .card-body {
-    padding: 15px;
+    padding: 12px;
     text-align: center;
 }
 
 .character-name {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .character-description {
-    font-size: 14px;
+    font-size: 13px;
     color: #666;
-    margin-bottom: 10px;
-    height: 60px;
+    margin-bottom: 8px;
+    height: 40px;
     overflow: hidden;
 }
 
 .model-tag {
     display: inline-block;
     background-color: #f0f0f0;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
     color: #555;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 .chat-btn {
     background-color: #f7931e;
     color: white;
     border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
+    border-radius: 18px;
+    padding: 6px 12px;
     font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 10px;
     transition: background-color 0.2s;
-    position: relative;
-    z-index: 20; /* Ensure button is above overlay */
 }
 
 .chat-btn:hover {
@@ -335,137 +319,70 @@ body {
 .chat-header {
     display: flex;
     align-items: center;
-    padding: 15px;
+    padding: 12px;
     background-color: #f8f9fa;
     border-bottom: 1px solid #e0e0e0;
 }
 
 .chat-avatar {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    margin-right: 15px;
+    margin-right: 12px;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .chat-name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
 }
 
 .chat-model {
-    font-size: 12px;
+    font-size: 11px;
     color: #666;
-    margin-left: 10px;
+    margin-left: 8px;
+}
+
+/* 隐藏Gradio图片组件的控制按钮 */
+.svelte-1g805jl .panel-buttons {
+    display: none !important; 
+}
+.svelte-1g805jl .absolute {
+    display: none !important;
+}
+.svelte-1g805jl .gr-image-tools {
+    display: none !important;
+}
+.svelte-1g805jl button {
+    display: none !important;
+}
+.gradio-container .prose img {
+    margin: 0 !important;
+}
+.gradio-image .panel-image {
+    border-radius: 50% !important;
+    overflow: hidden !important;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .character-card {
+        font-size: 90%;
+    }
+    
+    .card-avatar {
+        width: 70px;
+        height: 70px;
     }
 }
-
-/* Fix for desktop click issues */
-button {
-    cursor: pointer;
-    /* Prevent button events from being captured by other elements */
-    position: relative;
-    z-index: 20;
-}
-
-.chat-btn {
-    pointer-events: auto !important;
-}
-
-.gradio-button {
-    user-select: none;
-}
-
-/* Avoid text selection triggering card click */
-* {
-    user-select: none;
-}
 """
-
-# Create HTML for student grid - using a function to avoid f-string issues
-def create_student_grid_html():
-    cards_html = ""
-    for student_id in name_dict.keys():
-        name = name_dict[student_id]
-        desc = student_descriptions[student_id]
-        model = model_info[student_id]
-        
-        card_html = f"""
-        <div class="character-card" id="card-{student_id}" data-student-id="{student_id}">
-            <div class="card-header">Digital Twin</div>
-            <img src="avatar/{student_id}.png" class="card-avatar" />
-            <div class="card-body">
-                <div class="character-name">{name}</div>
-                <div class="character-description">{desc}</div>
-                <div class="model-tag">Powered by {model}</div>
-                <button class="chat-btn" id="btn-{student_id}" data-student-id="{student_id}">Start Chat</button>
-            </div>
-        </div>
-        """
-        cards_html += card_html
-    
-    # Full HTML with JavaScript
-    grid_html = f"""
-    <div class="character-grid">
-        {cards_html}
-    </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {{
-        console.log("Adding click events to buttons");
-        
-        // Add click events to all Start Chat buttons
-        document.querySelectorAll('.chat-btn').forEach(button => {{
-            button.addEventListener('click', function(e) {{
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const studentId = this.getAttribute('data-student-id');
-                console.log("Button clicked for student:", studentId);
-                
-                // Find the hidden input field and set studentId as its value
-                const hiddenInput = document.getElementById('student-id-input');
-                if(hiddenInput) {{
-                    hiddenInput.value = studentId;
-                    
-                    // Trigger submit event
-                    const submitEvent = new Event('input', {{ bubbles: true }});
-                    hiddenInput.dispatchEvent(submitEvent);
-                    
-                    // Click the hidden submit button
-                    const submitButton = document.getElementById('select-student-btn');
-                    if(submitButton) {{
-                        submitButton.click();
-                    }}
-                }}
-            }});
-        }});
-        
-        // Also add click events to the entire card
-        document.querySelectorAll('.character-card').forEach(card => {{
-            card.addEventListener('click', function(e) {{
-                // Prevent bubbling to Start Chat button
-                if(e.target.classList.contains('chat-btn')) return;
-                
-                const studentId = this.getAttribute('data-student-id');
-                console.log("Card clicked for student:", studentId);
-                
-                // Trigger the corresponding button click
-                const button = document.getElementById(`btn-${{studentId}}`);
-                if(button) {{
-                    button.click();
-                }}
-            }});
-        }});
-    }});
-    </script>
-    """
-    
-    return grid_html
 
 # --------------------------------------------
 # = UI BUILDING =
@@ -479,7 +396,7 @@ with gr.Blocks(
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
     
-    # Create main pages
+    # Create both pages as components 
     selection_page = gr.Group(visible=True)
     chat_page = gr.Group(visible=False)
     
@@ -491,8 +408,8 @@ with gr.Blocks(
                 value="avatar/default.png", 
                 elem_classes="chat-avatar", 
                 show_label=False, 
-                height=40, 
-                width=40
+                height=35, 
+                width=35
             )
             with gr.Column():
                 student_name_display = gr.Markdown("Student Name")
@@ -527,23 +444,55 @@ with gr.Blocks(
         
         gr.Markdown("### Choose a student to chat with")
         
-        # Create student selection cards using HTML (as a function)
-        students_grid = gr.HTML(create_student_grid_html())
-        
-        # Create hidden components for student selection
-        student_id_input = gr.Textbox(value="", visible=False, elem_id="student-id-input")
-        select_student_btn = gr.Button("Select", visible=False, elem_id="select-student-btn")
-            
-    # Event handlers 
-    # Student selection button click event
-    select_student_btn.click(
-        select_student_direct,
-        inputs=[student_id_input, history_dict_state],
-        outputs=[selection_page, chat_page, selected_id_state, 
-                student_name_display, student_model_display,
-                student_avatar_display, chatbot]
-    )
+        # Create student selection grid
+        with gr.Row(elem_classes="character-grid"):
+            for student_id in name_dict.keys():
+                name = name_dict[student_id]
+                desc = student_descriptions[student_id]
+                model = model_info[student_id]
+                
+                with gr.Column(elem_classes="character-card"):
+                    gr.HTML(f'<div class="card-header">Digital Twin</div>')
+                    
+                    # Avatar image
+                    gr.Image(
+                        value=avatar_dict[student_id],
+                        show_label=False,
+                        elem_classes="card-avatar",
+                        height=90,
+                        width=90
+                    )
+                    
+                    with gr.Column(elem_classes="card-body"):
+                        gr.HTML(f'<div class="character-name">{name}</div>')
+                        gr.HTML(f'<div class="character-description">{desc}</div>')
+                        gr.HTML(f'<div class="model-tag">Powered by {model}</div>')
+                        
+                        # Direct button for each student
+                        select_btn = gr.Button(
+                            "Start Chat", 
+                            elem_classes="chat-btn"
+                        )
+                        
+                        # Set up the click event for each button
+                        select_btn.click(
+                            select_student_direct,
+                            inputs=[
+                                gr.Textbox(value=student_id, visible=False),
+                                history_dict_state
+                            ],
+                            outputs=[
+                                selection_page, 
+                                chat_page, 
+                                selected_id_state, 
+                                student_name_display, 
+                                student_model_display,
+                                student_avatar_display, 
+                                chatbot
+                            ]
+                        )
     
+    # Event handlers 
     # Return to selection page
     back_button.click(
         return_to_selection,
