@@ -148,12 +148,12 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Character.ai style grid for selection page */
+/* Character.ai style grid for selection page - now 5 columns */
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 24px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -161,23 +161,29 @@ body {
 /* Responsive breakpoints for character grid */
 @media (max-width: 1200px) {
     .character-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .character-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
     .character-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
     .character-grid {
         grid-template-columns: 1fr;
     }
 }
 
-/* Card styling - more compact like Character.ai */
+/* Card styling - more compact for 5-column layout */
 .character-card {
     background: white;
     border-radius: 12px;
@@ -189,7 +195,7 @@ body {
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    max-width: 280px;
+    max-width: 220px;
     margin: 0 auto;
 }
 
@@ -201,29 +207,29 @@ body {
 .card-header {
     background-color: #f7931e;
     color: white;
-    padding: 8px;
+    padding: 6px;
     text-align: center;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
 }
 
-/* Student info styling - more compact */
+/* Student info styling - even more compact */
 .student-name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    margin: 8px 0 4px;
+    margin: 6px 0 2px;
     text-align: center;
 }
 
 .student-description {
-    padding: 0 12px;
+    padding: 0 10px;
     text-align: center;
     color: #555;
-    font-size: 13px;
-    min-height: 50px;
+    font-size: 12px;
+    min-height: 45px;
     overflow: hidden;
     flex-grow: 1;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -231,24 +237,24 @@ body {
 
 .model-tag {
     background-color: #f0f0f0;
-    border-radius: 15px;
-    padding: 4px 8px;
-    margin: 6px auto;
+    border-radius: 12px;
+    padding: 3px 6px;
+    margin: 4px auto;
     display: inline-block;
-    font-size: 11px;
+    font-size: 10px;
     color: #666;
     text-align: center;
 }
 
-/* Avatar styling in selection cards - smaller */
+/* Avatar styling in selection cards - smaller for 5 columns */
 .avatar-container {
-    width: 80px;
-    height: 80px;
-    margin: 12px auto 8px;
+    width: 70px;
+    height: 70px;
+    margin: 10px auto 6px;
     border-radius: 50%;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: 3px solid white;
+    border: 2px solid white;
 }
 
 .avatar-container img {
@@ -264,13 +270,13 @@ body {
     color: white !important;
     border: none !important;
     border-radius: 20px !important;
-    padding: 6px 0 !important;
-    margin: 8px auto 12px !important;
+    padding: 5px 0 !important;
+    margin: 6px auto 10px !important;
     width: 85% !important;
     display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    font-size: 14px !important;
+    font-size: 13px !important;
 }
 
 .chat-btn:hover {
@@ -521,15 +527,15 @@ with gr.Blocks(css=custom_css) as demo:
                 send_btn = gr.Button("Send", elem_classes="send-btn")
                 clear_btn = gr.Button("Clear", elem_classes="clear-btn")
     
-    # ── Selection page - Now with responsive 4-column grid like Character.ai ───────────────────────────
+    # ── Selection page - Now with responsive 5-column grid like Character.ai ───────────────────────────
     with selection_page:
         with gr.Column(elem_classes="container"):
             gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
             gr.Markdown("### Choose a student to chat with", elem_classes="selection-heading")
             
-            # Create a single responsive grid for all students
+            # Create a single responsive grid for all students - now 5 columns
             with gr.Column(elem_classes="character-grid"):
-                # Loop through all 10 students to create a 4-column grid
+                # Loop through all 10 students to create a 5-column grid
                 for i in range(0, 10):
                     student_id = f"student{i+1:03d}"
                     
