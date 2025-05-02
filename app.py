@@ -111,6 +111,7 @@ def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_history = history_dict.get(student_id, [])
     student_model = get_student_model(student_id)
+    student_avatar = f"avatar/{student_id}.png"
     
     return (
         gr.update(visible=False),  # Hide selection page
@@ -118,6 +119,7 @@ def select_student_direct(student_id, history_dict):
         student_id,                # Update selected student ID
         f"# {student_name}",       # Update student name display
         student_model,             # Update model display
+        student_avatar,            # Update student avatar
         student_history            # Update chat history
     )
 
@@ -128,7 +130,7 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Enhanced CSS for better UI
+# Enhanced CSS for better UI with Character.ai style chat bubbles and avatars
 custom_css = """
 /* Global styles */
 body {
@@ -292,14 +294,6 @@ body {
     width: 100% !important;
 }
 
-/* Custom avatar for users in chat */
-.user-avatar {
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    object-fit: cover;
-}
-
 /* Character info styling in chat */
 .character-info {
     display: flex;
@@ -307,47 +301,77 @@ body {
     justify-content: center;
 }
 
-/* Character.ai style enhancements */
+/* Character.ai style chat styling */
 .character-ai-style {
     border-radius: 12px;
     background-color: white;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.character-ai-panel {
+/* Custom styling for chat bubbles */
+.chatbot-row {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    margin-bottom: 20px;
 }
 
-/* Improved chat bubble styling */
-.chat-bubble {
-    padding: 10px 15px;
-    border-radius: 18px;
-    margin: 5px 0;
-    max-width: 80%;
-    word-wrap: break-word;
+/* Show avatars in the chatbot */
+.gradio-chatbot .avatar {
+    display: block !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    margin-right: 15px !important;
+    margin-top: 0 !important;
+    flex-shrink: 0 !important;
 }
 
-.user-bubble {
-    background-color: #f7931e;
-    color: white;
-    margin-left: auto;
-    border-bottom-right-radius: 4px;
+/* Make sure the avatars are visible and styled correctly */
+.gradio-chatbot .message-wrap.user .avatar,
+.gradio-chatbot .message-wrap.bot .avatar {
+    display: inline-block !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    margin-right: 10px !important;
+    flex-shrink: 0 !important;
 }
 
-.bot-bubble {
-    background-color: #f1f1f1;
-    color: #333;
-    margin-right: auto;
-    border-bottom-left-radius: 4px;
+/* Character.ai style chat bubbles */
+.gradio-chatbot .message {
+    border-radius: 18px !important;
+    padding: 12px 16px !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+    max-width: 80% !important;
+    display: inline-block !important;
+    margin-top: 5px !important;
+    word-wrap: break-word !important;
 }
 
-/* Fix for chat scrolling */
-.chatbox-container {
-    height: 75vh;
-    overflow-y: auto;
-    padding: 15px;
+/* User message styling */
+.gradio-chatbot .message.user {
+    background-color: #f7931e !important;
+    color: white !important;
+    border-bottom-right-radius: 4px !important;
+    margin-left: auto !important;
+}
+
+/* Bot message styling */
+.gradio-chatbot .message.bot {
+    background-color: #f1f1f1 !important;
+    color: #333 !important;
+    border-bottom-left-radius: 4px !important;
+    margin-right: auto !important;
+}
+
+/* Emotion tag styling */
+.emotion-tag {
+    font-style: italic;
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 0.9em;
 }
 
 /* Fix for selection card height */
@@ -368,9 +392,41 @@ body {
     }
 }
 
-/* Hide profile images in chat panel */
-.gradio-image {
-    display: none !important;
+/* Ensure avatars display in chat */
+.gradio-avatar {
+    display: flex !important;
+    align-items: flex-start !important;
+}
+
+/* Custom styling for chat container to match Character.ai */
+.chatbox-container {
+    padding: 20px !important;
+    background-color: #fff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+}
+
+/* Force image control visibility for avatars only */
+.chat-avatar-header {
+    display: flex !important;
+    align-items: center !important;
+    margin-right: 15px !important;
+}
+
+.chat-avatar-header img {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+    object-fit: cover !important;
+}
+
+/* Override default gradio chatbot styling to show avatars */
+.gradio-container .prose img.avatar-image {
+    display: inline-block !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
 }
 """
 
@@ -382,6 +438,7 @@ with gr.Blocks(css=custom_css) as demo:
     # ── History state (all students) ──────────
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
+    avatar_state = gr.State("")
     
     # ── Create both pages as components ──────────
     selection_page = gr.Group(visible=True)
@@ -389,19 +446,34 @@ with gr.Blocks(css=custom_css) as demo:
     
     # ── Define chat page components FIRST ──────────
     with chat_page:
-        # Chat header with student info - no avatar, back button on the left
+        # Chat header with student info and back button on the left
         with gr.Row(elem_classes="chat-header"):
             back_button = gr.Button("← Back", elem_classes="back-btn")
-            with gr.Column(elem_classes="character-info"):
-                name_display = gr.Markdown("Student Name")
-                model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
             
-        # Chat area
+            # Avatar and student info
+            with gr.Row():
+                # Student avatar
+                avatar_display = gr.Image(
+                    value="avatar/default.png", 
+                    show_label=False,
+                    elem_classes="chat-avatar-header",
+                    height=48,
+                    width=48
+                )
+                
+                # Student information
+                with gr.Column(elem_classes="character-info"):
+                    name_display = gr.Markdown("Student Name")
+                    model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
+            
+        # Chat area with avatars
         chatbot = gr.Chatbot(
             label="Conversation",
-            avatar_images=("avatar/user.png", None),  # We'll hide these with CSS
+            avatar_images=("avatar/user.png", None),  # Will be updated dynamically
             height=450,
-            elem_classes="character-ai-style"
+            elem_classes="character-ai-style chatbox-container",
+            show_label=True,
+            show_copy_button=True,
         )
         
         # Input area with improved layout
@@ -457,6 +529,7 @@ with gr.Blocks(css=custom_css) as demo:
                             selected_id_state, 
                             name_display, 
                             model_display,
+                            avatar_display,
                             chatbot
                         ]
                     )
@@ -494,9 +567,23 @@ with gr.Blocks(css=custom_css) as demo:
                             selected_id_state, 
                             name_display, 
                             model_display,
+                            avatar_display,
                             chatbot
                         ]
                     )
+
+    # Function to update avatar_images in chatbot
+    def update_chatbot_avatars(student_id):
+        user_avatar = "avatar/user.png"
+        bot_avatar = f"avatar/{student_id}.png"
+        return gr.update(avatar_images=(user_avatar, bot_avatar))
+        
+    # Event to update avatars when student is selected
+    selected_id_state.change(
+        update_chatbot_avatars,
+        inputs=[selected_id_state],
+        outputs=[chatbot]
+    )
     
     # ── Event handlers ─────────────────────────    
     # Return to selection page
@@ -526,6 +613,40 @@ with gr.Blocks(css=custom_css) as demo:
         outputs=[chatbot, history_dict_state],
         queue=False
     )
+
+    # JavaScript to ensure avatars display correctly
+    demo.load(None, None, None, js="""
+    function() {
+        // Keep checking and fixing the avatars periodically
+        setInterval(function() {
+            // Ensure avatar images are visible
+            document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
+                avatar.style.display = 'inline-block';
+                avatar.style.width = '40px';
+                avatar.style.height = '40px';
+                avatar.style.borderRadius = '50%';
+                avatar.style.marginRight = '10px';
+            });
+            
+            // Format message bubbles
+            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
+                msg.style.borderRadius = '18px';
+                msg.style.padding = '12px 16px';
+                msg.style.maxWidth = '80%';
+                
+                if (msg.classList.contains('user')) {
+                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.color = 'white';
+                    msg.style.borderBottomRightRadius = '4px';
+                } else {
+                    msg.style.backgroundColor = '#f1f1f1';
+                    msg.style.color = '#333';
+                    msg.style.borderBottomLeftRadius = '4px';
+                }
+            });
+        }, 500);
+    }
+    """)
 
 # Run the application
 if __name__ == "__main__":
