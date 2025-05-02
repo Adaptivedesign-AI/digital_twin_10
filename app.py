@@ -75,7 +75,7 @@ def get_empty_history_dict():
 
 # Chat function
 def chat(message, history, student_id, history_dict):
-    if not message.strip():
+    if not message or not message.strip():
         return "", history, history_dict
         
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
@@ -98,7 +98,7 @@ def chat(message, history, student_id, history_dict):
         history_dict[student_id] = history
         return "", history, history_dict
     except Exception as e:
-        history.append((message, f"⚠️ Error: {str(e)}"))
+        history.append([message, f"⚠️ Error: {str(e)}"])
         history_dict[student_id] = history
         return "", history, history_dict
 
@@ -107,11 +107,16 @@ def clear_current_chat(student_id, history_dict):
     history_dict[student_id] = []
     return [], history_dict
 
-# Switch from selection page to chat page
-def start_chat_with_student(student_id, history_dict):
+# Function to get student model info
+def get_student_model(student_id):
+    return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
+
+# Direct student selection - this is a separate function explicitly for button clicks
+def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_avatar = avatar_dict.get(student_id, "avatar/default.png")
     student_history = history_dict.get(student_id, [])
+    student_model = get_student_model(student_id)
     
     # Return selected student info and history to update chat interface
     return (
@@ -119,6 +124,7 @@ def start_chat_with_student(student_id, history_dict):
         gr.update(visible=True),   # Show chat page
         student_id,
         f"# {student_name}",
+        student_model,
         student_avatar,
         student_history
     )
@@ -345,42 +351,6 @@ body {
 }
 """
 
-# Create character selection HTML
-def create_character_selection_html():
-    html_content = """
-    <script>
-    function select_student(student_id) {
-        const input = document.getElementById('student_id_input').querySelector('input');
-        input.value = student_id;
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-    </script>
-    """
-
-    html_content += '<div class="character-grid">'
-
-    for student_id in name_dict.keys():
-        name = name_dict.get(student_id)
-        description = student_descriptions.get(student_id)
-        avatar = avatar_dict.get(student_id)
-        model = model_info.get(student_id)
-
-        html_content += f"""
-        <div class="character-card" onclick="select_student('{student_id}')">
-            <div class="card-header">Digital Twin</div>
-            <img class="card-avatar" src="{avatar}" alt="{name}" onerror="this.src='https://via.placeholder.com/120/f7931e/ffffff?text={name[0]}'" />
-            <div class="card-body">
-                <div class="character-name">{name}</div>
-                <div class="character-description">{description}</div>
-                <div class="model-tag">Powered by {model}</div>
-            </div>
-        </div>
-        """
-
-    html_content += "</div>"
-    return html_content
-
 # --------------------------------------------
 # = UI BUILDING =
 # --------------------------------------------
@@ -401,11 +371,52 @@ with gr.Blocks(
         with gr.Column():
             gr.Markdown("### Choose a student to chat with")
             
-            # Character grid using HTML
-            character_grid = gr.HTML(create_character_selection_html())
-            
-            # Hidden student ID input (for JavaScript)
-            student_id_input = gr.Textbox("", visible=False, elem_id="student_id_input")
+            # Create student selection buttons
+            with gr.Row(elem_classes="character-grid"):
+                for student_id in name_dict.keys():
+                    name = name_dict[student_id]
+                    desc = student_descriptions[student_id]
+                    model = model_info[student_id]
+                    
+                    with gr.Column(elem_classes="character-card"):
+                        gr.HTML(f'<div class="card-header">Digital Twin</div>')
+                        
+                        # Avatar image
+                        gr.Image(
+                            value=avatar_dict[student_id],
+                            show_label=False,
+                            elem_classes="card-avatar",
+                            height=120,
+                            width=120
+                        )
+                        
+                        with gr.Column(elem_classes="card-body"):
+                            gr.HTML(f'<div class="character-name">{name}</div>')
+                            gr.HTML(f'<div class="character-description">{desc}</div>')
+                            gr.HTML(f'<div class="model-tag">Powered by {model}</div>')
+                            
+                            # Direct button for each student
+                            select_btn = gr.Button(
+                                "Start Chat", 
+                                elem_classes="chat-btn"
+                            )
+                            # Set up the click event for each button
+                            select_btn.click(
+                                select_student_direct,
+                                inputs=[
+                                    gr.Textbox(value=student_id, visible=False),  # Pass student_id directly
+                                    history_dict_state
+                                ],
+                                outputs=[
+                                    selection_page, 
+                                    chat_page, 
+                                    selected_id_state, 
+                                    student_name_display, 
+                                    student_model_display,
+                                    student_avatar_display, 
+                                    chatbot
+                                ]
+                            )
     
     # ── Chat page ───────────────────────────
     with gr.Group(visible=False) as chat_page:
@@ -438,30 +449,7 @@ with gr.Blocks(
                     send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
                     clear_btn = gr.Button("Clear Chat", variant="secondary", elem_classes="clear-btn")
     
-    # ── Page switching logic ─────────────────────────
-    # JavaScript for student selection via cards
-    js_code = """
-    function select_student(student_id) {
-        document.getElementById('student_id_input').querySelector('input').value = student_id;
-        document.querySelector('#student_id_input button').click();
-    }
-    """
-    demo.load(js=js_code)
-    
-    # Handle student selection
-    student_id_input.change(
-        start_chat_with_student,
-        inputs=[student_id_input, history_dict_state],
-        outputs=[
-            selection_page, 
-            chat_page, 
-            selected_id_state, 
-            student_name_display, 
-            student_avatar_display, 
-            chatbot
-        ],
-    )
-    
+    # ── Event handlers ─────────────────────────    
     # Return to selection page
     back_button.click(
         return_to_selection,
