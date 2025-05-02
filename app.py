@@ -253,8 +253,9 @@ body {
     border-radius: 50%!important;
     overflow: hidden!important;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1)!important;
-    border: 2px solid white!important;
     display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .avatar-container img {
