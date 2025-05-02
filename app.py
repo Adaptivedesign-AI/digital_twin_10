@@ -111,7 +111,7 @@ def clear_current_chat(student_id, history_dict):
 def get_student_model(student_id):
     return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
-# Direct student selection - this is a separate function explicitly for button clicks
+# Direct student selection - for button clicks
 def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_avatar = avatar_dict.get(student_id, "avatar/default.png")
@@ -122,11 +122,11 @@ def select_student_direct(student_id, history_dict):
     return (
         gr.update(visible=False),  # Hide selection page
         gr.update(visible=True),   # Show chat page
-        student_id,
-        f"# {student_name}",
-        student_model,
-        student_avatar,
-        student_history
+        student_id,                # Update selected student ID
+        f"# {student_name}",       # Update student name display
+        student_model,             # Update model display
+        student_avatar,            # Update avatar display
+        student_history            # Update chat history
     )
 
 # Return to selection page
@@ -136,7 +136,7 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Custom CSS
+# Custom CSS with improved character.ai style
 custom_css = """
 /* Global styles */
 body {
@@ -343,6 +343,43 @@ body {
     margin-left: 10px;
 }
 
+/* Character.ai style messaging */
+.messages-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    height: 450px;
+    overflow-y: auto;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.message-content {
+    background-color: white;
+    padding: 12px 15px;
+    border-radius: 18px;
+    max-width: 70%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.user-message {
+    flex-direction: row-reverse;
+}
+
+.user-message .message-content {
+    background-color: #f7931e;
+    color: white;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .character-grid {
@@ -363,8 +400,24 @@ with gr.Blocks(
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
     
+    # ── Define all necessary components for both pages first ──────────
+    # Selection page
+    selection_page = gr.Group(visible=True)
+    
+    # Chat page components that will be referenced before definition
+    chat_page = gr.Group(visible=False)
+    student_name_display = gr.Markdown("Student Name")
+    student_model_display = gr.Markdown("Powered by GPT-4", elem_classes="chat-model")
+    student_avatar_display = gr.Image(value="avatar/default.png", elem_classes="chat-avatar", show_label=False, height=40, width=40)
+    chatbot = gr.Chatbot(
+        label="Conversation",
+        avatar_images=("avatar/user.png", None),  # Will be set dynamically
+        elem_classes="chat-area",
+        height=450,
+    )
+    
     # ── Selection page ───────────────────────────
-    with gr.Group(visible=True) as selection_page:
+    with selection_page:
         with gr.Row(elem_classes="header-container"):
             gr.Markdown("# 🎓 Digital-Twin Chat Demo")
         
@@ -381,7 +434,7 @@ with gr.Blocks(
                     with gr.Column(elem_classes="character-card"):
                         gr.HTML(f'<div class="card-header">Digital Twin</div>')
                         
-                        # Avatar image
+                        # Avatar image - debugging with fixed path
                         gr.Image(
                             value=avatar_dict[student_id],
                             show_label=False,
@@ -419,22 +472,18 @@ with gr.Blocks(
                             )
     
     # ── Chat page ───────────────────────────
-    with gr.Group(visible=False) as chat_page:
+    with chat_page:
         # Chat header information
         with gr.Row(elem_classes="chat-header"):
-            student_avatar_display = gr.Image(value="avatar/default.png", elem_classes="chat-avatar", show_label=False, height=40, width=40)
+            # These components are already defined above, so we just place them here
+            student_avatar_display
             with gr.Column():
-                student_name_display = gr.Markdown("Student Name")
-                student_model_display = gr.Markdown("Powered by GPT-4", elem_classes="chat-model")
+                student_name_display
+                student_model_display
             back_button = gr.Button("← Back", elem_classes="back-btn")
         
-        # Chat area
-        chatbot = gr.Chatbot(
-            label="Conversation",
-            avatar_images=("avatar/user.png", None),  # Will be set dynamically
-            elem_classes="chat-area",
-            height=450,
-        )
+        # Chat area (chatbot already defined above)
+        chatbot
         
         # Input area
         with gr.Row(elem_classes="input-container"):
@@ -480,6 +529,16 @@ with gr.Blocks(
 
 # ── Run ───────────────────────────────
 if __name__ == "__main__":
+    # Make sure the avatar directory exists
+    if not os.path.exists("avatar"):
+        os.makedirs("avatar")
+        
+    # Create a default user avatar if it doesn't exist
+    if not os.path.exists("avatar/user.png"):
+        # Create a blank file or use a placeholder
+        with open("avatar/user.png", "w") as f:
+            f.write("")
+            
     demo.queue().launch(
         server_name="0.0.0.0",
         server_port=int(os.environ.get("PORT", 7860)),
