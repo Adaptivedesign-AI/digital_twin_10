@@ -64,9 +64,16 @@ model_info = {
     "student010": "GPT-4"
 }
 
+# Avatar dictionary for easy access
+avatar_dict = {f"student{i:03d}": f"avatar/student{i:03d}.png" for i in range(1, 11)}
+
 # Initialize empty chat history for all students
 def get_empty_history_dict():
     return {student_id: [] for student_id in name_dict.keys()}
+
+# Function to get student model info
+def get_student_model(student_id):
+    return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
 # Chat function
 def chat(message, history, student_id, history_dict):
@@ -102,28 +109,6 @@ def clear_current_chat(student_id, history_dict):
     history_dict[student_id] = []
     return [], history_dict
 
-# Function to get student model info
-def get_student_model(student_id):
-    return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
-
-    # Function to update chatbot avatar when selecting a student
-    def select_student_direct(student_id, history_dict):
-        student_name = name_dict.get(student_id, "Unknown")
-        student_avatar = f"avatar/{student_id}.png"
-        student_history = history_dict.get(student_id, [])
-        student_model = get_student_model(student_id)
-        
-        # Update chatbot to use the correct student avatar
-        return (
-            gr.update(visible=False),  # Hide selection page
-            gr.update(visible=True),   # Show chat page
-            student_id,                # Update selected student ID
-            f"# {student_name}",       # Update student name display
-            student_model,             # Update model display
-            gr.Chatbot.update(avatar_images=("avatar/user.png", student_avatar)),  # Update avatar
-            student_history            # Update chat history
-        )
-
 # Return to selection page
 def return_to_selection():
     return (
@@ -131,7 +116,24 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Enhanced CSS with significant improvements
+# Direct student selection function
+def select_student_direct(student_id, history_dict):
+    student_name = name_dict.get(student_id, "Unknown")
+    student_avatar = avatar_dict.get(student_id, "avatar/default.png")
+    student_history = history_dict.get(student_id, [])
+    student_model = get_student_model(student_id)
+    
+    return (
+        gr.update(visible=False),  # Hide selection page
+        gr.update(visible=True),   # Show chat page
+        student_id,                # Update selected student ID
+        f"# {student_name}",       # Update student name display
+        student_model,             # Update model display
+        gr.Chatbot.update(avatar_images=("avatar/user.png", student_avatar)),  # Update avatar
+        student_history            # Update chat history
+    )
+
+# Custom CSS for styling
 custom_css = """
 /* Global styles */
 body {
@@ -151,25 +153,17 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Card grid layout - FIXED GRID WITH 3 CARDS PER ROW */
+/* Student grid layout */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Fixed 3 cards per row */
+    grid-template-columns: repeat(3, 1fr);  /* Fixed 3 cards per row */
     gap: 16px;
     margin: 15px;
 }
 
-/* Ensure consistent grid across all device sizes */
-@media (max-width: 992px) {
-    .card-grid {
-        grid-template-columns: repeat(3, 1fr); /* Keep 3 columns even on smaller screens */
-    }
-}
-
-/* Last row with just one card */
 .last-row {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;  /* Just one card centered */
     max-width: 33%;
     margin: 15px auto;
 }
@@ -246,7 +240,25 @@ body {
     background-color: #e67e00 !important;
 }
 
-/* CSS to make the chat interface more like a messaging app */
+/* Chat header styling */
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f9fa;
+}
+
+.back-btn {
+    background-color: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
+    color: #555 !important;
+    border-radius: 5px !important;
+    margin-right: auto !important;
+    order: -1 !important;
+}
+
+/* Chat interface styling */
 .chat-area {
     border-radius: 10px !important;
     overflow: hidden !important;
@@ -294,69 +306,7 @@ body {
     width: 100% !important;
 }
 
-/* Chat message bubbles styling */
-.message-bubble {
-    border-radius: 18px !important;
-    padding: 10px 15px !important;
-    max-width: 80% !important;
-    position: relative !important;
-    margin: 8px 0 !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-}
-
-.user-message {
-    background-color: #DCF8C6 !important;
-    color: #333 !important;
-    margin-left: auto !important;
-    border-bottom-right-radius: 4px !important;
-}
-
-.assistant-message {
-    background-color: #f7931e !important;
-    color: white !important;
-    margin-right: auto !important;
-    border-bottom-left-radius: 4px !important;
-}
-
-/* Avatar styling for chat */
-.chat-avatar {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50% !important;
-    border: 2px solid white !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
-    flex-shrink: 0 !important;
-}
-
-/* Ensuring avatars are visible */
-.gradio-chatbot .avatar {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Chat message row styling */
-.chat-row {
-    display: flex !important;
-    align-items: flex-start !important;
-    margin-bottom: 15px !important;
-    position: relative !important;
-}
-
-.chat-row img {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Force avatar visibility */
-.svelte-1ed2p3z {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* CRITICAL: Avatar styling for PERFECTLY CIRCULAR AVATARS */
+/* Perfect circle avatars */
 .avatar-container {
     position: relative;
     width: 100px;
@@ -366,7 +316,7 @@ body {
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: 3px solid white;
-    aspect-ratio: 1/1; /* Force perfect circle */
+    aspect-ratio: 1/1;
 }
 
 .avatar-container img {
@@ -374,10 +324,10 @@ body {
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    aspect-ratio: 1/1; /* Force perfect circle */
+    aspect-ratio: 1/1;
 }
 
-/* Better hide all image controls */
+/* Force hide image controls */
 .gradio-image .panel-buttons,
 .gradio-image .get_interpret_btn,
 .gradio-image .wrap.svelte-1cl284s,
@@ -406,140 +356,20 @@ div[class*="tool-buttons"],
     z-index: -999 !important;
 }
 
-/* Make avatars circular without controls */
-.gradio-image img {
-    border-radius: 50% !important;
-    object-fit: cover !important;
-}
-
-/* Additional fix for Safari */
-.gradio-container .prose img,
-.gradio-container .panel-image {
-    border-radius: 50% !important;
-    margin: 0 auto !important;
-    display: block !important;
-}
-
-/* Chat avatar specific */
+/* Ensure avatars are visible in chat */
 .chat-avatar {
     width: 40px !important;
     height: 40px !important;
     border-radius: 50% !important;
-    margin-right: 15px !important;
     border: 2px solid white !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-    object-fit: cover !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+    flex-shrink: 0 !important;
 }
 
-/* Chatbot styling for better message bubbles */
-.chatbot-container {
-    border-radius: 10px !important;
-    overflow: hidden !important;
-}
-
-.message-bubble {
-    border-radius: 18px !important;
-    padding: 10px 15px !important;
-    max-width: 80% !important;
-    position: relative !important;
-    margin: 8px 0 !important;
-}
-
-.user-message {
-    background-color: #f0f0f0 !important;
-    color: #333 !important;
-    margin-left: auto !important;
-    border-bottom-right-radius: 4px !important;
-}
-
-.assistant-message {
-    background-color: #f7931e !important;
-    color: white !important;
-    margin-right: auto !important;
-    border-bottom-left-radius: 4px !important;
-}
-
-/* Input and buttons styling - FIX FOR ISSUE #3: CHAT CONTROLS LAYOUT */
-.chat-controls {
-    display: flex !important;
-    gap: 10px !important;
-    margin-top: 10px !important;
-}
-
-.message-input {
-    flex-grow: 1 !important;
-    border-radius: 20px !important;
-    padding: 10px 15px !important;
-    border: 1px solid #e0e0e0 !important;
-}
-
-.controls-container {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-}
-
-.send-btn {
-    background-color: #f7931e !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    font-weight: bold !important;
-}
-
-.clear-btn {
-    background-color: #f0f0f0 !important;
-    color: #555 !important;
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
-    font-size: 12px !important;
-}
-
-/* Hide image controls more aggressively */
-.gradio-image .p-absolute,
-.gradio-image .relative > div:last-child,
-.gradio-image div[class^="flex"],
-.gradio-image div[class*="flex"],
-.gradio-image button {
-    display: none !important;
-    visibility: hidden !important;
-}
-
-/* Chat bubble styling for messages */
-.chatbot-row {
-    display: flex !important;
-    margin-bottom: 12px !important;
-    align-items: flex-start !important;
-}
-
-.chatbot-msg {
-    max-width: 85% !important;
-    border-radius: 18px !important;
-    padding: 10px 14px !important;
-    position: relative !important;
-    word-break: break-word !important;
-}
-
-.user-row {
-    justify-content: flex-end !important;
-}
-
-.bot-row {
-    justify-content: flex-start !important;
-}
-
-.user-msg {
-    background-color: #DCF8C6 !important;
-    margin-right: 10px !important;
-    border-bottom-right-radius: 4px !important;
-}
-
-.bot-msg {
-    background-color: #f7931e !important;
-    color: white !important;
-    margin-left: 10px !important;
-    border-bottom-left-radius: 4px !important;
+.gradio-chatbot .avatar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 """
 
@@ -565,10 +395,7 @@ with gr.Blocks(css=custom_css) as demo:
                 name_display = gr.Markdown("Student Name")
                 model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
         
-        # Create a dictionary to map student IDs to their avatar paths
-        avatar_dict = {f"student{i:03d}": f"avatar/student{i:03d}.png" for i in range(1, 11)}
-        
-        # Chat area with properly configured avatars
+        # Chat area with proper avatars
         chatbot = gr.Chatbot(
             label="Conversation",
             avatar_images=("avatar/user.png", "avatar/student001.png"),
@@ -591,26 +418,13 @@ with gr.Blocks(css=custom_css) as demo:
                 with gr.Row(elem_classes="action-buttons"):
                     send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
                     clear_btn = gr.Button("Clear", variant="secondary", elem_classes="clear-btn")
-        
-        # Input area - IMPROVED LAYOUT FOR ISSUE #3
-        with gr.Row(elem_classes="chat-controls"):
-            msg = gr.Textbox(
-                placeholder="Type your message...",
-                label="",
-                elem_classes="message-input",
-                scale=5
-            )
-            
-            with gr.Column(elem_classes="controls-container", scale=1):
-                send_btn = gr.Button("Send", elem_classes="send-btn")
-                clear_btn = gr.Button("Clear", elem_classes="clear-btn")
     
     # ── Selection page ───────────────────────────
     with selection_page:
         gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
         gr.Markdown("### Choose a student to chat with")
         
-        # Create student selection grid - REVISED LAYOUT FOR 3+3+3+1
+        # Create student selection grid - 3+3+3+1 LAYOUT
         with gr.Column():
             # First row with students 1-3
             with gr.Row(elem_classes="card-grid"):
@@ -644,7 +458,7 @@ with gr.Blocks(css=custom_css) as demo:
                                 selected_id_state, 
                                 name_display, 
                                 model_display,
-                                avatar_display, 
+                                chatbot, 
                                 chatbot
                             ]
                         )
@@ -681,7 +495,7 @@ with gr.Blocks(css=custom_css) as demo:
                                 selected_id_state, 
                                 name_display, 
                                 model_display,
-                                avatar_display, 
+                                chatbot, 
                                 chatbot
                             ]
                         )
@@ -718,7 +532,7 @@ with gr.Blocks(css=custom_css) as demo:
                                 selected_id_state, 
                                 name_display, 
                                 model_display,
-                                avatar_display, 
+                                chatbot, 
                                 chatbot
                             ]
                         )
@@ -754,7 +568,7 @@ with gr.Blocks(css=custom_css) as demo:
                             selected_id_state, 
                             name_display, 
                             model_display,
-                            avatar_display, 
+                            chatbot, 
                             chatbot
                         ]
                     )
@@ -788,93 +602,40 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to force avatar visibility and fix chat display
+    # JavaScript to fix image display and hide controls
     demo.load(None, None, None, js="""
     function() {
-        // Force circular avatars and make them visible in chat
-        const fixChatAvatars = function() {
-            // Fix avatar visibility in chatbot
-            document.querySelectorAll('.gradio-chatbot .avatar img, .svelte-s88hzt img, [class*="avatar"] img').forEach(function(img) {
-                // Fix visibility
-                img.style.display = 'block';
-                img.style.visibility = 'visible';
-                img.style.opacity = '1';
-                
-                // Fix shape
-                img.style.width = '40px';
-                img.style.height = '40px';
-                img.style.borderRadius = '50%';
-                img.style.objectFit = 'cover';
-                
-                // Fix container
-                const container = img.closest('div');
-                if (container) {
-                    container.style.display = 'block';
-                    container.style.visibility = 'visible';
-                    container.style.opacity = '1';
-                }
-            });
-            
-            // Hide image controls
+        // Force circular avatars and hide controls
+        const fixImages = function() {
+            // Hide all image controls
             document.querySelectorAll('.gradio-image button, .gradio-image .panel-buttons, .gradio-image .absolute').forEach(function(el) {
                 el.style.display = 'none';
                 el.style.visibility = 'hidden';
                 el.style.opacity = '0';
                 el.style.pointerEvents = 'none';
+                el.style.zIndex = '-999';
             });
             
-            // Make selection page avatars circular
-            document.querySelectorAll('.avatar-container img, .gradio-image img').forEach(function(img) {
+            // Make all images perfectly circular
+            document.querySelectorAll('.gradio-image img, .chatbot .avatar img').forEach(function(img) {
                 img.style.borderRadius = '50%';
+                img.style.objectFit = 'cover';
                 img.style.aspectRatio = '1/1';
             });
             
-            // Style chat bubbles
-            document.querySelectorAll('.gradio-chatbot > div').forEach(function(row) {
-                if (!row.classList.contains('styled-chat-row')) {
-                    row.classList.add('styled-chat-row');
-                    row.style.display = 'flex';
-                    row.style.alignItems = 'flex-start';
-                    row.style.marginBottom = '15px';
-                    
-                    // Add margins around avatar and text
-                    const avatarContainer = row.querySelector('.avatar');
-                    const textContainer = row.querySelector('.message, .block');
-                    
-                    if (avatarContainer) {
-                        avatarContainer.style.marginRight = '10px';
-                        avatarContainer.style.marginLeft = '10px';
-                    }
-                    
-                    if (textContainer) {
-                        textContainer.classList.add('message-bubble');
-                        if (row.classList.contains('user')) {
-                            textContainer.classList.add('user-message');
-                        } else {
-                            textContainer.classList.add('assistant-message');
-                        }
-                    }
-                }
+            // Ensure chat avatars are visible
+            document.querySelectorAll('.chatbot .avatar img').forEach(function(img) {
+                img.style.display = 'block';
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
+                img.style.width = '40px';
+                img.style.height = '40px';
             });
         };
         
-        // Apply fixes repeatedly
-        fixChatAvatars();
-        setInterval(fixChatAvatars, 200);
-        
-        // Setup mutation observer for real-time updates
-        const chatObserver = new MutationObserver(function() {
-            fixChatAvatars();
-        });
-        
-        // Start observing
-        setTimeout(function() {
-            chatObserver.observe(document.body, { 
-                childList: true, 
-                subtree: true,
-                attributes: true
-            });
-        }, 500);
+        // Run repeatedly to ensure styles are maintained
+        fixImages();
+        setInterval(fixImages, 300);
     }
     """)
 
