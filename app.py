@@ -38,16 +38,16 @@ name_dict = {
 
 # Student descriptions (personality, background, etc.)
 student_descriptions = {
-    "student001": "16 years old. Quiet and thoughtful. Loves sports but keeps emotions to himself.",
-    "student002": "15 years old. Restless and impulsive. Often skips school and feels overwhelmed.",
-    "student003": "17 years old. Withdrawn and isolated. Struggles with sadness and low energy.",
-    "student004": "16 years old. Top of class. Perfectionist who avoids risks and stays cautious.",
-    "student005": "15 years old. Sensitive and anxious. Rarely sleeps well and feels out of control.",
-    "student006": "17 years old. Shy and socially anxious. Finds it hard to speak up or connect.",
-    "student007": "16 years old. Positive and motivated. Tries hard at school and helps others.",
-    "student008": "15 years old. Mature and calm. Focused on school, avoids conflict and drama.",
-    "student009": "17 years old. Quiet and independent. Rarely opens up but stays composed.",
-    "student010": "16 years old. Athletic and confident. Faces family stress but feels strong at school."
+    "student001": "14 years old. Conflicted but responsible.",
+    "student002": "16 years old. Rebellious and reckless.",
+    "student003": "12 years old. Extreme and unstable.",
+    "student004": "18 years old. Mature and disciplined.",
+    "student005": "15 years old. Emotional and introspective.",
+    "student006": "16 years old. Moody and inconsistent.",
+    "student007": "13 years old. Cheerful and active.",
+    "student008": "18 years old. Focused and resilient.",
+    "student009": "14 years old. Tense and guarded.",
+    "student010": "15 years old. Energetic and driven."
 }
 
 # Models used by each student
