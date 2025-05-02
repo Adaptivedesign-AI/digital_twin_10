@@ -64,11 +64,6 @@ model_info = {
     "student010": "GPT-4"
 }
 
-# Student ID to avatar file mapping
-avatar_dict = {
-    sid: f"avatar/{sid}.png" for sid in name_dict.keys()
-}
-
 # Initialize empty chat history for all students
 def get_empty_history_dict():
     return {student_id: [] for student_id in name_dict.keys()}
@@ -111,435 +106,322 @@ def clear_current_chat(student_id, history_dict):
 def get_student_model(student_id):
     return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
-# Direct student selection function
-def select_student_direct(student_id, history_dict):
-    student_name = name_dict.get(student_id, "Unknown")
-    student_avatar = avatar_dict.get(student_id, "avatar/default.png")
-    student_history = history_dict.get(student_id, [])
-    student_model = get_student_model(student_id)
+# Simple interface with fixed pages instead of tabs
+def create_demo():
+    # Create empty history dictionary
+    history_dict = get_empty_history_dict()
     
-    print(f"Selecting student: {student_id}, name: {student_name}")
+    # Selection page interface
+    with gr.Blocks() as selection_page:
+        gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
+        gr.Markdown("### Choose a student to chat with")
+        
+        with gr.Row():
+            for i in range(1, 6):  # First row with 5 students
+                student_id = f"student{i:03d}"
+                with gr.Column(elem_classes="student-card"):
+                    gr.Markdown("Digital Twin", elem_classes="student-title")
+                    gr.Image(value=f"avatar/{student_id}.png", elem_classes="avatar-img")
+                    gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
+                    gr.Markdown(student_descriptions[student_id], elem_classes="student-desc")
+                    gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-info")
+                    
+                    btn = gr.Button(f"Start Chat", elem_classes="chat-button")
+                    btn.click(
+                        lambda sid=student_id: (sid, name_dict[sid], f"Powered by {model_info[sid]}", 
+                                               f"avatar/{sid}.png", history_dict.get(sid, [])),
+                        inputs=None,
+                        outputs=[
+                            student_id_output, 
+                            name_display, 
+                            model_display,
+                            avatar_display,
+                            chatbot
+                        ]
+                    )
+                    
+        with gr.Row():
+            for i in range(6, 11):  # Second row with 5 students
+                student_id = f"student{i:03d}"
+                with gr.Column(elem_classes="student-card"):
+                    gr.Markdown("Digital Twin", elem_classes="student-title")
+                    gr.Image(value=f"avatar/{student_id}.png", elem_classes="avatar-img")
+                    gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
+                    gr.Markdown(student_descriptions[student_id], elem_classes="student-desc")
+                    gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-info")
+                    
+                    btn = gr.Button(f"Start Chat", elem_classes="chat-button")
+                    btn.click(
+                        lambda sid=student_id: (sid, name_dict[sid], f"Powered by {model_info[sid]}", 
+                                              f"avatar/{sid}.png", history_dict.get(sid, [])),
+                        inputs=None,
+                        outputs=[
+                            student_id_output, 
+                            name_display, 
+                            model_display,
+                            avatar_display,
+                            chatbot
+                        ]
+                    )
     
-    return (
-        gr.update(visible=False),  # Hide selection page
-        gr.update(visible=True),   # Show chat page
-        student_id,                # Update selected student ID
-        f"# {student_name}",       # Update student name display
-        student_model,             # Update model display
-        student_avatar,            # Update avatar display
-        student_history            # Update chat history
-    )
+    # Chat page interface
+    with gr.Blocks() as chat_page:
+        with gr.Row(elem_classes="chat-header"):
+            avatar_display = gr.Image(value="avatar/default.png", elem_classes="chat-avatar")
+            
+            with gr.Column(elem_classes="chat-info"):
+                name_display = gr.Markdown("Student Name", elem_classes="chat-title")
+                model_display = gr.Markdown("Powered by GPT-4", elem_classes="chat-subtitle")
+                
+            back_btn = gr.Button("← Back", elem_classes="back-button")
+        
+        chatbot = gr.Chatbot(height=500)
+        student_id_output = gr.Textbox(visible=False)
+        
+        with gr.Row():
+            msg = gr.Textbox(
+                placeholder="Type your message here...",
+                show_label=False,
+                scale=9
+            )
+            
+            submit_btn = gr.Button("Send", scale=1)
+        
+        clear_btn = gr.Button("Clear Chat")
+        
+        # Chat functionality
+        def process_message(message, chat_history, student_id):
+            if not message or not student_id:
+                return "", chat_history
+            
+            if not message.strip():
+                return "", chat_history
+            
+            # Get existing history from the global dictionary
+            existing_history = history_dict.get(student_id, [])
+            
+            # Ensure chat_history is up to date
+            if chat_history != existing_history:
+                chat_history = existing_history.copy()
+            
+            # Process the new message
+            messages = [{"role": "system", "content": all_prompts.get(student_id, "You are a helpful assistant.")}]
+            for user_msg, bot_reply in chat_history:
+                messages.append({"role": "user", "content": user_msg})
+                messages.append({"role": "assistant", "content": bot_reply})
+            messages.append({"role": "user", "content": message})
+            
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=messages,
+                    temperature=0.7
+                )
+                reply = response.choices[0].message.content.strip()
+                
+                # Update history
+                chat_history.append([message, reply])
+                history_dict[student_id] = chat_history
+                
+                return "", chat_history
+            except Exception as e:
+                chat_history.append([message, f"⚠️ Error: {str(e)}"])
+                history_dict[student_id] = chat_history
+                return "", chat_history
+        
+        # Set up event handlers
+        msg.submit(
+            process_message,
+            inputs=[msg, chatbot, student_id_output],
+            outputs=[msg, chatbot]
+        )
+        
+        submit_btn.click(
+            process_message,
+            inputs=[msg, chatbot, student_id_output],
+            outputs=[msg, chatbot]
+        )
+        
+        def clear_chat(student_id):
+            if student_id in history_dict:
+                history_dict[student_id] = []
+            return []
+        
+        clear_btn.click(
+            clear_chat,
+            inputs=[student_id_output],
+            outputs=[chatbot]
+        )
+        
+        # Button to go back to selection page
+        back_btn.click(
+            lambda: None,
+            None,
+            None,
+            _js="""
+            () => {
+                document.getElementById('selection-page').style.display = 'block';
+                document.getElementById('chat-page').style.display = 'none';
+                return [];
+            }
+            """
+        )
+    
+    # Main interface with both pages
+    with gr.Blocks(css=css) as demo:
+        with gr.Box(elem_id="selection-page"):
+            selection_page.render()
+        
+        with gr.Box(elem_id="chat-page", visible=False):
+            chat_page.render()
+        
+        # Set up buttons to navigate between pages
+        for btn in selection_page.buttons:
+            btn.click(
+                fn=None,
+                inputs=None,
+                outputs=None,
+                _js="""
+                () => {
+                    document.getElementById('selection-page').style.display = 'none';
+                    document.getElementById('chat-page').style.display = 'block';
+                }
+                """
+            )
+    
+    return demo
 
-# Return to selection page
-def return_to_selection():
-    return (
-        gr.update(visible=True),   # Show selection page
-        gr.update(visible=False)   # Hide chat page
-    )
-
-# Custom CSS with improved character.ai style
-custom_css = """
-/* Global styles */
-body {
-    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #f9f9f9;
+# Simple CSS to make it look nicer
+css = """
+#selection-page, #chat-page {
+    padding: 20px;
 }
-
-/* Top orange bar */
-.header-container {
-    background: linear-gradient(90deg, #f7931e, #ff8c00);
-    border-radius: 8px 8px 0 0;
-    padding: 12px 20px;
-    margin: 0;
+.student-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px;
+    text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.header-container h1 {
-    color: white;
-    margin: 0;
-    font-size: 22px;
-    font-weight: 600;
-}
-
-/* Main container */
-.main-container {
-    display: flex;
-    border: 1px solid #e0e0e0;
-    border-radius: 0 0 8px 8px;
-    overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-/* Chat area */
-.chat-area {
-    min-height: 450px !important;
-    border: none !important;
-    background-color: #fafafa !important;
-}
-
-.chat-area > div {
-    padding: 16px !important;
-}
-
-/* Input box and buttons */
-.input-container {
-    padding: 16px;
-    border-top: 1px solid #e0e0e0;
     background-color: white;
 }
-
-.input-box {
-    border-radius: 20px !important;
-    border: 1px solid #e0e0e0 !important;
-    padding: 10px 16px !important;
+.student-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
 }
-
-.action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.send-btn {
-    background-color: #f7931e !important;
-    color: white !important;
-    border-radius: 20px !important;
-    font-weight: 500 !important;
-    flex-grow: 1;
-}
-
-.clear-btn {
-    background-color: #f5f5f5 !important;
-    color: #666 !important;
-    border-radius: 20px !important;
-    border: 1px solid #ddd !important;
-}
-
-.back-btn {
-    background-color: #f5f5f5 !important;
-    color: #666 !important;
-    border-radius: 20px !important;
-    border: 1px solid #ddd !important;
-    margin-right: auto;
-}
-
-/* Character Card Styles - Student selection page */
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    padding: 15px;
-}
-
-.character-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-    border: 1px solid #e0e0e0;
-}
-
-.character-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-}
-
-.card-header {
-    padding: 10px;
+.student-title {
     background-color: #f7931e;
     color: white;
-    text-align: center;
-    font-size: 14px;
+    padding: 10px;
+    margin: -15px -15px 15px -15px;
+    border-radius: 10px 10px 0 0;
 }
-
-/* 优化头像样式 */
-.card-avatar {
-    width: 90px;
-    height: 90px;
-    margin: 12px auto;
-    border-radius: 50%;
-    overflow: hidden;
+.avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50% !important;
+    margin: 10px auto;
     display: block;
     object-fit: cover;
-    border: 3px solid white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-
-.card-body {
-    padding: 12px;
-    text-align: center;
-}
-
-.character-name {
-    font-size: 17px;
+.student-name {
     font-weight: bold;
-    margin-bottom: 4px;
+    font-size: 18px;
+    margin: 10px 0;
 }
-
-.character-description {
-    font-size: 13px;
+.student-desc {
     color: #666;
-    margin-bottom: 8px;
-    height: 40px;
-    overflow: hidden;
+    margin-bottom: 10px;
+    font-size: 14px;
 }
-
-.model-tag {
+.model-info {
+    font-size: 12px;
+    color: #888;
+    background-color: #f5f5f5;
+    border-radius: 15px;
     display: inline-block;
-    background-color: #f0f0f0;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    color: #555;
-    margin-top: 4px;
+    padding: 5px 10px;
+    margin: 5px 0;
 }
-
-.chat-btn {
+.chat-button {
     background-color: #f7931e;
     color: white;
     border: none;
-    border-radius: 18px;
-    padding: 6px 12px;
-    font-weight: 500;
-    font-size: 14px;
+    border-radius: 20px;
+    padding: 8px 15px;
     cursor: pointer;
-    width: 100%;
     margin-top: 10px;
-    transition: background-color 0.2s;
+    font-weight: bold;
 }
-
-.chat-btn:hover {
-    background-color: #e67e00;
+.chat-button:hover {
+    background-color: #e57200;
 }
-
-/* Chat interface styles */
 .chat-header {
     display: flex;
     align-items: center;
-    padding: 12px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
     background-color: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
 }
-
 .chat-avatar {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    margin-right: 12px;
-    object-fit: cover;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50% !important;
+    margin-right: 10px;
 }
-
-.chat-name {
+.chat-info {
+    flex-grow: 1;
+}
+.chat-title {
+    margin: 0;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: bold;
 }
-
-.chat-model {
-    font-size: 11px;
+.chat-subtitle {
+    margin: 0;
+    font-size: 12px;
     color: #666;
-    margin-left: 8px;
 }
-
-/* 隐藏Gradio图片组件的控制按钮 */
-.svelte-1g805jl .panel-buttons {
-    display: none !important; 
+.main-title {
+    background-color: #f7931e;
+    color: white;
+    padding: 15px;
+    margin: 0 0 20px 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
 }
-.svelte-1g805jl .absolute {
-    display: none !important;
+.back-button {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: auto;
+    cursor: pointer;
 }
-.svelte-1g805jl .gr-image-tools {
-    display: none !important;
+.back-button:hover {
+    background-color: #e0e0e0;
 }
+/* Hide image controls */
+.svelte-1g805jl .panel-buttons, 
+.svelte-1g805jl .absolute, 
+.svelte-1g805jl .gr-image-tools, 
 .svelte-1g805jl button {
     display: none !important;
 }
 .gradio-container .prose img {
     margin: 0 !important;
 }
-.gradio-image .panel-image {
+.gradio-container .panel-image {
     border-radius: 50% !important;
     overflow: hidden !important;
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-    }
-    
-    .character-card {
-        font-size: 90%;
-    }
-    
-    .card-avatar {
-        width: 70px;
-        height: 70px;
-    }
-}
 """
 
-# --------------------------------------------
-# = UI BUILDING =
-# --------------------------------------------
-with gr.Blocks(
-    theme=gr.themes.Soft(primary_hue="orange"),
-    css=custom_css
-) as demo:
-
-    # State variables
-    history_dict_state = gr.State(get_empty_history_dict())
-    selected_id_state = gr.State("")
-    
-    # Create both pages as components 
-    selection_page = gr.Group(visible=True)
-    chat_page = gr.Group(visible=False)
-    
-    # Define chat page components
-    with chat_page:
-        # Chat header
-        with gr.Row(elem_classes="chat-header"):
-            student_avatar_display = gr.Image(
-                value="avatar/default.png", 
-                elem_classes="chat-avatar", 
-                show_label=False, 
-                height=35, 
-                width=35
-            )
-            with gr.Column():
-                student_name_display = gr.Markdown("Student Name")
-                student_model_display = gr.Markdown("Powered by GPT-4", elem_classes="chat-model")
-            back_button = gr.Button("← Back", elem_classes="back-btn")
-            
-        # Chat area
-        chatbot = gr.Chatbot(
-            label="Conversation",
-            avatar_images=("avatar/user.png", None),
-            elem_classes="chat-area",
-            height=450,
-        )
-        
-        # Input area
-        with gr.Row(elem_classes="input-container"):
-            with gr.Column():
-                msg = gr.Textbox(
-                    placeholder="Type your message...",
-                    label="",
-                    elem_classes="input-box",
-                )
-                
-                with gr.Row(elem_classes="action-buttons"):
-                    send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
-                    clear_btn = gr.Button("Clear Chat", variant="secondary", elem_classes="clear-btn")
-    
-    # Define selection page
-    with selection_page:
-        with gr.Row(elem_classes="header-container"):
-            gr.Markdown("# 🎓 Digital-Twin Chat Demo")
-        
-        gr.Markdown("### Choose a student to chat with")
-        
-        # Create student selection grid
-        with gr.Row(elem_classes="character-grid"):
-            for student_id in name_dict.keys():
-                name = name_dict[student_id]
-                desc = student_descriptions[student_id]
-                model = model_info[student_id]
-                
-                with gr.Column(elem_classes="character-card"):
-                    gr.HTML(f'<div class="card-header">Digital Twin</div>')
-                    
-                    # Avatar image
-                    gr.Image(
-                        value=avatar_dict[student_id],
-                        show_label=False,
-                        elem_classes="card-avatar",
-                        height=90,
-                        width=90
-                    )
-                    
-                    with gr.Column(elem_classes="card-body"):
-                        gr.HTML(f'<div class="character-name">{name}</div>')
-                        gr.HTML(f'<div class="character-description">{desc}</div>')
-                        gr.HTML(f'<div class="model-tag">Powered by {model}</div>')
-                        
-                        # Direct button for each student
-                        select_btn = gr.Button(
-                            "Start Chat", 
-                            elem_classes="chat-btn"
-                        )
-                        
-                        # Set up the click event for each button
-                        select_btn.click(
-                            select_student_direct,
-                            inputs=[
-                                gr.Textbox(value=student_id, visible=False),
-                                history_dict_state
-                            ],
-                            outputs=[
-                                selection_page, 
-                                chat_page, 
-                                selected_id_state, 
-                                student_name_display, 
-                                student_model_display,
-                                student_avatar_display, 
-                                chatbot
-                            ]
-                        )
-    
-    # Event handlers 
-    # Return to selection page
-    back_button.click(
-        return_to_selection,
-        inputs=[],
-        outputs=[selection_page, chat_page]
-    )
-    
-    # Send message
-    msg.submit(
-        chat,
-        inputs=[msg, chatbot, selected_id_state, history_dict_state],
-        outputs=[msg, chatbot, history_dict_state],
-    )
-    
-    send_btn.click(
-        chat,
-        inputs=[msg, chatbot, selected_id_state, history_dict_state],
-        outputs=[msg, chatbot, history_dict_state],
-    )
-    
-    # Clear chat history
-    clear_btn.click(
-        clear_current_chat,
-        inputs=[selected_id_state, history_dict_state],
-        outputs=[chatbot, history_dict_state],
-        queue=False
-    )
-
-# Run the application
+# Launch the app
 if __name__ == "__main__":
-    print("Starting application...")
-    print(f"Avatar paths: {avatar_dict}")
-    
-    # Ensure avatar directory exists
-    if not os.path.exists("avatar"):
-        os.makedirs("avatar")
-        print("Created avatar directory")
-        
-    # Create default user avatar
-    if not os.path.exists("avatar/user.png"):
-        print("Creating default user avatar")
-        with open("avatar/user.png", "w") as f:
-            f.write("")
-            
-    demo.queue().launch(
+    demo = create_demo()
+    demo.launch(
         server_name="0.0.0.0",
-        server_port=int(os.environ.get("PORT", 7860)),
-        debug=True,  # Enable debug mode
-        max_threads=20  # Increase threads
+        server_port=int(os.environ.get("PORT", 7860))
     )
