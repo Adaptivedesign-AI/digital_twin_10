@@ -248,24 +248,21 @@ body {
 
 /* Avatar styling in selection cards - perfectly circular */
 .avatar-container {
-    width: 70px;
-    height: 70px;
-    margin: 10px auto 6px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: 2px solid white;
-    position: relative;
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background-color: #fff; /* 可选，避免边缘透明 */
 }
 
 .avatar-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
 }
 
 /* Add JavaScript to force perfect circles */
