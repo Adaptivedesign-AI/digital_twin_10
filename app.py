@@ -87,35 +87,8 @@ def chat(message, history, student_id, history_dict):
             messages=messages,
             temperature=0.7
         )
-        reply_text = response.choices[0].message.content.strip()
-        
-        # (Optional) Emotion extraction logic – hardcoded for now
-        emotion_tag = "apathetic"  # TODO: Replace with real logic
-        
-        # Build bot message block
-        bot_avatar = f"<img src='file=avatar/{student_id}.png' class='user-avatar'>"
-        bot_bubble = f"""
-        <div style='display: flex; align-items: flex-start; gap: 10px;'>
-          {bot_avatar}
-          <div>
-            <div class='chat-bubble bot-bubble'>{reply_text}</div>
-            <div style='font-size: 12px; color: gray;'>Emotion: {emotion_tag}</div>
-          </div>
-        </div>
-        """
-        
-        # Build user message block
-        user_avatar = "<img src='file=avatar/user.png' class='user-avatar'>"
-        user_bubble = f"""
-        <div style='display: flex; justify-content: flex-end; align-items: flex-start; gap: 10px;'>
-          <div>
-            <div class='chat-bubble user-bubble'>{message}</div>
-          </div>
-          {user_avatar}
-        </div>
-        """
-        
-        history.append([user_bubble, bot_bubble])
+        reply = response.choices[0].message.content.strip()
+        history.append([message, reply])
         # Update history dictionary
         history_dict[student_id] = history
         return "", history, history_dict
@@ -264,7 +237,8 @@ body {
     border: 1px solid #ddd !important;
     color: #555 !important;
     border-radius: 5px !important;
-    margin-left: auto !important;
+    margin-right: 15px !important;
+    margin-left: 0 !important;
 }
 
 /* Avatar styling in selection cards */
@@ -415,7 +389,7 @@ with gr.Blocks(css=custom_css) as demo:
     
     # ── Define chat page components FIRST ──────────
     with chat_page:
-        # Chat header with student info - no avatar
+        # Chat header with student info - no avatar, back button on the left
         with gr.Row(elem_classes="chat-header"):
             back_button = gr.Button("← Back", elem_classes="back-btn")
             with gr.Column(elem_classes="character-info"):
@@ -423,7 +397,12 @@ with gr.Blocks(css=custom_css) as demo:
                 model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
             
         # Chat area
-        chatbox = gr.HTML(value="", elem_id="chatbox-html", elem_classes="chatbox-container")
+        chatbot = gr.Chatbot(
+            label="Conversation",
+            avatar_images=("avatar/user.png", None),  # We'll hide these with CSS
+            height=450,
+            elem_classes="character-ai-style"
+        )
         
         # Input area with improved layout
         with gr.Row():
@@ -468,8 +447,18 @@ with gr.Blocks(css=custom_css) as demo:
                     btn = gr.Button("Start Chat", elem_classes="chat-btn")
                     btn.click(
                         select_student_direct,
-                        inputs=[gr.Textbox(value=student_id, visible=False), history_dict_state],
-                        outputs=[selection_page, chat_page, selected_id_state, name_display, model_display, chatbox]
+                        inputs=[
+                            gr.Textbox(value=student_id, visible=False),
+                            history_dict_state
+                        ],
+                        outputs=[
+                            selection_page, 
+                            chat_page, 
+                            selected_id_state, 
+                            name_display, 
+                            model_display,
+                            chatbot
+                        ]
                     )
         
         # Create student selection grid - second row
@@ -505,7 +494,7 @@ with gr.Blocks(css=custom_css) as demo:
                             selected_id_state, 
                             name_display, 
                             model_display,
-                            chatbox
+                            chatbot
                         ]
                     )
     
@@ -520,21 +509,21 @@ with gr.Blocks(css=custom_css) as demo:
     # Send message
     msg.submit(
         chat,
-        inputs=[msg, chatbox, selected_id_state, history_dict_state],
-        outputs=[msg, chatbox, history_dict_state],
+        inputs=[msg, chatbot, selected_id_state, history_dict_state],
+        outputs=[msg, chatbot, history_dict_state],
     )
     
     send_btn.click(
         chat,
-        inputs=[msg, chatbox, selected_id_state, history_dict_state],
-        outputs=[msg, chatbox, history_dict_state],
+        inputs=[msg, chatbot, selected_id_state, history_dict_state],
+        outputs=[msg, chatbot, history_dict_state],
     )
     
     # Clear chat history
     clear_btn.click(
         clear_current_chat,
         inputs=[selected_id_state, history_dict_state],
-        outputs=[chatbox, history_dict_state],
+        outputs=[chatbot, history_dict_state],
         queue=False
     )
 
