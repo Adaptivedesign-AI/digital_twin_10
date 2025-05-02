@@ -38,16 +38,16 @@ name_dict = {
 
 # Student descriptions (personality, background, etc.)
 student_descriptions = {
-    "student001": "16 years old. Quiet and thoughtful. Loves sports but keeps emotions to himself.",
-    "student002": "15 years old. Restless and impulsive. Often skips school and feels overwhelmed.",
-    "student003": "17 years old. Withdrawn and isolated. Struggles with sadness and low energy.",
-    "student004": "16 years old. Top of class. Perfectionist who avoids risks and stays cautious.",
-    "student005": "15 years old. Sensitive and anxious. Rarely sleeps well and feels out of control.",
-    "student006": "17 years old. Shy and socially anxious. Finds it hard to speak up or connect.",
-    "student007": "16 years old. Positive and motivated. Tries hard at school and helps others.",
-    "student008": "15 years old. Mature and calm. Focused on school, avoids conflict and drama.",
-    "student009": "17 years old. Quiet and independent. Rarely opens up but stays composed.",
-    "student010": "16 years old. Athletic and confident. Faces family stress but feels strong at school."
+    "student001": "16 years old, excels in science and math, introverted but helpful",
+    "student002": "15 years old, loves sports especially basketball, outgoing and energetic",
+    "student003": "17 years old, enjoys music and art, creative but somewhat sensitive",
+    "student004": "16 years old, good at debate and writing, quick thinker",
+    "student005": "15 years old, passionate about natural sciences, very curious",
+    "student006": "17 years old, strong social skills, interested in fashion and design",
+    "student007": "16 years old, loves reading and writing, shy but thoughtful",
+    "student008": "15 years old, has leadership qualities, involved in many school activities",
+    "student009": "17 years old, math genius, enjoys solving complex problems",
+    "student010": "16 years old, athletic, optimistic and cheerful"
 }
 
 # Models used by each student
@@ -246,34 +246,23 @@ body {
     text-align: center;
 }
 
+/* Avatar styling in selection cards - smaller for 5 columns */
 .avatar-container {
-    width: 70px !important;
-    height: 70px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
-    border: 2px solid white !important;
-    background-color: #fff !important;
-    position: relative !important;
+    width: 70px;
+    height: 70px;
+    margin: 10px auto 6px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid white;
 }
 
 .avatar-container img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 50% !important;
-    aspect-ratio: 1 / 1 !important;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
-
-/* Add JavaScript to force perfect circles */
-.avatar-img {
-    aspect-ratio: 1 / 1 !important;
-}
-
-
 
 /* Chat button styling */
 .chat-btn {
@@ -380,26 +369,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* TINY AVATARS - now 6px instead of 12px */
+/* EVEN SMALLER AVATARS - now 12px instead of 20px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 6px !important;
-    height: 6px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
-    margin-right: 4px !important;
-    margin-top: 5px !important;
+    margin-right: 6px !important;
+    margin-top: 4px !important;
     flex-shrink: 0 !important;
 }
 
-/* Make sure the avatars are visible and styled correctly with micro size */
+/* Make sure the avatars are visible and styled correctly with tiny size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 6px !important;
-    height: 6px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 4px !important;
+    margin-right: 6px !important;
     flex-shrink: 0 !important;
 }
 
@@ -638,60 +627,34 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to ensure avatars display correctly and at the much smaller size
     demo.load(None, None, None, js="""
     function() {
+        // Keep checking and fixing the avatars periodically to ensure they're tiny
         setInterval(function() {
-            // ✅ 缩小聊天气泡中的头像（强制覆盖默认尺寸）
+            // Ensure avatar images are visible but TINY (12px)
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
-                avatar.style.setProperty('width', '20px', 'important');  // ← 调小尺寸
-                avatar.style.setProperty('height', '20px', 'important');
-                avatar.style.setProperty('border-radius', '50%', 'important');
-                avatar.style.setProperty('margin-right', '6px', 'important');
-                avatar.style.setProperty('margin-top', '3px', 'important');
-                avatar.style.setProperty('object-fit', 'cover', 'important');
+                avatar.style.display = 'inline-block';
+                avatar.style.width = '12px';
+                avatar.style.height = '12px';
+                avatar.style.borderRadius = '50%';
+                avatar.style.marginRight = '6px';
+                avatar.style.marginTop = '4px';
             });
-    
-            // ✅ 聊天气泡样式
+            
+            // Format message bubbles
             document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
-                msg.style.setProperty('border-radius', '18px', 'important');
-                msg.style.setProperty('padding', '12px 16px', 'important');
-                msg.style.setProperty('max-width', '80%', 'important');
-    
+                msg.style.borderRadius = '18px';
+                msg.style.padding = '12px 16px';
+                msg.style.maxWidth = '80%';
+                
                 if (msg.classList.contains('user')) {
-                    msg.style.setProperty('background-color', '#f7931e', 'important');
-                    msg.style.setProperty('color', 'white', 'important');
-                    msg.style.setProperty('border-bottom-right-radius', '4px', 'important');
+                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.color = 'white';
+                    msg.style.borderBottomRightRadius = '4px';
                 } else {
-                    msg.style.setProperty('background-color', '#f1f1f1', 'important');
-                    msg.style.setProperty('color', '#333', 'important');
-                    msg.style.setProperty('border-bottom-left-radius', '4px', 'important');
+                    msg.style.backgroundColor = '#f1f1f1';
+                    msg.style.color = '#333';
+                    msg.style.borderBottomLeftRadius = '4px';
                 }
             });
-    
-            // ✅ 首页卡片中的头像：强制变成正方形
-            document.querySelectorAll('.avatar-img').forEach(function(img) {
-                img.style.setProperty('aspect-ratio', '1 / 1', 'important');
-                img.style.setProperty('width', '100%', 'important');
-                img.style.setProperty('height', '100%', 'important');
-                img.style.setProperty('object-fit', 'cover', 'important');
-                const container = img.closest('.avatar-container');
-                if (container) {
-                    container.style.setProperty('width', '70px', 'important');
-                    container.style.setProperty('height', '70px', 'important');
-                }
-            });
-    
-            // ✅ 整个卡片点击跳转
-            document.querySelectorAll('.character-card').forEach(function(card) {
-                card.style.setProperty('cursor', 'pointer', 'important');
-                card.addEventListener('click', function(e) {
-                    const button = this.querySelector('.chat-btn');
-                    if (button && e.target !== button) {
-                        button.click();
-                    }
-                });
-            });
-        }, 500);
-    }
-    """)
             
             // Make character cards clickable (entire card, not just button)
             document.querySelectorAll('.character-card').forEach(function(card) {
@@ -707,7 +670,6 @@ with gr.Blocks(css=custom_css) as demo:
         }, 500);
     }
     """)
-
 
 # Run the application
 if __name__ == "__main__":
