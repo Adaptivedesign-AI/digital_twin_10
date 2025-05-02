@@ -638,47 +638,60 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to ensure avatars display correctly and at the much smaller size
     demo.load(None, None, None, js="""
     function() {
-        // Keep checking and fixing the avatars periodically to ensure they're tiny
         setInterval(function() {
-            // Ensure avatar images are visible but TINY (12px)
+            // ✅ 缩小聊天气泡中的头像（强制覆盖默认尺寸）
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
-                avatar.style.display = 'inline-block';
-                avatar.style.width = '6px';
-                avatar.style.height = '6px';
-                avatar.style.marginRight = '4px';
-                avatar.style.borderRadius = '50%';
-                avatar.style.marginTop = '4px';
+                avatar.style.setProperty('width', '20px', 'important');  // ← 调小尺寸
+                avatar.style.setProperty('height', '20px', 'important');
+                avatar.style.setProperty('border-radius', '50%', 'important');
+                avatar.style.setProperty('margin-right', '6px', 'important');
+                avatar.style.setProperty('margin-top', '3px', 'important');
+                avatar.style.setProperty('object-fit', 'cover', 'important');
             });
-            
-            // Format message bubbles
+    
+            // ✅ 聊天气泡样式
             document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
-                msg.style.borderRadius = '18px';
-                msg.style.padding = '12px 16px';
-                msg.style.maxWidth = '80%';
-                
+                msg.style.setProperty('border-radius', '18px', 'important');
+                msg.style.setProperty('padding', '12px 16px', 'important');
+                msg.style.setProperty('max-width', '80%', 'important');
+    
                 if (msg.classList.contains('user')) {
-                    msg.style.backgroundColor = '#f7931e';
-                    msg.style.color = 'white';
-                    msg.style.borderBottomRightRadius = '4px';
+                    msg.style.setProperty('background-color', '#f7931e', 'important');
+                    msg.style.setProperty('color', 'white', 'important');
+                    msg.style.setProperty('border-bottom-right-radius', '4px', 'important');
                 } else {
-                    msg.style.backgroundColor = '#f1f1f1';
-                    msg.style.color = '#333';
-                    msg.style.borderBottomLeftRadius = '4px';
+                    msg.style.setProperty('background-color', '#f1f1f1', 'important');
+                    msg.style.setProperty('color', '#333', 'important');
+                    msg.style.setProperty('border-bottom-left-radius', '4px', 'important');
                 }
             });
-            // Force images to be perfectly circular
+    
+            // ✅ 首页卡片中的头像：强制变成正方形
             document.querySelectorAll('.avatar-img').forEach(function(img) {
-                img.style.aspectRatio = '1 / 1';
-                
-                // Get the parent container
+                img.style.setProperty('aspect-ratio', '1 / 1', 'important');
+                img.style.setProperty('width', '100%', 'important');
+                img.style.setProperty('height', '100%', 'important');
+                img.style.setProperty('object-fit', 'cover', 'important');
                 const container = img.closest('.avatar-container');
                 if (container) {
-                    // Make the container a perfect square
-                    const size = Math.min(container.offsetWidth, container.offsetHeight);
-                    container.style.width = size + 'px';
-                    container.style.height = size + 'px';
+                    container.style.setProperty('width', '70px', 'important');
+                    container.style.setProperty('height', '70px', 'important');
                 }
             });
+    
+            // ✅ 整个卡片点击跳转
+            document.querySelectorAll('.character-card').forEach(function(card) {
+                card.style.setProperty('cursor', 'pointer', 'important');
+                card.addEventListener('click', function(e) {
+                    const button = this.querySelector('.chat-btn');
+                    if (button && e.target !== button) {
+                        button.click();
+                    }
+                });
+            });
+        }, 500);
+    }
+    """)
             
             // Make character cards clickable (entire card, not just button)
             document.querySelectorAll('.character-card').forEach(function(card) {
