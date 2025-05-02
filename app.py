@@ -377,26 +377,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* TINY AVATARS - now 6px instead of 12px */
+/* EVEN SMALLER AVATARS - now 12px instead of 20px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 6px !important;
-    height: 6px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
-    margin-right: 4px !important;
-    margin-top: 5px !important;
+    margin-right: 6px !important;
+    margin-top: 4px !important;
     flex-shrink: 0 !important;
 }
 
-/* Make sure the avatars are visible and styled correctly with micro size */
+/* Make sure the avatars are visible and styled correctly with tiny size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 6px !important;
-    height: 6px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 4px !important;
+    margin-right: 6px !important;
     flex-shrink: 0 !important;
 }
 
@@ -637,11 +637,13 @@ with gr.Blocks(css=custom_css) as demo:
     function() {
         setInterval(function() {
             // ✅ 强制设置聊天头像尺寸（bot 和 user）
-            document.querySelectorAll('.gradio-chatbot .avatar img').forEach(function(img) {
-                img.style.setProperty('width', '16px', 'important');         // ← 可改为 12px 或更小
-                img.style.setProperty('height', '16px', 'important');
-                img.style.setProperty('border-radius', '50%', 'important');
-                img.style.setProperty('object-fit', 'cover', 'important');
+            document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
+                avatar.style.display = 'inline-block';
+                avatar.style.width = '12px';
+                avatar.style.height = '12px';
+                avatar.style.borderRadius = '50%';
+                avatar.style.marginRight = '6px';
+                avatar.style.marginTop = '4px';
             });
     
             // ✅ 聊天气泡样式
