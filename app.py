@@ -639,8 +639,8 @@ with gr.Blocks(css=custom_css) as demo:
             // ✅ 强制设置聊天头像尺寸（bot 和 user）
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.setProperty('display', 'inline-block', 'important');
-                avatar.style.setProperty('width', '24px', 'important');       // 👉 改为你想要的大小
-                avatar.style.setProperty('height', '24px', 'important');
+                avatar.style.setProperty('width', '10px', 'important');       // 👉 改为你想要的大小
+                avatar.style.setProperty('height', '10px', 'important');
                 avatar.style.setProperty('margin-right', '8px', 'important');
                 avatar.style.setProperty('margin-top', '4px', 'important');
                 avatar.style.setProperty('border-radius', '50%', 'important');
