@@ -246,16 +246,18 @@ body {
     text-align: center;
 }
 
-/* Avatar styling in selection cards - perfectly circular */
 .avatar-container {
-    width: 100px !important;
-    height: 100px !important;
+    width: 70px !important;
+    height: 70px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    background-color: #fff; /* 可选，避免边缘透明 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+    border: 2px solid white !important;
+    background-color: #fff !important;
+    position: relative !important;
 }
 
 .avatar-container img {
@@ -263,6 +265,7 @@ body {
     height: 100% !important;
     object-fit: cover !important;
     border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
 }
 
 /* Add JavaScript to force perfect circles */
@@ -377,26 +380,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* EVEN SMALLER AVATARS - now 12px instead of 20px */
+/* TINY AVATARS - now 6px instead of 12px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 6px !important;
+    height: 6px !important;
     border-radius: 50% !important;
-    margin-right: 6px !important;
-    margin-top: 4px !important;
+    margin-right: 4px !important;
+    margin-top: 5px !important;
     flex-shrink: 0 !important;
 }
 
-/* Make sure the avatars are visible and styled correctly with tiny size */
+/* Make sure the avatars are visible and styled correctly with micro size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 6px !important;
+    height: 6px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 6px !important;
+    margin-right: 4px !important;
     flex-shrink: 0 !important;
 }
 
@@ -635,49 +638,53 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to ensure avatars display correctly and at the much smaller size
     demo.load(None, None, None, js="""
     function() {
+        // Keep checking and fixing the avatars periodically to ensure they're tiny
         setInterval(function() {
-            // ✅ 强制设置聊天头像尺寸（bot 和 user）
+            // Ensure avatar images are visible but TINY (12px)
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.display = 'inline-block';
-                avatar.style.width = '12px';
-                avatar.style.height = '12px';
+                avatar.style.width = '6px';
+                avatar.style.height = '6px';
+                avatar.style.marginRight = '4px';
                 avatar.style.borderRadius = '50%';
-                avatar.style.marginRight = '6px';
                 avatar.style.marginTop = '4px';
             });
-    
-            // ✅ 聊天气泡样式
+            
+            // Format message bubbles
             document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
-                msg.style.setProperty('border-radius', '18px', 'important');
-                msg.style.setProperty('padding', '12px 16px', 'important');
-                msg.style.setProperty('max-width', '80%', 'important');
-    
+                msg.style.borderRadius = '18px';
+                msg.style.padding = '12px 16px';
+                msg.style.maxWidth = '80%';
+                
                 if (msg.classList.contains('user')) {
-                    msg.style.setProperty('background-color', '#f7931e', 'important');
-                    msg.style.setProperty('color', 'white', 'important');
-                    msg.style.setProperty('border-bottom-right-radius', '4px', 'important');
+                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.color = 'white';
+                    msg.style.borderBottomRightRadius = '4px';
                 } else {
-                    msg.style.setProperty('background-color', '#f1f1f1', 'important');
-                    msg.style.setProperty('color', '#333', 'important');
-                    msg.style.setProperty('border-bottom-left-radius', '4px', 'important');
+                    msg.style.backgroundColor = '#f1f1f1';
+                    msg.style.color = '#333';
+                    msg.style.borderBottomLeftRadius = '4px';
                 }
             });
-    
-            // ✅ 首页选择卡片中的头像：保持正圆
+            // Force images to be perfectly circular
             document.querySelectorAll('.avatar-img').forEach(function(img) {
-                img.style.setProperty('aspect-ratio', '1 / 1', 'important');
+                img.style.aspectRatio = '1 / 1';
+                
+                // Get the parent container
                 const container = img.closest('.avatar-container');
                 if (container) {
+                    // Make the container a perfect square
                     const size = Math.min(container.offsetWidth, container.offsetHeight);
-                    container.style.setProperty('width', size + 'px', 'important');
-                    container.style.setProperty('height', size + 'px', 'important');
+                    container.style.width = size + 'px';
+                    container.style.height = size + 'px';
                 }
             });
-    
-            // ✅ 整个卡片点击也能跳转（不仅仅是按钮）
+            
+            // Make character cards clickable (entire card, not just button)
             document.querySelectorAll('.character-card').forEach(function(card) {
-                card.style.setProperty('cursor', 'pointer', 'important');
+                card.style.cursor = 'pointer';
                 card.addEventListener('click', function(e) {
+                    // Find and click the button within this card
                     const button = this.querySelector('.chat-btn');
                     if (button && e.target !== button) {
                         button.click();
@@ -687,6 +694,7 @@ with gr.Blocks(css=custom_css) as demo:
         }, 500);
     }
     """)
+
 
 # Run the application
 if __name__ == "__main__":
