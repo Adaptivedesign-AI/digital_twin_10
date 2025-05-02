@@ -262,6 +262,7 @@ body {
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
+    aspect-ratio: 1 / 1 !important;
 }
 
 /* Chat button styling */
