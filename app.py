@@ -666,6 +666,19 @@ with gr.Blocks(css=custom_css) as demo:
                     msg.style.borderBottomLeftRadius = '4px';
                 }
             });
+            // Force images to be perfectly circular
+            document.querySelectorAll('.avatar-img').forEach(function(img) {
+                img.style.aspectRatio = '1 / 1';
+                
+                // Get the parent container
+                const container = img.closest('.avatar-container');
+                if (container) {
+                    // Make the container a perfect square
+                    const size = Math.min(container.offsetWidth, container.offsetHeight);
+                    container.style.width = size + 'px';
+                    container.style.height = size + 'px';
+                }
+            });
             
             // Make character cards clickable (entire card, not just button)
             document.querySelectorAll('.character-card').forEach(function(card) {
@@ -681,19 +694,7 @@ with gr.Blocks(css=custom_css) as demo:
         }, 500);
     }
     """)
-    // Force images to be perfectly circular
-    document.querySelectorAll('.avatar-img').forEach(function(img) {
-        img.style.aspectRatio = '1 / 1';
-        
-        // Get the parent container
-        const container = img.closest('.avatar-container');
-        if (container) {
-            // Make the container a perfect square
-            const size = Math.min(container.offsetWidth, container.offsetHeight);
-            container.style.width = size + 'px';
-            container.style.height = size + 'px';
-        }
-    });
+
 
 # Run the application
 if __name__ == "__main__":
