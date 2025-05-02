@@ -248,21 +248,20 @@ body {
 
 /* Avatar styling in selection cards - smaller for 5 columns */
 .avatar-container {
-    width: 70px;
-    height: 70px;
-    margin: 10px auto 6px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: 2px solid white;
+    width: 70px!important;
+    height: 70px!important;
+    border-radius: 50%!important;
+    overflow: hidden!important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1)!important;
+    border: 2px solid white!important;
 }
 
 .avatar-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    aspect-ratio: 1 / 1 !important;
+    width: 100%!important;
+    height: 100%!important;
+    object-fit: cover!important;
+    border-radius: 50%!important;
+    aspect-ratio: 1 / 1 !important!important;
 }
 
 /* Chat button styling */
