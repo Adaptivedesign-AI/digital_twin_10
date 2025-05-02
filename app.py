@@ -253,7 +253,9 @@ body {
     border-radius: 50%!important;
     overflow: hidden!important;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1)!important;
-    border: 2px solid white!important;
+    border: 2px solid white!important
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .avatar-container img {
@@ -261,7 +263,7 @@ body {
     height: 100%!important;
     object-fit: cover!important;
     border-radius: 50%!important;
-    aspect-ratio: 1 / 1 !important!important;
+    aspect-ratio: 1 / 1 !important;
 }
 
 /* Chat button styling */
