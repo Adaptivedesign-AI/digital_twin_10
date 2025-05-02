@@ -106,7 +106,7 @@ def clear_current_chat(student_id, history_dict):
 def get_student_model(student_id):
     return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
-# Direct student selection function - simplified for better compatibility
+# Direct student selection function
 def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_avatar = f"avatar/{student_id}.png"
@@ -130,7 +130,7 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# This CSS focuses on completely hiding image controls and enforcing circular avatars
+# This CSS has been completely redesigned to look like character.ai
 custom_css = """
 /* Global styles */
 body {
@@ -138,19 +138,7 @@ body {
     background-color: #f9f9f9;
 }
 
-/* Header styling */
-.main-title {
-    background-color: #f7931e;
-    color: white;
-    padding: 15px;
-    margin: 0;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 8px 8px 0 0;
-}
-
-/* Card styling */
+/* Card styling for selection page */
 .character-card {
     background: white;
     border-radius: 10px;
@@ -175,7 +163,6 @@ body {
     font-weight: bold;
 }
 
-/* Student info styling */
 .student-name {
     font-size: 20px;
     font-weight: bold;
@@ -202,7 +189,6 @@ body {
     color: #666;
 }
 
-/* Chat button styling */
 .chat-btn {
     background-color: #f7931e !important;
     color: white !important;
@@ -220,25 +206,19 @@ body {
     background-color: #e67e00 !important;
 }
 
-/* Chat interface styling */
-.chat-header {
-    display: flex;
-    align-items: center;
+/* Selection page title */
+.main-title {
+    background-color: #f7931e;
+    color: white;
     padding: 15px;
-    border-bottom: 1px solid #eee;
-    background-color: #f8f9fa;
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0;
 }
 
-.back-btn {
-    background-color: #f5f5f5 !important;
-    border: 1px solid #ddd !important;
-    color: #555 !important;
-    border-radius: 5px !important;
-    margin-left: auto !important;
-}
-
-/* CRITICAL: Avatar styling and controls hiding */
-/* For the avatar images in the cards */
+/* Avatar styling */
 .avatar-container {
     position: relative;
     width: 100px;
@@ -246,8 +226,8 @@ body {
     margin: 15px auto;
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: 3px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .avatar-container img {
@@ -285,15 +265,25 @@ div[class*="tool-buttons"],
     object-fit: cover !important;
 }
 
-/* Additional fix for Safari */
-.gradio-container .prose img,
-.gradio-container .panel-image {
-    border-radius: 50% !important;
-    margin: 0 auto !important;
-    display: block !important;
+/* Chat page styling */
+.chat-page-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
 }
 
-/* Chat avatar specific */
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: white;
+    position: relative;
+}
+
 .chat-avatar {
     width: 40px !important;
     height: 40px !important;
@@ -304,33 +294,189 @@ div[class*="tool-buttons"],
     object-fit: cover !important;
 }
 
-/* Input and buttons styling */
+.back-btn {
+    position: absolute;
+    right: 15px;
+    background-color: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
+    color: #555 !important;
+    border-radius: 5px !important;
+    padding: 5px 15px !important;
+}
+
+/* Character.ai style chat bubbles */
+.chatbot-container {
+    background-color: #f6f7f8 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Make messages display properly */
+.chatbot-container .message-wrap {
+    display: flex !important;
+    margin-bottom: 20px !important;
+    position: relative !important;
+}
+
+.chatbot-container .user-message {
+    flex-direction: row-reverse !important;
+}
+
+.chatbot-container .bot-message {
+    flex-direction: row !important;
+}
+
+/* Message bubble styling */
+.chatbot-container .message {
+    max-width: 80% !important;
+    padding: 12px 16px !important;
+    border-radius: 18px !important;
+    margin: 0 12px !important;
+    position: relative !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+.chatbot-container .user-bubble {
+    background-color: #f8e5b9 !important;
+    color: #000 !important;
+    border-top-right-radius: 4px !important;
+    text-align: right !important;
+    margin-left: auto !important;
+}
+
+.chatbot-container .bot-bubble {
+    background-color: white !important;
+    color: #000 !important;
+    border-top-left-radius: 4px !important;
+    text-align: left !important;
+    margin-right: auto !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+/* Message avatar styling */
+.chatbot-container .avatar {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* Emotion tag styling - like in the screenshot */
+.emotion-tag {
+    display: block;
+    font-style: italic;
+    color: #666;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+/* Input area styling */
+.input-container {
+    background-color: white;
+    border-top: 1px solid #eee;
+    padding: 15px;
+    position: relative;
+}
+
 .message-input {
     border-radius: 20px !important;
-    padding: 10px 15px !important;
     border: 1px solid #e0e0e0 !important;
+    padding: 12px 15px !important;
+    font-size: 14px !important;
+    transition: border-color 0.3s !important;
+}
+
+.message-input:focus {
+    border-color: #f7931e !important;
+    box-shadow: 0 0 0 2px rgba(247, 147, 30, 0.2) !important;
 }
 
 .send-btn {
     background-color: #f7931e !important;
     color: white !important;
     border: none !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
+    border-radius: 24px !important;
+    padding: 12px 20px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    margin-left: 10px !important;
+    transition: background-color 0.3s !important;
+}
+
+.send-btn:hover {
+    background-color: #e67e00 !important;
 }
 
 .clear-btn {
-    background-color: #f0f0f0 !important;
-    color: #555 !important;
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
+    background-color: transparent !important;
+    color: #666 !important;
+    border: none !important;
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
 }
 
-/* Force image controls to be hidden with !important */
+/* Override Gradio's default chat styles */
+.message > .self, .message > .svelte-16r4uzs {
+    border-top-right-radius: 4px !important;
+    background-color: #f8e5b9 !important;
+}
+
+.message:not(.self), .message:not(.svelte-16r4uzs) {
+    border-top-left-radius: 4px !important;
+    background-color: white !important;
+}
+
+/* Don't display Gradio's default avatars */
+.message.self::before, .message:not(.self)::before {
+    display: none !important;
+}
+
+/* Message container styling */
+.message-container {
+    border-radius: 18px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    max-width: 70%;
+    position: relative;
+}
+
+.user-message-container {
+    background-color: #f8e5b9;
+    margin-left: auto;
+    border-top-right-radius: 4px;
+}
+
+.bot-message-container {
+    background-color: white;
+    margin-right: auto;
+    border-top-left-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Force image controls to be hidden */
 .gradio-image .p-absolute,
 .gradio-image div[class^="flex"],
 .gradio-image div[class*="flex"] {
     display: none !important;
+}
+
+/* Make sure both header and input are visible */
+.chat-header, .input-container {
+    position: sticky;
+    z-index: 10;
+}
+
+.chat-header {
+    top: 0;
+}
+
+.input-container {
+    bottom: 0;
 }
 """
 
@@ -345,7 +491,7 @@ with gr.Blocks(css=custom_css) as demo:
     
     # ── Create both pages as components ──────────
     selection_page = gr.Group(visible=True)
-    chat_page = gr.Group(visible=False)
+    chat_page = gr.Group(visible=False, elem_classes="chat-page-container")
     
     # ── Define chat page components FIRST ──────────
     with chat_page:
@@ -363,24 +509,30 @@ with gr.Blocks(css=custom_css) as demo:
                 model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
             back_button = gr.Button("← Back", elem_classes="back-btn")
             
-        # Chat area
+        # Chat area with character.ai style
         chatbot = gr.Chatbot(
-            label="Conversation",
+            label="",
+            elem_classes="chatbot-container",
             avatar_images=("avatar/user.png", None),
-            height=450,
+            height=500,
+            show_label=False,
+            bubble=True,
         )
         
-        # Input area
-        with gr.Row():
-            msg = gr.Textbox(
-                placeholder="Type your message...",
-                label="",
-                elem_classes="message-input",
-            )
+        # Input area styled like character.ai
+        with gr.Row(elem_classes="input-container"):
+            with gr.Column(scale=5):
+                msg = gr.Textbox(
+                    placeholder="Type your message...",
+                    label="",
+                    elem_classes="message-input",
+                    show_label=False,
+                )
             
-            send_btn = gr.Button("Send", elem_classes="send-btn")
+            with gr.Column(scale=1, min_width=100):
+                send_btn = gr.Button("Send", elem_classes="send-btn")
         
-        clear_btn = gr.Button("Clear Chat", elem_classes="clear-btn")
+        clear_btn = gr.Button("Clear conversation", elem_classes="clear-btn")
     
     # ── Selection page ───────────────────────────
     with selection_page:
@@ -394,13 +546,14 @@ with gr.Blocks(css=custom_css) as demo:
                 
                 with gr.Column(elem_classes="character-card"):
                     gr.Markdown("Digital Twin", elem_classes="card-header")
-                    gr.Image(
-                        value=f"avatar/{student_id}.png",
-                        show_label=False,
-                        elem_classes="avatar-img",
-                        height=100,
-                        width=100
-                    )
+                    with gr.Column(elem_classes="avatar-container"):
+                        gr.Image(
+                            value=f"avatar/{student_id}.png",
+                            show_label=False,
+                            elem_classes="avatar-img",
+                            height=100,
+                            width=100
+                        )
                     gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
                     gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                     gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
@@ -429,13 +582,14 @@ with gr.Blocks(css=custom_css) as demo:
                 
                 with gr.Column(elem_classes="character-card"):
                     gr.Markdown("Digital Twin", elem_classes="card-header")
-                    gr.Image(
-                        value=f"avatar/{student_id}.png",
-                        show_label=False,
-                        elem_classes="avatar-img",
-                        height=100,
-                        width=100
-                    )
+                    with gr.Column(elem_classes="avatar-container"):
+                        gr.Image(
+                            value=f"avatar/{student_id}.png",
+                            show_label=False,
+                            elem_classes="avatar-img",
+                            height=100,
+                            width=100
+                        )
                     gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
                     gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                     gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
@@ -487,25 +641,137 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to fix image display and hide controls
+    # JavaScript to enhance the chat interface and force proper styling
     demo.load(None, None, None, js="""
     function() {
-        // Force hide image controls
-        setInterval(function() {
-            // Hide all image controls
-            document.querySelectorAll('.gradio-image button, .gradio-image .panel-buttons, .gradio-image .absolute').forEach(function(el) {
-                el.style.display = 'none';
-                el.style.visibility = 'hidden';
-                el.style.opacity = '0';
-                el.style.pointerEvents = 'none';
-            });
+        // Custom function to enhance the chat interface
+        function enhanceChatInterface() {
+            // Helper to create emotion tag
+            function addEmotionTagsToMessages() {
+                document.querySelectorAll('.bot-message .message-content').forEach(function(msgElement) {
+                    let text = msgElement.textContent;
+                    if (text.includes('Emotion:') || text.includes('Emotion tag:')) {
+                        let parts = text.split(/Emotion:|\nEmotion tag:/);
+                        if (parts.length > 1) {
+                            let mainContent = parts[0].trim();
+                            let emotion = parts[1].trim();
+                            
+                            // Replace the content with just the main part
+                            msgElement.textContent = mainContent;
+                            
+                            // Create and append emotion tag
+                            let emotionTag = document.createElement('span');
+                            emotionTag.className = 'emotion-tag';
+                            emotionTag.textContent = 'Emotion: ' + emotion;
+                            msgElement.appendChild(emotionTag);
+                        }
+                    }
+                });
+            }
             
-            // Make all images circular
-            document.querySelectorAll('.gradio-image img').forEach(function(img) {
-                img.style.borderRadius = '50%';
-                img.style.objectFit = 'cover';
-            });
-        }, 100);
+            // Style message bubbles and add avatars
+            function styleMessageBubbles() {
+                // Hide all image controls
+                document.querySelectorAll('.gradio-image button, .gradio-image .panel-buttons, .gradio-image .absolute').forEach(function(el) {
+                    el.style.display = 'none';
+                    el.style.visibility = 'hidden';
+                    el.style.opacity = '0';
+                    el.style.pointerEvents = 'none';
+                });
+                
+                // Make all avatar images circular
+                document.querySelectorAll('.gradio-image img').forEach(function(img) {
+                    img.style.borderRadius = '50%';
+                    img.style.objectFit = 'cover';
+                });
+                
+                // Get avatar URLs
+                const userAvatar = 'avatar/user.png';
+                const studentAvatar = document.querySelector('.chat-avatar')?.src || 'avatar/default.png';
+                
+                // Style chatbot messages
+                document.querySelectorAll('.chatbot-container .message').forEach(function(msgElement) {
+                    // Skip if already processed
+                    if (msgElement.dataset.processed === 'true') return;
+                    
+                    // Check if user or bot message
+                    const isUserMessage = msgElement.classList.contains('self');
+                    
+                    // Create avatar element if it doesn't exist
+                    if (!msgElement.querySelector('.chat-message-avatar')) {
+                        const avatarElement = document.createElement('div');
+                        avatarElement.className = 'avatar';
+                        
+                        // Set correct avatar image and position
+                        if (isUserMessage) {
+                            avatarElement.style.backgroundImage = `url('${userAvatar}')`;
+                            msgElement.classList.add('user-bubble');
+                            msgElement.parentElement.classList.add('user-message');
+                        } else {
+                            avatarElement.style.backgroundImage = `url('${studentAvatar}')`;
+                            msgElement.classList.add('bot-bubble');
+                            msgElement.parentElement.classList.add('bot-message');
+                        }
+                        
+                        // Add avatar before or after message based on sender
+                        if (isUserMessage) {
+                            msgElement.parentElement.appendChild(avatarElement);
+                        } else {
+                            msgElement.parentElement.prepend(avatarElement);
+                        }
+                    }
+                    
+                    // Mark as processed
+                    msgElement.dataset.processed = 'true';
+                });
+                
+                // Add emotion tags
+                addEmotionTagsToMessages();
+            }
+            
+            // Run styling functions periodically
+            styleMessageBubbles();
+            setInterval(styleMessageBubbles, 500);
+        }
+        
+        // Initialize the chat interface enhancement
+        enhanceChatInterface();
+        
+        // Additional CSS fixes via JavaScript for elements that might be dynamically added
+        const style = document.createElement('style');
+        style.textContent = `
+            .message {
+                max-width: 80% !important;
+                border-radius: 18px !important;
+                padding: 12px 16px !important;
+                margin: 0 12px !important;
+                position: relative !important;
+            }
+            
+            .user-bubble {
+                background-color: #f8e5b9 !important;
+                border-top-right-radius: 4px !important;
+            }
+            
+            .bot-bubble {
+                background-color: white !important;
+                border-top-left-radius: 4px !important;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+            }
+            
+            .avatar {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                border-radius: 50% !important;
+                background-size: cover !important;
+                background-position: center !important;
+                margin: 0 8px !important;
+                align-self: flex-end !important;
+            }
+        `;
+        document.head.appendChild(style);
     }
     """)
 
