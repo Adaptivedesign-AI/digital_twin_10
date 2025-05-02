@@ -369,26 +369,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* SMALLER AVATARS - now 20px instead of 40px */
+/* EVEN SMALLER AVATARS - now 12px instead of 20px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
-    margin-right: 10px !important;
-    margin-top: 0 !important;
+    margin-right: 6px !important;
+    margin-top: 4px !important;
     flex-shrink: 0 !important;
 }
 
-/* Make sure the avatars are visible and styled correctly with smaller size */
+/* Make sure the avatars are visible and styled correctly with tiny size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 8px !important;
+    margin-right: 6px !important;
     flex-shrink: 0 !important;
 }
 
@@ -437,13 +437,13 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
 
-/* Override default gradio chatbot styling for smaller avatars */
+/* Override default gradio chatbot styling for tiny avatars */
 .gradio-container .prose img.avatar-image {
     display: inline-block !important;
     margin: 0 !important;
     border-radius: 50% !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 12px !important;
+    height: 12px !important;
 }
 
 /* Selection heading styling */
@@ -475,6 +475,17 @@ body {
 .center-header {
     margin: 0 auto;
     text-align: center;
+}
+
+/* Add more whitespace around messages */
+.gradio-chatbot .message-wrap {
+    margin-bottom: 10px !important;
+}
+
+/* Adjust spacing for better alignment with tiny avatars */
+.gradio-chatbot .message-wrap > div {
+    display: flex !important;
+    align-items: flex-start !important;
 }
 """
 
@@ -613,18 +624,19 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly and at the smaller size
+    # JavaScript to ensure avatars display correctly and at the much smaller size
     demo.load(None, None, None, js="""
     function() {
-        // Keep checking and fixing the avatars periodically to ensure they're smaller
+        // Keep checking and fixing the avatars periodically to ensure they're tiny
         setInterval(function() {
-            // Ensure avatar images are visible but SMALLER (20px)
+            // Ensure avatar images are visible but TINY (12px)
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.display = 'inline-block';
-                avatar.style.width = '20px';
-                avatar.style.height = '20px';
+                avatar.style.width = '12px';
+                avatar.style.height = '12px';
                 avatar.style.borderRadius = '50%';
-                avatar.style.marginRight = '8px';
+                avatar.style.marginRight = '6px';
+                avatar.style.marginTop = '4px';
             });
             
             // Format message bubbles
