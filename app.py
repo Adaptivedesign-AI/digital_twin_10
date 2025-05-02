@@ -505,7 +505,7 @@ with gr.Blocks(css=custom_css) as demo:
                             selected_id_state, 
                             name_display, 
                             model_display,
-                            chatbot
+                            chatbox
                         ]
                     )
     
@@ -520,8 +520,8 @@ with gr.Blocks(css=custom_css) as demo:
     # Send message
     msg.submit(
         chat,
-        inputs=[msg, chatbot, selected_id_state, history_dict_state],
-        outputs=[msg, chatbot, history_dict_state],
+        inputs=[msg, chatbox, selected_id_state, history_dict_state],
+        outputs=[msg, chatbox, history_dict_state],
     )
     
     send_btn.click(
@@ -534,7 +534,7 @@ with gr.Blocks(css=custom_css) as demo:
     clear_btn.click(
         clear_current_chat,
         inputs=[selected_id_state, history_dict_state],
-        outputs=[chatbot, history_dict_state],
+        outputs=[chatbox, history_dict_state],
         queue=False
     )
 
