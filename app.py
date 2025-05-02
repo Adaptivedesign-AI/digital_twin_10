@@ -245,7 +245,7 @@ body {
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     border: 1px solid #e0e0e0;
-    position: relative; /* 为整个卡片点击做准备 */
+    position: relative; /* For card click */
 }
 
 .character-card:hover {
@@ -253,7 +253,7 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
-/* 添加一个透明的覆盖层，用于改善点击体验 */
+/* Add transparent overlay for better click experience */
 .card-overlay {
     position: absolute;
     top: 0;
@@ -324,7 +324,7 @@ body {
     margin-top: 15px;
     transition: background-color 0.2s;
     position: relative;
-    z-index: 20; /* 确保按钮在覆盖层之上 */
+    z-index: 20; /* Ensure button is above overlay */
 }
 
 .chat-btn:hover {
@@ -365,10 +365,10 @@ body {
     }
 }
 
-/* 为解决电脑端的点击问题增加的样式 */
+/* Fix for desktop click issues */
 button {
     cursor: pointer;
-    /* 防止按钮事件被其他元素捕获 */
+    /* Prevent button events from being captured by other elements */
     position: relative;
     z-index: 20;
 }
@@ -381,7 +381,7 @@ button {
     user-select: none;
 }
 
-/* 避免选择文本时触发卡片点击 */
+/* Avoid text selection triggering card click */
 * {
     user-select: none;
 }
@@ -395,17 +395,17 @@ with gr.Blocks(
     css=custom_css
 ) as demo:
 
-    # ── 状态变量 ──────────
+    # State variables
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
     
-    # ── 创建两个主要页面 ──────────
+    # Create main pages
     selection_page = gr.Group(visible=True)
     chat_page = gr.Group(visible=False)
     
-    # ── 定义聊天页面组件 ──────────
+    # Define chat page components
     with chat_page:
-        # 聊天页面标题
+        # Chat header
         with gr.Row(elem_classes="chat-header"):
             student_avatar_display = gr.Image(
                 value="avatar/default.png", 
@@ -419,7 +419,7 @@ with gr.Blocks(
                 student_model_display = gr.Markdown("Powered by GPT-4", elem_classes="chat-model")
             back_button = gr.Button("← Back", elem_classes="back-btn")
             
-        # 聊天区域
+        # Chat area
         chatbot = gr.Chatbot(
             label="Conversation",
             avatar_images=("avatar/user.png", None),
@@ -427,7 +427,7 @@ with gr.Blocks(
             height=450,
         )
         
-        # 输入区域
+        # Input area
         with gr.Row(elem_classes="input-container"):
             with gr.Column():
                 msg = gr.Textbox(
@@ -440,14 +440,14 @@ with gr.Blocks(
                     send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
                     clear_btn = gr.Button("Clear Chat", variant="secondary", elem_classes="clear-btn")
     
-    # ── 定义选择页面 ───────────────────────────
+    # Define selection page
     with selection_page:
         with gr.Row(elem_classes="header-container"):
             gr.Markdown("# 🎓 Digital-Twin Chat Demo")
         
         gr.Markdown("### Choose a student to chat with")
         
-        # 创建学生选择卡片
+        # Create student selection cards using HTML
         students_grid = gr.HTML(f"""
         <div class="character-grid">
             {''.join([f'''
@@ -464,11 +464,11 @@ with gr.Blocks(
             ''' for student_id in name_dict.keys()])}
         </div>
         <script>
-            // 页面加载完成后为所有按钮添加点击事件
+            // Add click events after page loads
             document.addEventListener('DOMContentLoaded', function() {
                 console.log("Adding click events to buttons");
                 
-                // 为每个Start Chat按钮添加点击事件
+                // Add click events to all Start Chat buttons
                 document.querySelectorAll('.chat-btn').forEach(button => {
                     button.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -477,16 +477,16 @@ with gr.Blocks(
                         const studentId = this.getAttribute('data-student-id');
                         console.log("Button clicked for student:", studentId);
                         
-                        // 查找隐藏的输入框，将studentId设置为其值
+                        // Find the hidden input field and set studentId as its value
                         const hiddenInput = document.getElementById('student-id-input');
                         if(hiddenInput) {
                             hiddenInput.value = studentId;
                             
-                            // 触发提交事件
+                            // Trigger submit event
                             const submitEvent = new Event('input', { bubbles: true });
                             hiddenInput.dispatchEvent(submitEvent);
                             
-                            // 点击隐藏的提交按钮
+                            // Click the hidden submit button
                             const submitButton = document.getElementById('select-student-btn');
                             if(submitButton) {
                                 submitButton.click();
@@ -495,16 +495,16 @@ with gr.Blocks(
                     });
                 });
                 
-                // 也可以为整个卡片添加点击事件
+                // Also add click events to the entire card
                 document.querySelectorAll('.character-card').forEach(card => {
                     card.addEventListener('click', function(e) {
-                        // 防止冒泡到Start Chat按钮
+                        // Prevent bubbling to Start Chat button
                         if(e.target.classList.contains('chat-btn')) return;
                         
                         const studentId = this.getAttribute('data-student-id');
                         console.log("Card clicked for student:", studentId);
                         
-                        // 触发对应的按钮点击
+                        // Trigger the corresponding button click
                         const button = document.getElementById(`btn-${studentId}`);
                         if(button) {
                             button.click();
@@ -515,12 +515,12 @@ with gr.Blocks(
         </script>
         """)
         
-        # 创建隐藏的组件用于处理学生选择
+        # Create hidden components for student selection
         student_id_input = gr.Textbox(value="", visible=False, elem_id="student-id-input")
         select_student_btn = gr.Button("Select", visible=False, elem_id="select-student-btn")
             
-    # ── 事件处理 ─────────────────────────    
-    # 学生选择按钮点击事件
+    # Event handlers 
+    # Student selection button click event
     select_student_btn.click(
         select_student_direct,
         inputs=[student_id_input, history_dict_state],
@@ -529,14 +529,14 @@ with gr.Blocks(
                 student_avatar_display, chatbot]
     )
     
-    # 返回选择页面
+    # Return to selection page
     back_button.click(
         return_to_selection,
         inputs=[],
         outputs=[selection_page, chat_page]
     )
     
-    # 发送消息
+    # Send message
     msg.submit(
         chat,
         inputs=[msg, chatbot, selected_id_state, history_dict_state],
@@ -549,7 +549,7 @@ with gr.Blocks(
         outputs=[msg, chatbot, history_dict_state],
     )
     
-    # 清除聊天历史
+    # Clear chat history
     clear_btn.click(
         clear_current_chat,
         inputs=[selected_id_state, history_dict_state],
@@ -557,17 +557,17 @@ with gr.Blocks(
         queue=False
     )
 
-# ── 启动应用 ───────────────────────────
+# Run the application
 if __name__ == "__main__":
     print("Starting application...")
     print(f"Avatar paths: {avatar_dict}")
     
-    # 确保avatar目录存在
+    # Ensure avatar directory exists
     if not os.path.exists("avatar"):
         os.makedirs("avatar")
         print("Created avatar directory")
         
-    # 创建默认用户头像
+    # Create default user avatar
     if not os.path.exists("avatar/user.png"):
         print("Creating default user avatar")
         with open("avatar/user.png", "w") as f:
@@ -576,6 +576,6 @@ if __name__ == "__main__":
     demo.queue().launch(
         server_name="0.0.0.0",
         server_port=int(os.environ.get("PORT", 7860)),
-        debug=True,  # 调试模式
-        max_threads=20  # 增加线程数
+        debug=True,  # Enable debug mode
+        max_threads=20  # Increase threads
     )
