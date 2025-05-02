@@ -387,6 +387,86 @@ button {
 }
 """
 
+# Create HTML for student grid - using a function to avoid f-string issues
+def create_student_grid_html():
+    cards_html = ""
+    for student_id in name_dict.keys():
+        name = name_dict[student_id]
+        desc = student_descriptions[student_id]
+        model = model_info[student_id]
+        
+        card_html = f"""
+        <div class="character-card" id="card-{student_id}" data-student-id="{student_id}">
+            <div class="card-header">Digital Twin</div>
+            <img src="avatar/{student_id}.png" class="card-avatar" />
+            <div class="card-body">
+                <div class="character-name">{name}</div>
+                <div class="character-description">{desc}</div>
+                <div class="model-tag">Powered by {model}</div>
+                <button class="chat-btn" id="btn-{student_id}" data-student-id="{student_id}">Start Chat</button>
+            </div>
+        </div>
+        """
+        cards_html += card_html
+    
+    # Full HTML with JavaScript
+    grid_html = f"""
+    <div class="character-grid">
+        {cards_html}
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {{
+        console.log("Adding click events to buttons");
+        
+        // Add click events to all Start Chat buttons
+        document.querySelectorAll('.chat-btn').forEach(button => {{
+            button.addEventListener('click', function(e) {{
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const studentId = this.getAttribute('data-student-id');
+                console.log("Button clicked for student:", studentId);
+                
+                // Find the hidden input field and set studentId as its value
+                const hiddenInput = document.getElementById('student-id-input');
+                if(hiddenInput) {{
+                    hiddenInput.value = studentId;
+                    
+                    // Trigger submit event
+                    const submitEvent = new Event('input', {{ bubbles: true }});
+                    hiddenInput.dispatchEvent(submitEvent);
+                    
+                    // Click the hidden submit button
+                    const submitButton = document.getElementById('select-student-btn');
+                    if(submitButton) {{
+                        submitButton.click();
+                    }}
+                }}
+            }});
+        }});
+        
+        // Also add click events to the entire card
+        document.querySelectorAll('.character-card').forEach(card => {{
+            card.addEventListener('click', function(e) {{
+                // Prevent bubbling to Start Chat button
+                if(e.target.classList.contains('chat-btn')) return;
+                
+                const studentId = this.getAttribute('data-student-id');
+                console.log("Card clicked for student:", studentId);
+                
+                // Trigger the corresponding button click
+                const button = document.getElementById(`btn-${{studentId}}`);
+                if(button) {{
+                    button.click();
+                }}
+            }});
+        }});
+    }});
+    </script>
+    """
+    
+    return grid_html
+
 # --------------------------------------------
 # = UI BUILDING =
 # --------------------------------------------
@@ -447,73 +527,8 @@ with gr.Blocks(
         
         gr.Markdown("### Choose a student to chat with")
         
-        # Create student selection cards using HTML
-        students_grid = gr.HTML(f"""
-        <div class="character-grid">
-            {''.join([f'''
-            <div class="character-card" id="card-{student_id}" data-student-id="{student_id}">
-                <div class="card-header">Digital Twin</div>
-                <img src="{avatar_dict[student_id]}" class="card-avatar" />
-                <div class="card-body">
-                    <div class="character-name">{name_dict[student_id]}</div>
-                    <div class="character-description">{student_descriptions[student_id]}</div>
-                    <div class="model-tag">Powered by {model_info[student_id]}</div>
-                    <button class="chat-btn" id="btn-{student_id}" data-student-id="{student_id}">Start Chat</button>
-                </div>
-            </div>
-            ''' for student_id in name_dict.keys()])}
-        </div>
-        <script>
-            // Add click events after page loads
-            document.addEventListener('DOMContentLoaded', function() {
-                console.log("Adding click events to buttons");
-                
-                // Add click events to all Start Chat buttons
-                document.querySelectorAll('.chat-btn').forEach(button => {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const studentId = this.getAttribute('data-student-id');
-                        console.log("Button clicked for student:", studentId);
-                        
-                        // Find the hidden input field and set studentId as its value
-                        const hiddenInput = document.getElementById('student-id-input');
-                        if(hiddenInput) {
-                            hiddenInput.value = studentId;
-                            
-                            // Trigger submit event
-                            const submitEvent = new Event('input', { bubbles: true });
-                            hiddenInput.dispatchEvent(submitEvent);
-                            
-                            // Click the hidden submit button
-                            const submitButton = document.getElementById('select-student-btn');
-                            if(submitButton) {
-                                submitButton.click();
-                            }
-                        }
-                    });
-                });
-                
-                // Also add click events to the entire card
-                document.querySelectorAll('.character-card').forEach(card => {
-                    card.addEventListener('click', function(e) {
-                        // Prevent bubbling to Start Chat button
-                        if(e.target.classList.contains('chat-btn')) return;
-                        
-                        const studentId = this.getAttribute('data-student-id');
-                        console.log("Card clicked for student:", studentId);
-                        
-                        // Trigger the corresponding button click
-                        const button = document.getElementById(`btn-${studentId}`);
-                        if(button) {
-                            button.click();
-                        }
-                    });
-                });
-            });
-        </script>
-        """)
+        # Create student selection cards using HTML (as a function)
+        students_grid = gr.HTML(create_student_grid_html())
         
         # Create hidden components for student selection
         student_id_input = gr.Textbox(value="", visible=False, elem_id="student-id-input")
