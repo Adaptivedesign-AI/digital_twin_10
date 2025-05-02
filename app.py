@@ -637,13 +637,11 @@ with gr.Blocks(css=custom_css) as demo:
     function() {
         setInterval(function() {
             // ✅ 强制设置聊天头像尺寸（bot 和 user）
-            document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
-                avatar.style.setProperty('display', 'inline-block', 'important');
-                avatar.style.setProperty('width', '8px', 'important');       // 👉 改为你想要的大小
-                avatar.style.setProperty('height', '8px', 'important');
-                avatar.style.setProperty('margin-right', '5px', 'important');
-                avatar.style.setProperty('margin-top', '4px', 'important');
-                avatar.style.setProperty('border-radius', '50%', 'important');
+            document.querySelectorAll('.gradio-chatbot .avatar img').forEach(function(img) {
+                img.style.setProperty('width', '16px', 'important');         // ← 可改为 12px 或更小
+                img.style.setProperty('height', '16px', 'important');
+                img.style.setProperty('border-radius', '50%', 'important');
+                img.style.setProperty('object-fit', 'cover', 'important');
             });
     
             // ✅ 聊天气泡样式
