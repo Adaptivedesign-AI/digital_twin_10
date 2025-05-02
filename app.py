@@ -366,7 +366,6 @@ def create_character_selection_html():
                 <div class="character-name">{name}</div>
                 <div class="character-description">{description}</div>
                 <div class="model-tag">Powered by {model}</div>
-                <button class="chat-btn">Start Chat</button>
             </div>
         </div>
         """
