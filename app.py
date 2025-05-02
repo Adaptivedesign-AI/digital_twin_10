@@ -64,16 +64,9 @@ model_info = {
     "student010": "GPT-4"
 }
 
-# Avatar dictionary for easy access
-avatar_dict = {f"student{i:03d}": f"avatar/student{i:03d}.png" for i in range(1, 11)}
-
 # Initialize empty chat history for all students
 def get_empty_history_dict():
     return {student_id: [] for student_id in name_dict.keys()}
-
-# Function to get student model info
-def get_student_model(student_id):
-    return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
 # Chat function
 def chat(message, history, student_id, history_dict):
@@ -109,17 +102,14 @@ def clear_current_chat(student_id, history_dict):
     history_dict[student_id] = []
     return [], history_dict
 
-# Return to selection page
-def return_to_selection():
-    return (
-        gr.update(visible=True),   # Show selection page
-        gr.update(visible=False)   # Hide chat page
-    )
+# Function to get student model info
+def get_student_model(student_id):
+    return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
 
-# Direct student selection function
+# Direct student selection function - simplified for better compatibility
 def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
-    student_avatar = avatar_dict.get(student_id, "avatar/default.png")
+    student_avatar = f"avatar/{student_id}.png"
     student_history = history_dict.get(student_id, [])
     student_model = get_student_model(student_id)
     
@@ -129,11 +119,18 @@ def select_student_direct(student_id, history_dict):
         student_id,                # Update selected student ID
         f"# {student_name}",       # Update student name display
         student_model,             # Update model display
-        gr.Chatbot.update(avatar_images=("avatar/user.png", student_avatar)),  # Update avatar
+        student_avatar,            # Update avatar display
         student_history            # Update chat history
     )
 
-# Custom CSS for styling
+# Return to selection page
+def return_to_selection():
+    return (
+        gr.update(visible=True),   # Show selection page
+        gr.update(visible=False)   # Hide chat page
+    )
+
+# This CSS focuses on completely hiding image controls and enforcing circular avatars
 custom_css = """
 /* Global styles */
 body {
@@ -153,21 +150,6 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Student grid layout */
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);  /* Fixed 3 cards per row */
-    gap: 16px;
-    margin: 15px;
-}
-
-.last-row {
-    display: grid;
-    grid-template-columns: 1fr;  /* Just one card centered */
-    max-width: 33%;
-    margin: 15px auto;
-}
-
 /* Card styling */
 .character-card {
     background: white;
@@ -176,10 +158,8 @@ body {
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     transition: transform 0.2s;
+    margin: 10px;
     border: 1px solid #e0e0e0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 .character-card:hover {
@@ -240,7 +220,7 @@ body {
     background-color: #e67e00 !important;
 }
 
-/* Chat header styling */
+/* Chat interface styling */
 .chat-header {
     display: flex;
     align-items: center;
@@ -254,59 +234,11 @@ body {
     border: 1px solid #ddd !important;
     color: #555 !important;
     border-radius: 5px !important;
-    margin-right: auto !important;
-    order: -1 !important;
+    margin-left: auto !important;
 }
 
-/* Chat interface styling */
-.chat-area {
-    border-radius: 10px !important;
-    overflow: hidden !important;
-    background-color: #f8f9fa !important;
-    padding: 10px !important;
-}
-
-/* Input container styling */
-.input-container {
-    margin-top: 10px !important;
-    gap: 10px !important;
-    align-items: center !important;
-}
-
-.input-box {
-    border-radius: 20px !important;
-    padding: 10px 15px !important;
-    border: 1px solid #e0e0e0 !important;
-    background-color: white !important;
-}
-
-/* Button styling */
-.action-buttons {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-}
-
-.send-btn {
-    background-color: #f7931e !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    font-weight: bold !important;
-    width: 100% !important;
-}
-
-.clear-btn {
-    background-color: #f0f0f0 !important;
-    color: #555 !important;
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
-    font-size: 12px !important;
-    width: 100% !important;
-}
-
-/* Perfect circle avatars */
+/* CRITICAL: Avatar styling and controls hiding */
+/* For the avatar images in the cards */
 .avatar-container {
     position: relative;
     width: 100px;
@@ -316,7 +248,6 @@ body {
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: 3px solid white;
-    aspect-ratio: 1/1;
 }
 
 .avatar-container img {
@@ -324,16 +255,13 @@ body {
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    aspect-ratio: 1/1;
 }
 
-/* Force hide image controls */
+/* Hide all image controls */
 .gradio-image .panel-buttons,
-.gradio-image .get_interpret_btn,
-.gradio-image .wrap.svelte-1cl284s,
+.gradio-image button,
 .gradio-image .absolute,
 .gradio-image .gr-image-tools,
-.gradio-image .tool-button,
 button[title="Open in new tab"],
 button[title="Download"],
 .panel-btn, 
@@ -344,32 +272,65 @@ div[class*="image-tools"],
 div[class*="tool-buttons"],
 .svelte-1g805jl .panel-buttons,
 .svelte-1g805jl .absolute,
-.svelte-1g805jl button,
-.image-buttons-row {
+.svelte-1g805jl button {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    position: absolute !important;
-    z-index: -999 !important;
 }
 
-/* Ensure avatars are visible in chat */
+/* Make avatars circular without controls */
+.gradio-image img {
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Additional fix for Safari */
+.gradio-container .prose img,
+.gradio-container .panel-image {
+    border-radius: 50% !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+/* Chat avatar specific */
 .chat-avatar {
     width: 40px !important;
     height: 40px !important;
     border-radius: 50% !important;
+    margin-right: 15px !important;
     border: 2px solid white !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
-    flex-shrink: 0 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    object-fit: cover !important;
 }
 
-.gradio-chatbot .avatar {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+/* Input and buttons styling */
+.message-input {
+    border-radius: 20px !important;
+    padding: 10px 15px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+.send-btn {
+    background-color: #f7931e !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 15px !important;
+}
+
+.clear-btn {
+    background-color: #f0f0f0 !important;
+    color: #555 !important;
+    border: 1px solid #ddd !important;
+    border-radius: 5px !important;
+}
+
+/* Force image controls to be hidden with !important */
+.gradio-image .p-absolute,
+.gradio-image div[class^="flex"],
+.gradio-image div[class*="flex"] {
+    display: none !important;
 }
 """
 
@@ -388,169 +349,58 @@ with gr.Blocks(css=custom_css) as demo:
     
     # ── Define chat page components FIRST ──────────
     with chat_page:
-        # Chat header with student info - BACK BUTTON ON LEFT
+        # Chat header with student info
         with gr.Row(elem_classes="chat-header"):
-            back_button = gr.Button("← Back", elem_classes="back-btn")
-            with gr.Column(scale=3):
+            avatar_display = gr.Image(
+                value="avatar/default.png", 
+                show_label=False,
+                elem_classes="chat-avatar",
+                height=40,
+                width=40
+            )
+            with gr.Column():
                 name_display = gr.Markdown("Student Name")
                 model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
-        
-        # Chat area with proper avatars
+            back_button = gr.Button("← Back", elem_classes="back-btn")
+            
+        # Chat area
         chatbot = gr.Chatbot(
             label="Conversation",
-            avatar_images=("avatar/user.png", "avatar/student001.png"),
-            elem_classes="chat-area",
+            avatar_images=("avatar/user.png", None),
             height=450,
-            show_label=False,
-            type="messages"  # Use messages type to fix deprecation warning
         )
+        
+        # Input area
+        with gr.Row():
+            msg = gr.Textbox(
+                placeholder="Type your message...",
+                label="",
+                elem_classes="message-input",
+            )
             
-        # Input area with better layout
-        with gr.Row(elem_classes="input-container"):
-            with gr.Column(scale=4):
-                msg = gr.Textbox(
-                    placeholder="Type a message and press Enter...",
-                    label="",
-                    elem_classes="input-box",
-                )
-                
-            with gr.Column(scale=1, elem_classes="controls-container"):
-                with gr.Row(elem_classes="action-buttons"):
-                    send_btn = gr.Button("Send", variant="primary", elem_classes="send-btn")
-                    clear_btn = gr.Button("Clear", variant="secondary", elem_classes="clear-btn")
+            send_btn = gr.Button("Send", elem_classes="send-btn")
+        
+        clear_btn = gr.Button("Clear Chat", elem_classes="clear-btn")
     
     # ── Selection page ───────────────────────────
     with selection_page:
         gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
         gr.Markdown("### Choose a student to chat with")
         
-        # Create student selection grid - 3+3+3+1 LAYOUT
-        with gr.Column():
-            # First row with students 1-3
-            with gr.Row(elem_classes="card-grid"):
-                for i in range(1, 4):  # Students 1-3
-                    student_id = f"student{i:03d}"
-                    
-                    with gr.Column(elem_classes="character-card"):
-                        gr.Markdown("Digital Twin", elem_classes="card-header")
-                        with gr.Column(elem_classes="avatar-container"):
-                            gr.Image(
-                                value=f"avatar/{student_id}.png",
-                                show_label=False,
-                                elem_classes="avatar-img",
-                                height=100,
-                                width=100
-                            )
-                        gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
-                        gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                        gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
-                        
-                        btn = gr.Button("Start Chat", elem_classes="chat-btn")
-                        btn.click(
-                            select_student_direct,
-                            inputs=[
-                                gr.Textbox(value=student_id, visible=False),
-                                history_dict_state
-                            ],
-                            outputs=[
-                                selection_page, 
-                                chat_page, 
-                                selected_id_state, 
-                                name_display, 
-                                model_display,
-                                chatbot, 
-                                chatbot
-                            ]
-                        )
-            
-            # Second row with students 4-6
-            with gr.Row(elem_classes="card-grid"):
-                for i in range(4, 7):  # Students 4-6
-                    student_id = f"student{i:03d}"
-                    
-                    with gr.Column(elem_classes="character-card"):
-                        gr.Markdown("Digital Twin", elem_classes="card-header")
-                        with gr.Column(elem_classes="avatar-container"):
-                            gr.Image(
-                                value=f"avatar/{student_id}.png",
-                                show_label=False,
-                                elem_classes="avatar-img",
-                                height=100,
-                                width=100
-                            )
-                        gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
-                        gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                        gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
-                        
-                        btn = gr.Button("Start Chat", elem_classes="chat-btn")
-                        btn.click(
-                            select_student_direct,
-                            inputs=[
-                                gr.Textbox(value=student_id, visible=False),
-                                history_dict_state
-                            ],
-                            outputs=[
-                                selection_page, 
-                                chat_page, 
-                                selected_id_state, 
-                                name_display, 
-                                model_display,
-                                chatbot, 
-                                chatbot
-                            ]
-                        )
-                        
-            # Third row with students 7-9
-            with gr.Row(elem_classes="card-grid"):
-                for i in range(7, 10):  # Students 7-9
-                    student_id = f"student{i:03d}"
-                    
-                    with gr.Column(elem_classes="character-card"):
-                        gr.Markdown("Digital Twin", elem_classes="card-header")
-                        with gr.Column(elem_classes="avatar-container"):
-                            gr.Image(
-                                value=f"avatar/{student_id}.png",
-                                show_label=False,
-                                elem_classes="avatar-img",
-                                height=100,
-                                width=100
-                            )
-                        gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
-                        gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                        gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
-                        
-                        btn = gr.Button("Start Chat", elem_classes="chat-btn")
-                        btn.click(
-                            select_student_direct,
-                            inputs=[
-                                gr.Textbox(value=student_id, visible=False),
-                                history_dict_state
-                            ],
-                            outputs=[
-                                selection_page, 
-                                chat_page, 
-                                selected_id_state, 
-                                name_display, 
-                                model_display,
-                                chatbot, 
-                                chatbot
-                            ]
-                        )
-            
-            # Fourth row with just student 10 (centered)
-            with gr.Row(elem_classes="last-row"):
-                student_id = "student010"
+        # Create student selection grid
+        with gr.Row():
+            for i in range(0, 5):  # First row with 5 students
+                student_id = f"student{i+1:03d}"
                 
                 with gr.Column(elem_classes="character-card"):
                     gr.Markdown("Digital Twin", elem_classes="card-header")
-                    with gr.Column(elem_classes="avatar-container"):
-                        gr.Image(
-                            value=f"avatar/{student_id}.png",
-                            show_label=False,
-                            elem_classes="avatar-img",
-                            height=100,
-                            width=100
-                        )
+                    gr.Image(
+                        value=f"avatar/{student_id}.png",
+                        show_label=False,
+                        elem_classes="avatar-img",
+                        height=100,
+                        width=100
+                    )
                     gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
                     gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                     gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
@@ -568,7 +418,42 @@ with gr.Blocks(css=custom_css) as demo:
                             selected_id_state, 
                             name_display, 
                             model_display,
-                            chatbot, 
+                            avatar_display, 
+                            chatbot
+                        ]
+                    )
+        
+        with gr.Row():
+            for i in range(5, 10):  # Second row with 5 students
+                student_id = f"student{i+1:03d}"
+                
+                with gr.Column(elem_classes="character-card"):
+                    gr.Markdown("Digital Twin", elem_classes="card-header")
+                    gr.Image(
+                        value=f"avatar/{student_id}.png",
+                        show_label=False,
+                        elem_classes="avatar-img",
+                        height=100,
+                        width=100
+                    )
+                    gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
+                    gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                    gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
+                    
+                    btn = gr.Button("Start Chat", elem_classes="chat-btn")
+                    btn.click(
+                        select_student_direct,
+                        inputs=[
+                            gr.Textbox(value=student_id, visible=False),
+                            history_dict_state
+                        ],
+                        outputs=[
+                            selection_page, 
+                            chat_page, 
+                            selected_id_state, 
+                            name_display, 
+                            model_display,
+                            avatar_display, 
                             chatbot
                         ]
                     )
@@ -605,37 +490,22 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to fix image display and hide controls
     demo.load(None, None, None, js="""
     function() {
-        // Force circular avatars and hide controls
-        const fixImages = function() {
+        // Force hide image controls
+        setInterval(function() {
             // Hide all image controls
             document.querySelectorAll('.gradio-image button, .gradio-image .panel-buttons, .gradio-image .absolute').forEach(function(el) {
                 el.style.display = 'none';
                 el.style.visibility = 'hidden';
                 el.style.opacity = '0';
                 el.style.pointerEvents = 'none';
-                el.style.zIndex = '-999';
             });
             
-            // Make all images perfectly circular
-            document.querySelectorAll('.gradio-image img, .chatbot .avatar img').forEach(function(img) {
+            // Make all images circular
+            document.querySelectorAll('.gradio-image img').forEach(function(img) {
                 img.style.borderRadius = '50%';
                 img.style.objectFit = 'cover';
-                img.style.aspectRatio = '1/1';
             });
-            
-            // Ensure chat avatars are visible
-            document.querySelectorAll('.chatbot .avatar img').forEach(function(img) {
-                img.style.display = 'block';
-                img.style.visibility = 'visible';
-                img.style.opacity = '1';
-                img.style.width = '40px';
-                img.style.height = '40px';
-            });
-        };
-        
-        // Run repeatedly to ensure styles are maintained
-        fixImages();
-        setInterval(fixImages, 300);
+        }, 100);
     }
     """)
 
