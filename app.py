@@ -235,6 +235,10 @@ body {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    position: relative !important;
+    margin: 0 auto !important;
+    padding-bottom: 0 !important;
+    aspect-ratio: 1 / 1 !important;
 }
 
 .avatar-container img {
@@ -243,6 +247,9 @@ body {
     object-fit: cover!important;
     border-radius: 50%!important;
     aspect-ratio: 1 / 1 !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
 }
 
 /* Chat button styling */
