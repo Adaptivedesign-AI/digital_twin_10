@@ -347,21 +347,29 @@ body {
 
 # Create character selection HTML
 def create_character_selection_html():
-    html_content = '<div class="character-grid">'
-    
+    html_content = """
+    <script>
+    function select_student(student_id) {
+        const input = document.getElementById('student_id_input').querySelector('input');
+        input.value = student_id;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    </script>
+    """
+
+    html_content += '<div class="character-grid">'
+
     for student_id in name_dict.keys():
         name = name_dict.get(student_id)
         description = student_descriptions.get(student_id)
         avatar = avatar_dict.get(student_id)
         model = model_info.get(student_id)
-        
-        # Make sure paths are correctly formed for UI display
+
         html_content += f"""
         <div class="character-card" onclick="select_student('{student_id}')">
-            <div class="card-header">
-                <span>Digital Twin</span>
-            </div>
-            <img class="card-avatar" src="{avatar}" onerror="this.src='https://via.placeholder.com/120/f7931e/ffffff?text={name[0]}'" alt="{name}">
+            <div class="card-header">Digital Twin</div>
+            <img class="card-avatar" src="{avatar}" alt="{name}" onerror="this.src='https://via.placeholder.com/120/f7931e/ffffff?text={name[0]}'" />
             <div class="card-body">
                 <div class="character-name">{name}</div>
                 <div class="character-description">{description}</div>
@@ -369,8 +377,8 @@ def create_character_selection_html():
             </div>
         </div>
         """
-    
-    html_content += '</div>'
+
+    html_content += "</div>"
     return html_content
 
 # --------------------------------------------
