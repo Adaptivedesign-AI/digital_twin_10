@@ -111,7 +111,6 @@ def select_student_direct(student_id, history_dict):
     student_name = name_dict.get(student_id, "Unknown")
     student_history = history_dict.get(student_id, [])
     student_model = get_student_model(student_id)
-    student_avatar = f"avatar/{student_id}.png"
     
     return (
         gr.update(visible=False),  # Hide selection page
@@ -119,7 +118,6 @@ def select_student_direct(student_id, history_dict):
         student_id,                # Update selected student ID
         f"# {student_name}",       # Update student name display
         student_model,             # Update model display
-        student_avatar,            # Update student avatar
         student_history            # Update chat history
     )
 
@@ -330,11 +328,26 @@ body {
     width: 100% !important;
 }
 
-/* Character info styling in chat */
+/* Character info styling in chat - simplified header without avatar */
 .character-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-left: 5px;
+}
+
+/* Student name styling */
+.student-name-header {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Model display styling */
+.model-display {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #666;
 }
 
 /* Character.ai style chat styling */
@@ -350,26 +363,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* Show avatars in the chatbot */
+/* SMALLER AVATARS - now 20px instead of 40px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 40px !important;
-    height: 40px !important;
+    width: 20px !important;
+    height: 20px !important;
     border-radius: 50% !important;
-    margin-right: 15px !important;
+    margin-right: 10px !important;
     margin-top: 0 !important;
     flex-shrink: 0 !important;
 }
 
-/* Make sure the avatars are visible and styled correctly */
+/* Make sure the avatars are visible and styled correctly with smaller size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 40px !important;
-    height: 40px !important;
+    width: 20px !important;
+    height: 20px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 10px !important;
+    margin-right: 8px !important;
     flex-shrink: 0 !important;
 }
 
@@ -418,27 +431,13 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
 
-/* Force image control visibility for avatars only */
-.chat-avatar-header {
-    display: flex !important;
-    align-items: center !important;
-    margin-right: 15px !important;
-}
-
-.chat-avatar-header img {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    border: 2px solid white !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
-    object-fit: cover !important;
-}
-
-/* Override default gradio chatbot styling to show avatars */
+/* Override default gradio chatbot styling for smaller avatars */
 .gradio-container .prose img.avatar-image {
     display: inline-block !important;
     margin: 0 !important;
     border-radius: 50% !important;
+    width: 20px !important;
+    height: 20px !important;
 }
 
 /* Selection heading styling */
@@ -465,6 +464,12 @@ body {
 .block {
     margin-bottom: 0 !important;
 }
+
+/* Center the name and model in the chat header */
+.center-header {
+    margin: 0 auto;
+    text-align: center;
+}
 """
 
 # --------------------------------------------
@@ -475,7 +480,6 @@ with gr.Blocks(css=custom_css) as demo:
     # ── History state (all students) ──────────
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
-    avatar_state = gr.State("")
     
     # ── Create both pages as components ──────────
     selection_page = gr.Group(visible=True)
@@ -483,25 +487,14 @@ with gr.Blocks(css=custom_css) as demo:
     
     # ── Define chat page components FIRST ──────────
     with chat_page:
-        # Chat header with student info and back button on the left
+        # Chat header with student info - REMOVED avatar, centered student info
         with gr.Row(elem_classes="chat-header"):
             back_button = gr.Button("← Back", elem_classes="back-btn")
             
-            # Avatar and student info
-            with gr.Row():
-                # Student avatar
-                avatar_display = gr.Image(
-                    value="avatar/default.png", 
-                    show_label=False,
-                    elem_classes="chat-avatar-header",
-                    height=48,
-                    width=48
-                )
-                
-                # Student information
-                with gr.Column(elem_classes="character-info"):
-                    name_display = gr.Markdown("Student Name")
-                    model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
+            # Student information - centered, no avatar
+            with gr.Column(elem_classes="center-header"):
+                name_display = gr.Markdown("Student Name")
+                model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
             
         # Chat area with avatars
         chatbot = gr.Chatbot(
@@ -568,7 +561,6 @@ with gr.Blocks(css=custom_css) as demo:
                                 selected_id_state, 
                                 name_display, 
                                 model_display,
-                                avatar_display,
                                 chatbot
                             ]
                         )
@@ -615,18 +607,18 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly
+    # JavaScript to ensure avatars display correctly and at the smaller size
     demo.load(None, None, None, js="""
     function() {
-        // Keep checking and fixing the avatars periodically
+        // Keep checking and fixing the avatars periodically to ensure they're smaller
         setInterval(function() {
-            // Ensure avatar images are visible
+            // Ensure avatar images are visible but SMALLER (20px)
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.display = 'inline-block';
-                avatar.style.width = '40px';
-                avatar.style.height = '40px';
+                avatar.style.width = '20px';
+                avatar.style.height = '20px';
                 avatar.style.borderRadius = '50%';
-                avatar.style.marginRight = '10px';
+                avatar.style.marginRight = '8px';
             });
             
             // Format message bubbles
