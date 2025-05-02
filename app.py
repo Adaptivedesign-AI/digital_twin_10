@@ -423,12 +423,7 @@ with gr.Blocks(css=custom_css) as demo:
                 model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
             
         # Chat area
-        chatbot = gr.Chatbot(
-            label="Conversation",
-            avatar_images=("avatar/user.png", None),  # We'll hide these with CSS
-            height=450,
-            elem_classes="character-ai-style"
-        )
+        chatbox = gr.HTML(value="", elem_id="chatbox-html", elem_classes="chatbox-container")
         
         # Input area with improved layout
         with gr.Row():
@@ -473,18 +468,8 @@ with gr.Blocks(css=custom_css) as demo:
                     btn = gr.Button("Start Chat", elem_classes="chat-btn")
                     btn.click(
                         select_student_direct,
-                        inputs=[
-                            gr.Textbox(value=student_id, visible=False),
-                            history_dict_state
-                        ],
-                        outputs=[
-                            selection_page, 
-                            chat_page, 
-                            selected_id_state, 
-                            name_display, 
-                            model_display,
-                            chatbot
-                        ]
+                        inputs=[gr.Textbox(value=student_id, visible=False), history_dict_state],
+                        outputs=[selection_page, chat_page, selected_id_state, name_display, model_display, chatbox]
                     )
         
         # Create student selection grid - second row
@@ -541,8 +526,8 @@ with gr.Blocks(css=custom_css) as demo:
     
     send_btn.click(
         chat,
-        inputs=[msg, chatbot, selected_id_state, history_dict_state],
-        outputs=[msg, chatbot, history_dict_state],
+        inputs=[msg, chatbox, selected_id_state, history_dict_state],
+        outputs=[msg, chatbox, history_dict_state],
     )
     
     # Clear chat history
