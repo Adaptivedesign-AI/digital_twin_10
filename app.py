@@ -571,10 +571,11 @@ with gr.Blocks(css=custom_css) as demo:
         # Chat area with properly configured avatars
         chatbot = gr.Chatbot(
             label="Conversation",
-            avatar_images=("avatar/user.png", "avatar/student001.png"),  # Default student avatar
+            avatar_images=("avatar/user.png", "avatar/student001.png"),
             elem_classes="chat-area",
             height=450,
             show_label=False,
+            type="messages"  # Use messages type to fix deprecation warning
         )
             
         # Input area with better layout
