@@ -50,20 +50,6 @@ student_descriptions = {
     "student010": "15 years old. Energetic and driven."
 }
 
-# Models used by each student
-model_info = {
-    "student001": "GPT-4",
-    "student002": "GPT-4",
-    "student003": "GPT-4",
-    "student004": "GPT-4",
-    "student005": "GPT-4",
-    "student006": "GPT-4",
-    "student007": "GPT-4",
-    "student008": "GPT-4",
-    "student009": "GPT-4",
-    "student010": "GPT-4"
-}
-
 # Initialize empty chat history for all students
 def get_empty_history_dict():
     return {student_id: [] for student_id in name_dict.keys()}
@@ -104,7 +90,7 @@ def clear_current_chat(student_id, history_dict):
 
 # Function to get student model info
 def get_student_model(student_id):
-    return f"Powered by {model_info.get(student_id, 'Unknown Model')}"
+    return ""  # Return empty string instead of model info
 
 # Direct student selection function
 def select_student_direct(student_id, history_dict):
@@ -117,7 +103,7 @@ def select_student_direct(student_id, history_dict):
         gr.update(visible=True),   # Show chat page
         student_id,                # Update selected student ID
         f"# {student_name}",       # Update student name display
-        student_model,             # Update model display
+        student_model,             # Update model display (now empty)
         student_history            # Update chat history
     )
 
@@ -235,15 +221,9 @@ body {
     -webkit-box-orient: vertical;
 }
 
+/* Hide model tag */
 .model-tag {
-    background-color: #f0f0f0;
-    border-radius: 12px;
-    padding: 3px 6px;
-    margin: 4px auto;
-    display: inline-block;
-    font-size: 10px;
-    color: #666;
-    text-align: center;
+    display: none;
 }
 
 /* Avatar styling in selection cards - smaller for 5 columns */
@@ -350,11 +330,9 @@ body {
     margin: 0;
 }
 
-/* Model display styling */
+/* Model display styling - hide it */
 .model-display {
-    margin-top: 4px;
-    font-size: 12px;
-    color: #666;
+    display: none;
 }
 
 /* Character.ai style chat styling */
@@ -512,7 +490,7 @@ with gr.Blocks(css=custom_css) as demo:
             # Student information - centered, no avatar
             with gr.Column(elem_classes="center-header"):
                 name_display = gr.Markdown("Student Name")
-                model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
+                model_display = gr.Markdown("", elem_classes="model-tag")  # Empty model display
             
         # Chat area with avatars
         chatbot = gr.Chatbot(
@@ -564,7 +542,8 @@ with gr.Blocks(css=custom_css) as demo:
                             
                         gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
                         gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                        gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
+                        # Remove or hide the model tag
+                        gr.Markdown("", elem_classes="model-tag")  # Empty model tag
                         
                         btn = gr.Button("Start Chat", elem_classes="chat-btn")
                         btn.click(
@@ -667,6 +646,11 @@ with gr.Blocks(css=custom_css) as demo:
                         button.click();
                     }
                 });
+            });
+            
+            // Hide any model tags that might appear
+            document.querySelectorAll('.model-tag').forEach(function(tag) {
+                tag.style.display = 'none';
             });
         }, 500);
     }
