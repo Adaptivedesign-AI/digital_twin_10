@@ -38,16 +38,16 @@ name_dict = {
 
 # Student descriptions (personality, background, etc.)
 student_descriptions = {
-    "student001": "16 years old, excels in science and math, introverted but helpful",
-    "student002": "15 years old, loves sports especially basketball, outgoing and energetic",
-    "student003": "17 years old, enjoys music and art, creative but somewhat sensitive",
-    "student004": "16 years old, good at debate and writing, quick thinker",
-    "student005": "15 years old, passionate about natural sciences, very curious",
-    "student006": "17 years old, strong social skills, interested in fashion and design",
-    "student007": "16 years old, loves reading and writing, shy but thoughtful",
-    "student008": "15 years old, has leadership qualities, involved in many school activities",
-    "student009": "17 years old, math genius, enjoys solving complex problems",
-    "student010": "16 years old, athletic, optimistic and cheerful"
+    "student001": "16 years old. Quiet and thoughtful. Loves sports but keeps emotions to himself.",
+    "student002": "15 years old. Restless and impulsive. Often skips school and feels overwhelmed.",
+    "student003": "17 years old. Withdrawn and isolated. Struggles with sadness and low energy.",
+    "student004": "16 years old. Top of class. Perfectionist who avoids risks and stays cautious.",
+    "student005": "15 years old. Sensitive and anxious. Rarely sleeps well and feels out of control.",
+    "student006": "17 years old. Shy and socially anxious. Finds it hard to speak up or connect.",
+    "student007": "16 years old. Positive and motivated. Tries hard at school and helps others.",
+    "student008": "15 years old. Mature and calm. Focused on school, avoids conflict and drama.",
+    "student009": "17 years old. Quiet and independent. Rarely opens up but stays composed.",
+    "student010": "16 years old. Athletic and confident. Faces family stress but feels strong at school."
 }
 
 # Models used by each student
@@ -369,26 +369,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* EVEN SMALLER AVATARS - now 12px instead of 20px */
+/* TINY AVATARS - now 6px instead of 12px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 6px !important;
+    height: 6px !important;
     border-radius: 50% !important;
-    margin-right: 6px !important;
-    margin-top: 4px !important;
+    margin-right: 4px !important;
+    margin-top: 5px !important;
     flex-shrink: 0 !important;
 }
 
-/* Make sure the avatars are visible and styled correctly with tiny size */
+/* Make sure the avatars are visible and styled correctly with micro size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 6px !important;
+    height: 6px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 6px !important;
+    margin-right: 4px !important;
     flex-shrink: 0 !important;
 }
 
@@ -632,10 +632,10 @@ with gr.Blocks(css=custom_css) as demo:
             // Ensure avatar images are visible but TINY (12px)
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.display = 'inline-block';
-                avatar.style.width = '12px';
-                avatar.style.height = '12px';
+                avatar.style.width = '6px';
+                avatar.style.height = '6px';
+                avatar.style.marginRight = '4px';
                 avatar.style.borderRadius = '50%';
-                avatar.style.marginRight = '6px';
                 avatar.style.marginTop = '4px';
             });
             
