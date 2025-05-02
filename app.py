@@ -87,8 +87,35 @@ def chat(message, history, student_id, history_dict):
             messages=messages,
             temperature=0.7
         )
-        reply = response.choices[0].message.content.strip()
-        history.append([message, reply])
+        reply_text = response.choices[0].message.content.strip()
+        
+        # (Optional) Emotion extraction logic – hardcoded for now
+        emotion_tag = "apathetic"  # TODO: Replace with real logic
+        
+        # Build bot message block
+        bot_avatar = f"<img src='file=avatar/{student_id}.png' class='user-avatar'>"
+        bot_bubble = f"""
+        <div style='display: flex; align-items: flex-start; gap: 10px;'>
+          {bot_avatar}
+          <div>
+            <div class='chat-bubble bot-bubble'>{reply_text}</div>
+            <div style='font-size: 12px; color: gray;'>Emotion: {emotion_tag}</div>
+          </div>
+        </div>
+        """
+        
+        # Build user message block
+        user_avatar = "<img src='file=avatar/user.png' class='user-avatar'>"
+        user_bubble = f"""
+        <div style='display: flex; justify-content: flex-end; align-items: flex-start; gap: 10px;'>
+          <div>
+            <div class='chat-bubble user-bubble'>{message}</div>
+          </div>
+          {user_avatar}
+        </div>
+        """
+        
+        history.append([user_bubble, bot_bubble])
         # Update history dictionary
         history_dict[student_id] = history
         return "", history, history_dict
@@ -390,10 +417,10 @@ with gr.Blocks(css=custom_css) as demo:
     with chat_page:
         # Chat header with student info - no avatar
         with gr.Row(elem_classes="chat-header"):
+            back_button = gr.Button("← Back", elem_classes="back-btn")
             with gr.Column(elem_classes="character-info"):
                 name_display = gr.Markdown("Student Name")
                 model_display = gr.Markdown("Powered by GPT-4", elem_classes="model-tag")
-            back_button = gr.Button("← Back", elem_classes="back-btn")
             
         # Chat area
         chatbot = gr.Chatbot(
