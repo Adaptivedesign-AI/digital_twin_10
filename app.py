@@ -246,7 +246,7 @@ body {
     text-align: center;
 }
 
-/* Avatar styling in selection cards - smaller for 5 columns */
+/* Avatar styling in selection cards - perfectly circular */
 .avatar-container {
     width: 70px;
     height: 70px;
@@ -255,14 +255,25 @@ body {
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: 2px solid white;
+    position: relative;
 }
 
 .avatar-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
 }
+
+/* Add JavaScript to force perfect circles */
+.avatar-img {
+    aspect-ratio: 1 / 1 !important;
+}
+
+
 
 /* Chat button styling */
 .chat-btn {
@@ -670,6 +681,19 @@ with gr.Blocks(css=custom_css) as demo:
         }, 500);
     }
     """)
+    // Force images to be perfectly circular
+    document.querySelectorAll('.avatar-img').forEach(function(img) {
+        img.style.aspectRatio = '1 / 1';
+        
+        // Get the parent container
+        const container = img.closest('.avatar-container');
+        if (container) {
+            // Make the container a perfect square
+            const size = Math.min(container.offsetWidth, container.offsetHeight);
+            container.style.width = size + 'px';
+            container.style.height = size + 'px';
+        }
+    });
 
 # Run the application
 if __name__ == "__main__":
