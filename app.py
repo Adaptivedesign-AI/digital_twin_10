@@ -130,7 +130,7 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Enhanced CSS for better UI with Character.ai style chat bubbles and avatars
+# Enhanced CSS for better UI with Character.ai style
 custom_css = """
 /* Global styles */
 body {
@@ -150,19 +150,49 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Card styling */
+/* Character.ai style grid for selection page */
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Responsive breakpoints for character grid */
+@media (max-width: 1200px) {
+    .character-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .character-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .character-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card styling - more compact like Character.ai */
 .character-card {
     background: white;
-    border-radius: 10px;
-    padding: 0;
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: transform 0.2s;
-    margin: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #e0e0e0;
     height: 100%;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    max-width: 280px;
+    margin: 0 auto;
 }
 
 .character-card:hover {
@@ -173,38 +203,61 @@ body {
 .card-header {
     background-color: #f7931e;
     color: white;
-    padding: 10px;
+    padding: 8px;
     text-align: center;
     font-weight: bold;
+    font-size: 14px;
 }
 
-/* Student info styling */
+/* Student info styling - more compact */
 .student-name {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 8px 0 4px;
     text-align: center;
 }
 
 .student-description {
-    padding: 0 15px;
+    padding: 0 12px;
     text-align: center;
     color: #555;
-    font-size: 14px;
-    min-height: 60px;
+    font-size: 13px;
+    min-height: 50px;
     overflow: hidden;
     flex-grow: 1;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 .model-tag {
     background-color: #f0f0f0;
     border-radius: 15px;
-    padding: 5px 10px;
-    margin: 10px auto;
+    padding: 4px 8px;
+    margin: 6px auto;
     display: inline-block;
-    font-size: 12px;
+    font-size: 11px;
     color: #666;
     text-align: center;
+}
+
+/* Avatar styling in selection cards - smaller */
+.avatar-container {
+    width: 80px;
+    height: 80px;
+    margin: 12px auto 8px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 3px solid white;
+}
+
+.avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 /* Chat button styling */
@@ -213,12 +266,13 @@ body {
     color: white !important;
     border: none !important;
     border-radius: 20px !important;
-    padding: 8px 0 !important;
-    margin: 15px auto !important;
-    width: 90% !important;
+    padding: 6px 0 !important;
+    margin: 8px auto 12px !important;
+    width: 85% !important;
     display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
+    font-size: 14px !important;
 }
 
 .chat-btn:hover {
@@ -241,24 +295,6 @@ body {
     border-radius: 5px !important;
     margin-right: 15px !important;
     margin-left: 0 !important;
-}
-
-/* Avatar styling in selection cards */
-.avatar-container {
-    width: 100px;
-    height: 100px;
-    margin: 15px auto;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: 3px solid white;
-}
-
-.avatar-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
 }
 
 /* Input and buttons styling */
@@ -374,30 +410,6 @@ body {
     font-size: 0.9em;
 }
 
-/* Fix for selection card height */
-.selection-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.selection-grid-row {
-    display: contents;
-}
-
-@media (max-width: 768px) {
-    .selection-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Ensure avatars display in chat */
-.gradio-avatar {
-    display: flex !important;
-    align-items: flex-start !important;
-}
-
 /* Custom styling for chat container to match Character.ai */
 .chatbox-container {
     padding: 20px !important;
@@ -427,6 +439,31 @@ body {
     display: inline-block !important;
     margin: 0 !important;
     border-radius: 50% !important;
+}
+
+/* Selection heading styling */
+.selection-heading {
+    text-align: center;
+    margin: 20px 0 10px;
+    color: #333;
+    font-size: 20px;
+}
+
+/* Container for the main content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Fix any Gradio spacing issues */
+.gradio-container {
+    max-width: 100% !important;
+}
+
+/* Hide unnecessary margins */
+.block {
+    margin-bottom: 0 !important;
 }
 """
 
@@ -491,86 +528,50 @@ with gr.Blocks(css=custom_css) as demo:
                 send_btn = gr.Button("Send", elem_classes="send-btn")
                 clear_btn = gr.Button("Clear", elem_classes="clear-btn")
     
-    # ── Selection page ───────────────────────────
+    # ── Selection page - Now with responsive 4-column grid like Character.ai ───────────────────────────
     with selection_page:
-        gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
-        gr.Markdown("### Choose a student to chat with")
-        
-        # Create student selection grid - first row
-        with gr.Row(elem_classes="selection-grid-row"):
-            for i in range(0, 5):  # First row with 5 students
-                student_id = f"student{i+1:03d}"
-                
-                with gr.Column(elem_classes="character-card"):
-                    gr.Markdown("Digital Twin", elem_classes="card-header")
+        with gr.Column(elem_classes="container"):
+            gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
+            gr.Markdown("### Choose a student to chat with", elem_classes="selection-heading")
+            
+            # Create a single responsive grid for all students
+            with gr.Column(elem_classes="character-grid"):
+                # Loop through all 10 students to create a 4-column grid
+                for i in range(0, 10):
+                    student_id = f"student{i+1:03d}"
                     
-                    # Avatar container
-                    with gr.Column(elem_classes="avatar-container"):
-                        gr.Image(
-                            value=f"avatar/{student_id}.png",
-                            show_label=False,
-                            elem_classes="avatar-img"
-                        )
+                    with gr.Column(elem_classes="character-card"):
+                        gr.Markdown("Digital Twin", elem_classes="card-header")
                         
-                    gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
-                    gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                    gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
-                    
-                    btn = gr.Button("Start Chat", elem_classes="chat-btn")
-                    btn.click(
-                        select_student_direct,
-                        inputs=[
-                            gr.Textbox(value=student_id, visible=False),
-                            history_dict_state
-                        ],
-                        outputs=[
-                            selection_page, 
-                            chat_page, 
-                            selected_id_state, 
-                            name_display, 
-                            model_display,
-                            avatar_display,
-                            chatbot
-                        ]
-                    )
-        
-        # Create student selection grid - second row
-        with gr.Row(elem_classes="selection-grid-row"):
-            for i in range(5, 10):  # Second row with 5 students
-                student_id = f"student{i+1:03d}"
-                
-                with gr.Column(elem_classes="character-card"):
-                    gr.Markdown("Digital Twin", elem_classes="card-header")
-                    
-                    # Avatar container
-                    with gr.Column(elem_classes="avatar-container"):
-                        gr.Image(
-                            value=f"avatar/{student_id}.png",
-                            show_label=False,
-                            elem_classes="avatar-img"
-                        )
+                        # Avatar container
+                        with gr.Column(elem_classes="avatar-container"):
+                            gr.Image(
+                                value=f"avatar/{student_id}.png",
+                                show_label=False,
+                                elem_classes="avatar-img"
+                            )
+                            
+                        gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
+                        gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                        gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
                         
-                    gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
-                    gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                    gr.Markdown(f"Powered by {model_info[student_id]}", elem_classes="model-tag")
-                    
-                    btn = gr.Button("Start Chat", elem_classes="chat-btn")
-                    btn.click(
-                        select_student_direct,
-                        inputs=[
-                            gr.Textbox(value=student_id, visible=False),
-                            history_dict_state
-                        ],
-                        outputs=[
-                            selection_page, 
-                            chat_page, 
-                            selected_id_state, 
-                            name_display, 
-                            model_display,
-                            avatar_display,
-                            chatbot
-                        ]
-                    )
+                        btn = gr.Button("Start Chat", elem_classes="chat-btn")
+                        btn.click(
+                            select_student_direct,
+                            inputs=[
+                                gr.Textbox(value=student_id, visible=False),
+                                history_dict_state
+                            ],
+                            outputs=[
+                                selection_page, 
+                                chat_page, 
+                                selected_id_state, 
+                                name_display, 
+                                model_display,
+                                avatar_display,
+                                chatbot
+                            ]
+                        )
 
     # Function to update avatar_images in chatbot
     def update_chatbot_avatars(student_id):
@@ -643,6 +644,18 @@ with gr.Blocks(css=custom_css) as demo:
                     msg.style.color = '#333';
                     msg.style.borderBottomLeftRadius = '4px';
                 }
+            });
+            
+            // Make character cards clickable (entire card, not just button)
+            document.querySelectorAll('.character-card').forEach(function(card) {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function(e) {
+                    // Find and click the button within this card
+                    const button = this.querySelector('.chat-btn');
+                    if (button && e.target !== button) {
+                        button.click();
+                    }
+                });
             });
         }, 500);
     }
