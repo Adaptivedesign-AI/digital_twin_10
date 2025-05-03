@@ -522,15 +522,6 @@ img.avatar-image {
     display: flex !important;
     align-items: flex-start !important;
 }
-/* 修复用户消息气泡太靠头像的问题 */
-.gradio-chatbot .message-wrap.user > div:first-child {
-    margin-right: 10px !important;  /* user 头像与气泡间距 */
-}
-
-/* 修复机器人消息气泡离头像太远的问题 */
-.gradio-chatbot .message-wrap.bot > div:first-child {
-    margin-left: 10px !important;   /* bot 头像与气泡间距 */
-}
 """
 
 # --------------------------------------------
@@ -766,6 +757,13 @@ with gr.Blocks(css=custom_css) as demo:
             // Hide any model tags that might appear
             document.querySelectorAll('.model-tag').forEach(function(tag) {
                 tag.style.display = 'none';
+            });
+            // ✅ 修复消息框与头像距离
+            document.querySelectorAll('.gradio-chatbot .message-wrap.bot').forEach(msg => {
+              msg.style.marginLeft = "58px";
+            });
+            document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(msg => {
+              msg.style.marginRight = "58px";
             });
         }
         
