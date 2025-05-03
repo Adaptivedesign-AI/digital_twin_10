@@ -432,7 +432,7 @@ body {
     background-color: transparent !important;
 }
 
-/* Additional CSS to remove avatar boxes but keep larger avatar size */
+/* Additional CSS for avatar appearance and positioning */
 .avatar-container {
     background-color: transparent !important;
     border: none !important;
@@ -479,6 +479,48 @@ img.avatar-image {
     outline: none !important;
     background: transparent !important;
     padding: 0 !important;
+}
+
+/* Message bubble alignment fixes */
+.message-row, .message-wrap {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 8px !important;  /* Reduce gap between avatar and bubble */
+    width: 100% !important;
+    margin-bottom: 8px !important;
+}
+
+/* User message alignment */
+.message-row.user, .message-wrap.user {
+    flex-direction: row-reverse !important;
+    justify-content: flex-start !important;
+}
+
+/* Bot message alignment */
+.message-row.bot, .message-wrap.bot {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+/* Message content positioning */
+.message-content {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Message and bubble positioning */
+.message-bubble, .message {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Ensure messages stay close to avatars */
+.gradio-chatbot .message.user {
+    margin-right: 8px !important;
+}
+
+.gradio-chatbot .message.bot {
+    margin-left: 8px !important;
 }
 
 /* Selection heading styling */
@@ -661,16 +703,13 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly
+    # JavaScript to fix message bubble positioning
     demo.load(None, None, None, js="""
     function() {
         // Define the style fix function
-        function fixAvatarStyles() {
-            // Find all avatar images and containers
+        function fixChatStyles() {
+            // Fix avatar appearances
             const avatarImages = document.querySelectorAll('img.avatar-image');
-            const avatarContainers = document.querySelectorAll('.avatar-container, [class*="message"] .svelte-1y9ctm5');
-            
-            // Fix avatar images
             avatarImages.forEach(img => {
                 img.style.border = 'none';
                 img.style.boxShadow = 'none';
@@ -691,28 +730,33 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // Fix avatar containers
-            avatarContainers.forEach(container => {
-                container.style.border = 'none';
-                container.style.boxShadow = 'none';
-                container.style.backgroundColor = 'transparent';
-                container.style.padding = '0';
-                container.style.margin = '0';
-            });
-            
-            // Find any element with class containing 'message'
-            document.querySelectorAll('[class*="message"]').forEach(el => {
-                // Find possible avatar containers within messages
-                const possibleContainers = el.querySelectorAll('div:first-child');
-                possibleContainers.forEach(container => {
-                    if (container.querySelector('img')) {
-                        container.style.border = 'none';
-                        container.style.boxShadow = 'none';
-                        container.style.backgroundColor = 'transparent';
-                        container.style.padding = '0';
-                        container.style.margin = '0';
+            // Fix message row and bubble positioning
+            document.querySelectorAll('.message-row, .message-wrap').forEach(row => {
+                row.style.display = 'flex';
+                row.style.alignItems = 'flex-start';
+                row.style.gap = '4px'; // Very small gap
+                row.style.width = '100%';
+                row.style.marginBottom = '8px';
+                
+                if (row.classList.contains('user')) {
+                    row.style.flexDirection = 'row-reverse';
+                    row.style.justifyContent = 'flex-start';
+                } else {
+                    row.style.flexDirection = 'row';
+                    row.style.justifyContent = 'flex-start';
+                }
+                
+                // Style the actual message bubble
+                const messageBubble = row.querySelector('.message, .message-bubble');
+                if (messageBubble) {
+                    if (row.classList.contains('user')) {
+                        messageBubble.style.marginRight = '4px';
+                        messageBubble.style.marginLeft = 'auto';
+                    } else {
+                        messageBubble.style.marginLeft = '4px';
+                        messageBubble.style.marginRight = 'auto';
                     }
-                });
+                }
             });
             
             // Make sure selection page avatars remain properly sized and visible
@@ -761,11 +805,11 @@ with gr.Blocks(css=custom_css) as demo:
         }
         
         // Call the fix function initially
-        fixAvatarStyles();
+        fixChatStyles();
         
         // Set up a mutation observer to watch for DOM changes
         const observer = new MutationObserver(function(mutations) {
-            fixAvatarStyles();
+            fixChatStyles();
         });
         
         // Start observing the entire document for changes
@@ -775,7 +819,7 @@ with gr.Blocks(css=custom_css) as demo:
         });
         
         // Also periodically call the fix function for reliability
-        setInterval(fixAvatarStyles, 1000);
+        setInterval(fixChatStyles, 1000);
     }
     """)
 
