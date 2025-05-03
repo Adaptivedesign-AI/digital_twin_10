@@ -432,7 +432,7 @@ body {
     background-color: transparent !important;
 }
 
-/* Additional CSS for avatar appearance and positioning */
+/* Additional CSS to remove avatar boxes but keep larger avatar size */
 .avatar-container {
     background-color: transparent !important;
     border: none !important;
@@ -479,39 +479,6 @@ img.avatar-image {
     outline: none !important;
     background: transparent !important;
     padding: 0 !important;
-}
-
-/* Simple styling for clean circular avatars without boxes */
-.avatar-container {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.message-row .avatar-image, 
-.message-wrap .avatar-image {
-    width: 48px !important;
-    height: 48px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    display: block !important;
-    border-radius: 50% !important;
-}
-
-/* Override default gradio chatbot styling for avatars */
-.gradio-container .prose img.avatar-image {
-    display: inline-block !important;
-    margin: 0 !important;
-    border-radius: 50% !important;
-    width: 48px !important;
-    height: 48px !important;
-    border: none !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
 }
 
 /* Selection heading styling */
@@ -581,7 +548,7 @@ with gr.Blocks(css=custom_css) as demo:
                 name_display = gr.Markdown("Student Name")
                 model_display = gr.Markdown("", elem_classes="model-tag")  # Empty model display
             
-        # Chat area with avatars - use standard layout
+        # Chat area with avatars
         chatbot = gr.Chatbot(
             label="Conversation",
             avatar_images=("avatar/user.png", None),  # Will be updated dynamically
@@ -589,6 +556,7 @@ with gr.Blocks(css=custom_css) as demo:
             elem_classes="character-ai-style chatbox-container",
             show_label=True,
             show_copy_button=True,
+            bubble_full_width=False,
         )
         
         # Input area with improved layout
@@ -693,33 +661,61 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # Simple JavaScript to keep avatars circular without boxes
+    # JavaScript to ensure avatars display correctly
     demo.load(None, None, None, js="""
     function() {
-        // Function to handle avatar styling
-        function fixAvatars() {
+        // Define the style fix function
+        function fixAvatarStyles() {
+            // Find all avatar images and containers
+            const avatarImages = document.querySelectorAll('img.avatar-image');
+            const avatarContainers = document.querySelectorAll('.avatar-container, [class*="message"] .svelte-1y9ctm5');
+            
             // Fix avatar images
-            document.querySelectorAll('img.avatar-image').forEach(img => {
-                img.style.width = '48px';
-                img.style.height = '48px';
-                img.style.borderRadius = '50%';
+            avatarImages.forEach(img => {
                 img.style.border = 'none';
                 img.style.boxShadow = 'none';
                 img.style.padding = '0';
                 img.style.margin = '0';
+                img.style.width = '48px';
+                img.style.height = '48px';
+                img.style.display = 'block';
+                img.style.borderRadius = '50%';
                 
-                // Set parent containers to have no borders/boxes
-                let parent = img.parentElement;
-                if (parent) {
-                    parent.style.border = 'none';
-                    parent.style.boxShadow = 'none';
-                    parent.style.backgroundColor = 'transparent';
-                    parent.style.padding = '0';
-                    parent.style.margin = '0';
+                // Set parent elements as well
+                if (img.parentElement) {
+                    img.parentElement.style.border = 'none';
+                    img.parentElement.style.boxShadow = 'none';
+                    img.parentElement.style.padding = '0';
+                    img.parentElement.style.margin = '0';
+                    img.parentElement.style.backgroundColor = 'transparent';
                 }
             });
             
-            // Make sure selection page avatars look right
+            // Fix avatar containers
+            avatarContainers.forEach(container => {
+                container.style.border = 'none';
+                container.style.boxShadow = 'none';
+                container.style.backgroundColor = 'transparent';
+                container.style.padding = '0';
+                container.style.margin = '0';
+            });
+            
+            // Find any element with class containing 'message'
+            document.querySelectorAll('[class*="message"]').forEach(el => {
+                // Find possible avatar containers within messages
+                const possibleContainers = el.querySelectorAll('div:first-child');
+                possibleContainers.forEach(container => {
+                    if (container.querySelector('img')) {
+                        container.style.border = 'none';
+                        container.style.boxShadow = 'none';
+                        container.style.backgroundColor = 'transparent';
+                        container.style.padding = '0';
+                        container.style.margin = '0';
+                    }
+                });
+            });
+            
+            // Make sure selection page avatars remain properly sized and visible
             document.querySelectorAll('.avatar-container img').forEach(function(img) {
                 if (img.closest('.character-card')) {
                     img.style.display = 'block';
@@ -729,39 +725,57 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // Hide any model tags
-            document.querySelectorAll('.model-tag').forEach(function(tag) {
-                tag.style.display = 'none';
+            // Format message bubbles
+            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
+                msg.style.borderRadius = '18px';
+                msg.style.padding = '12px 16px';
+                msg.style.maxWidth = '80%';
+                
+                if (msg.classList.contains('user')) {
+                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.color = 'white';
+                    msg.style.borderBottomRightRadius = '4px';
+                } else {
+                    msg.style.backgroundColor = '#f1f1f1';
+                    msg.style.color = '#333';
+                    msg.style.borderBottomLeftRadius = '4px';
+                }
             });
             
-            // Make character cards clickable
+            // Make character cards clickable (entire card, not just button)
             document.querySelectorAll('.character-card').forEach(function(card) {
                 card.style.cursor = 'pointer';
                 card.addEventListener('click', function(e) {
+                    // Find and click the button within this card
                     const button = this.querySelector('.chat-btn');
                     if (button && e.target !== button) {
                         button.click();
                     }
                 });
             });
+            
+            // Hide any model tags that might appear
+            document.querySelectorAll('.model-tag').forEach(function(tag) {
+                tag.style.display = 'none';
+            });
         }
         
-        // Call fix function initially
-        fixAvatars();
+        // Call the fix function initially
+        fixAvatarStyles();
         
-        // Set up mutation observer
+        // Set up a mutation observer to watch for DOM changes
         const observer = new MutationObserver(function(mutations) {
-            fixAvatars();
+            fixAvatarStyles();
         });
         
-        // Observe DOM changes
+        // Start observing the entire document for changes
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
         
-        // Periodically call the fix function
-        setInterval(fixAvatars, 1000);
+        // Also periodically call the fix function for reliability
+        setInterval(fixAvatarStyles, 1000);
     }
     """)
 
