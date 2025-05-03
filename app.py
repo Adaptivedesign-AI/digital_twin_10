@@ -481,7 +481,7 @@ img.avatar-image {
     padding: 0 !important;
 }
 
-/* Reset and simplify chat layout */
+/* Maintain the core chat styling while ensuring stability */
 .message-row, .message-wrap {
     display: flex !important;
     align-items: flex-start !important;
@@ -546,6 +546,31 @@ img.avatar-image {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
+}
+
+/* Center and stabilize chat layout */
+.gradio-chatbot {
+    margin: 0 auto !important;
+    width: 100% !important;
+}
+
+/* Ensure chat container doesn't shift */
+.gradio-container .prose {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Ensure all content is centered in container */
+.chatbox-container {
+    margin: 0 auto !important;
+    width: 100% !important;
+}
+
+/* Keep the main container centered */
+.center-header {
+    margin: 0 auto !important;
+    text-align: center !important;
+    width: 100% !important;
 }
 
 /* Selection heading styling */
@@ -729,12 +754,12 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript for a traditional chat layout with clean avatars
+    # JavaScript to prevent chat from shifting left after new messages
     demo.load(None, None, None, js="""
     function() {
-        // Simplify the chat layout and fix avatar styling
-        function fixChatLayout() {
-            // Fix avatar appearance
+        // Style fixing function for consistent chat layout
+        function fixChatStyles() {
+            // Basic avatar styles
             document.querySelectorAll('img.avatar-image').forEach(img => {
                 img.style.width = '48px';
                 img.style.height = '48px';
@@ -745,7 +770,7 @@ with gr.Blocks(css=custom_css) as demo:
                 img.style.margin = '0';
                 img.style.backgroundColor = 'transparent';
                 
-                // Fix any parent containers
+                // Fix parent containers
                 let parent = img.parentElement;
                 while (parent && !parent.classList.contains('gradio-chatbot')) {
                     parent.style.border = 'none';
@@ -757,42 +782,47 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // Apply standard bubble chat formatting
-            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
-                // For proper vertical alignment of messages
-                wrap.style.display = 'flex';
-                wrap.style.alignItems = 'flex-start';
-                wrap.style.gap = '8px';
-                wrap.style.marginBottom = '12px';
-                wrap.style.width = '100%';
+            // Ensure chat container doesn't shift to one side
+            document.querySelectorAll('.gradio-chatbot').forEach(chatbot => {
+                chatbot.style.margin = '0 auto';
+                chatbot.style.width = '100%';
                 
-                // Position user and bot messages differently
-                if (wrap.classList.contains('user')) {
-                    wrap.style.justifyContent = 'flex-end';
-                } else {
-                    wrap.style.justifyContent = 'flex-start';
-                }
-                
-                // Style the actual message bubbles
-                const message = wrap.querySelector('.message');
-                if (message) {
-                    message.style.borderRadius = '18px';
-                    message.style.padding = '12px 16px';
-                    message.style.maxWidth = '80%';
+                // Fix all child containers to maintain stability
+                const childContainers = chatbot.querySelectorAll('div');
+                childContainers.forEach(container => {
+                    container.style.width = '100%';
                     
-                    if (wrap.classList.contains('user')) {
-                        message.style.backgroundColor = '#f7931e';
-                        message.style.color = 'white';
-                        message.style.borderBottomRightRadius = '4px';
-                    } else {
-                        message.style.backgroundColor = '#f1f1f1';
-                        message.style.color = '#333';
-                        message.style.borderBottomLeftRadius = '4px';
+                    // Fix message alignment
+                    if (container.classList.contains('message-wrap')) {
+                        container.style.display = 'flex';
+                        container.style.alignItems = 'flex-start';
+                        container.style.marginBottom = '12px';
+                        container.style.width = '100%';
+                        
+                        if (container.classList.contains('user')) {
+                            // Keep user messages to the right, but avatar on left
+                            container.style.justifyContent = 'flex-end';
+                        } else {
+                            // Keep bot messages to the left
+                            container.style.justifyContent = 'flex-start';
+                        }
                     }
-                }
+                });
             });
             
-            // Make sure selection page avatars remain properly sized and visible
+            // Make the main chat container stable
+            document.querySelectorAll('.prose').forEach(prose => {
+                prose.style.width = '100%';
+                prose.style.maxWidth = '100%';
+            });
+            
+            // Ensure the chatbox container doesn't shift
+            document.querySelectorAll('.chatbox-container').forEach(box => {
+                box.style.margin = '0 auto';
+                box.style.width = '100%';
+            });
+            
+            // Make sure selection page avatars remain properly sized
             document.querySelectorAll('.avatar-container img').forEach(function(img) {
                 if (img.closest('.character-card')) {
                     img.style.display = 'block';
@@ -802,11 +832,27 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // Make character cards clickable (entire card, not just button)
+            // Keep message bubbles properly styled
+            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
+                msg.style.borderRadius = '18px';
+                msg.style.padding = '12px 16px';
+                msg.style.maxWidth = '80%';
+                
+                if (msg.closest('.user')) {
+                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.color = 'white';
+                    msg.style.borderBottomRightRadius = '4px';
+                } else {
+                    msg.style.backgroundColor = '#f1f1f1';
+                    msg.style.color = '#333';
+                    msg.style.borderBottomLeftRadius = '4px';
+                }
+            });
+            
+            // Make character cards clickable
             document.querySelectorAll('.character-card').forEach(function(card) {
                 card.style.cursor = 'pointer';
                 card.addEventListener('click', function(e) {
-                    // Find and click the button within this card
                     const button = this.querySelector('.chat-btn');
                     if (button && e.target !== button) {
                         button.click();
@@ -814,28 +860,28 @@ with gr.Blocks(css=custom_css) as demo:
                 });
             });
             
-            // Hide any model tags that might appear
+            // Hide model tags
             document.querySelectorAll('.model-tag').forEach(function(tag) {
                 tag.style.display = 'none';
             });
         }
         
-        // Call the fix function initially
-        fixChatLayout();
+        // Call fix function initially
+        fixChatStyles();
         
-        // Set up a mutation observer to watch for DOM changes
+        // Set up mutation observer
         const observer = new MutationObserver(function(mutations) {
-            fixChatLayout();
+            fixChatStyles();
         });
         
-        // Start observing the entire document for changes
+        // Observe DOM changes
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
         
-        // Also periodically call the fix function for reliability
-        setInterval(fixChatLayout, 1000);
+        // Periodically call the fix function
+        setInterval(fixChatStyles, 500);
     }
     """)
 
