@@ -432,14 +432,53 @@ body {
     background-color: transparent !important;
 }
 
-/* Remove border boxes around avatar containers */
-.gradio-chatbot .avatar-container,
-.gradio-chatbot .message-wrap .avatar-container {
+/* Additional CSS to remove avatar boxes */
+.avatar-container {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
+}
+
+.message-row .avatar-image, 
+.message-wrap .avatar-image {
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: block !important;
+}
+
+/* Directly target the specific avatar container in messages */
+.message-row > .svelte-1y9ctm5,
+.message-wrap > .svelte-1y9ctm5 {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Target avatar in message bubbles */
+.message-bubble .avatar-container,
+.message .avatar-container {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Disable all rectangular borders around avatar images */
+img.avatar-image {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: transparent !important;
+    padding: 0 !important;
 }
 
 /* Selection heading styling */
@@ -517,6 +556,7 @@ with gr.Blocks(css=custom_css) as demo:
             elem_classes="character-ai-style chatbox-container",
             show_label=True,
             show_copy_button=True,
+            bubble_full_width=False,
         )
         
         # Input area with improved layout
@@ -624,37 +664,65 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to ensure avatars display correctly
     demo.load(None, None, None, js="""
     function() {
-        // Keep checking and fixing the UI elements periodically
-        setInterval(function() {
-            // Ensure chat avatars are visible but TINY (8px) without any border/box
-            document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
-                avatar.style.display = 'inline-block';
-                avatar.style.width = '8px';
-                avatar.style.height = '8px';
-                avatar.style.borderRadius = '50%';
-                avatar.style.marginRight = '4px';
-                avatar.style.marginTop = '2px';
-                avatar.style.border = 'none';
-                avatar.style.padding = '0';
-                avatar.style.boxShadow = 'none';
-                avatar.style.backgroundColor = 'transparent';
+        // Define the style fix function
+        function fixAvatarStyles() {
+            // Find all avatar images and containers
+            const avatarImages = document.querySelectorAll('img.avatar-image');
+            const avatarContainers = document.querySelectorAll('.avatar-container, [class*="message"] .svelte-1y9ctm5');
+            
+            // Fix avatar images
+            avatarImages.forEach(img => {
+                img.style.border = 'none';
+                img.style.boxShadow = 'none';
+                img.style.padding = '0';
+                img.style.margin = '0';
+                img.style.width = '24px';
+                img.style.height = '24px';
+                img.style.display = 'block';
+                img.style.borderRadius = '50%';
                 
-                // Look for parent elements that might be adding boxes and remove them
-                let parent = avatar.parentElement;
-                if (parent) {
-                    parent.style.border = 'none';
-                    parent.style.backgroundColor = 'transparent';
-                    parent.style.boxShadow = 'none';
-                    parent.style.padding = '0';
+                // Set parent elements as well
+                if (img.parentElement) {
+                    img.parentElement.style.border = 'none';
+                    img.parentElement.style.boxShadow = 'none';
+                    img.parentElement.style.padding = '0';
+                    img.parentElement.style.margin = '0';
+                    img.parentElement.style.backgroundColor = 'transparent';
                 }
             });
             
-            // Make sure selection page avatars are properly sized and visible
+            // Fix avatar containers
+            avatarContainers.forEach(container => {
+                container.style.border = 'none';
+                container.style.boxShadow = 'none';
+                container.style.backgroundColor = 'transparent';
+                container.style.padding = '0';
+                container.style.margin = '0';
+            });
+            
+            // Find any element with class containing 'message'
+            document.querySelectorAll('[class*="message"]').forEach(el => {
+                // Find possible avatar containers within messages
+                const possibleContainers = el.querySelectorAll('div:first-child');
+                possibleContainers.forEach(container => {
+                    if (container.querySelector('img')) {
+                        container.style.border = 'none';
+                        container.style.boxShadow = 'none';
+                        container.style.backgroundColor = 'transparent';
+                        container.style.padding = '0';
+                        container.style.margin = '0';
+                    }
+                });
+            });
+            
+            // Make sure selection page avatars remain properly sized and visible
             document.querySelectorAll('.avatar-container img').forEach(function(img) {
-                img.style.display = 'block';
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
+                if (img.closest('.character-card')) {
+                    img.style.display = 'block';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                }
             });
             
             // Format message bubbles
@@ -690,19 +758,24 @@ with gr.Blocks(css=custom_css) as demo:
             document.querySelectorAll('.model-tag').forEach(function(tag) {
                 tag.style.display = 'none';
             });
-            
-            // Remove borders and boxes around avatar images in chatbot
-            document.querySelectorAll('.gradio-chatbot img.avatar-image').forEach(function(img) {
-                img.style.border = 'none';
-                img.style.boxShadow = 'none';
-                var parent = img.parentElement;
-                if (parent) {
-                    parent.style.backgroundColor = 'transparent';
-                    parent.style.border = 'none';
-                    parent.style.boxShadow = 'none';
-                }
-            });
-        }, 500);
+        }
+        
+        // Call the fix function initially
+        fixAvatarStyles();
+        
+        // Set up a mutation observer to watch for DOM changes
+        const observer = new MutationObserver(function(mutations) {
+            fixAvatarStyles();
+        });
+        
+        // Start observing the entire document for changes
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // Also periodically call the fix function for reliability
+        setInterval(fixAvatarStyles, 1000);
     }
     """)
 
