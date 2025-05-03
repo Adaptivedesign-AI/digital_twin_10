@@ -226,30 +226,22 @@ body {
     display: none;
 }
 
-/* Avatar styling in selection cards - smaller for 5 columns */
+/* Avatar styling in selection cards - square avatars */
 .avatar-container {
-    width: 70px!important;
-    height: 70px!important;
-    border-radius: 50%!important;
+    width: 80px!important;
+    height: 80px!important;
+    border-radius: 6px!important;  /* slight rounding on corners */
     overflow: hidden!important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+    display: block !important;
+    margin: 10px auto !important;
     position: relative !important;
-    margin: 0 auto !important;
-    padding-bottom: 0 !important;
-    aspect-ratio: 1 / 1 !important;
 }
 
 .avatar-container img {
     width: 100%!important;
     height: 100%!important;
     object-fit: cover!important;
-    border-radius: 50%!important;
-    aspect-ratio: 1 / 1 !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    display: block !important;
 }
 
 /* Chat button styling */
@@ -524,7 +516,7 @@ with gr.Blocks(css=custom_css) as demo:
                 send_btn = gr.Button("Send", elem_classes="send-btn")
                 clear_btn = gr.Button("Clear", elem_classes="clear-btn")
     
-    # ── Selection page - Now with responsive 5-column grid like Character.ai ───────────────────────────
+            # ── Selection page - Now with responsive 5-column grid like Character.ai ───────────────────────────
     with selection_page:
         with gr.Column(elem_classes="container"):
             gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
@@ -539,12 +531,14 @@ with gr.Blocks(css=custom_css) as demo:
                     with gr.Column(elem_classes="character-card"):
                         gr.Markdown("Digital Twin", elem_classes="card-header")
                         
-                        # Avatar container
-                        with gr.Column(elem_classes="avatar-container"):
+                        # Display avatar image with explicit height/width
+                        with gr.Box(elem_classes="avatar-container"):
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
-                                elem_classes="avatar-img"
+                                elem_classes="avatar-img",
+                                height=80,
+                                width=80
                             )
                             
                         gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
@@ -611,12 +605,12 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly and at the much smaller size
+    # JavaScript to ensure avatars display correctly
     demo.load(None, None, None, js="""
     function() {
-        // Keep checking and fixing the avatars periodically to ensure they're tiny
+        // Keep checking and fixing the UI elements periodically
         setInterval(function() {
-            // Ensure avatar images are visible but TINY (12px)
+            // Ensure chat avatars are visible but TINY (12px)
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.display = 'inline-block';
                 avatar.style.width = '12px';
@@ -624,6 +618,14 @@ with gr.Blocks(css=custom_css) as demo:
                 avatar.style.borderRadius = '50%';
                 avatar.style.marginRight = '6px';
                 avatar.style.marginTop = '4px';
+            });
+            
+            // Make sure selection page avatars are properly sized and visible
+            document.querySelectorAll('.avatar-container img').forEach(function(img) {
+                img.style.display = 'block';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
             });
             
             // Format message bubbles
