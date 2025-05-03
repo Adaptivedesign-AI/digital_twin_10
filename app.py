@@ -481,26 +481,7 @@ img.avatar-image {
     padding: 0 !important;
 }
 
-/* Maintain the core chat styling while ensuring stability */
-.message-row, .message-wrap {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
-    margin-bottom: 12px !important;
-    width: 100% !important;
-}
-
-.message-row.user, .message-wrap.user {
-    flex-direction: row !important; /* Keep avatars on the left */
-    justify-content: flex-end !important; /* Push user messages to the right */
-}
-
-.message-row.bot, .message-wrap.bot {
-    flex-direction: row !important; /* Keep avatars on the left */
-    justify-content: flex-start !important; /* Keep bot messages to the left */
-}
-
-/* Clear fancy styling for avatar containers */
+/* Simple styling for clean circular avatars without boxes */
 .avatar-container {
     background-color: transparent !important;
     border: none !important;
@@ -509,68 +490,28 @@ img.avatar-image {
     margin: 0 !important;
 }
 
-/* Standard avatar image size and style */
-img.avatar-image {
+.message-row .avatar-image, 
+.message-wrap .avatar-image {
     width: 48px !important;
     height: 48px !important;
-    border-radius: 50% !important;
-    border: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: block !important;
+    border-radius: 50% !important;
+}
+
+/* Override default gradio chatbot styling for avatars */
+.gradio-container .prose img.avatar-image {
+    display: inline-block !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    width: 48px !important;
+    height: 48px !important;
+    border: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
-}
-
-/* Message bubble styling */
-.gradio-chatbot .message {
-    border-radius: 18px !important;
-    padding: 12px 16px !important;
-    margin: 0 !important;
-    max-width: 80% !important;
-}
-
-.gradio-chatbot .message.user {
-    background-color: #f7931e !important;
-    color: white !important;
-    border-bottom-right-radius: 4px !important;
-}
-
-.gradio-chatbot .message.bot {
-    background-color: #f1f1f1 !important;
-    color: #333 !important;
-    border-bottom-left-radius: 4px !important;
-}
-
-/* Force proper positioning for the message containers */
-.gradio-chatbot > div > div {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-}
-
-/* Center and stabilize chat layout */
-.gradio-chatbot {
-    margin: 0 auto !important;
-    width: 100% !important;
-}
-
-/* Ensure chat container doesn't shift */
-.gradio-container .prose {
-    width: 100% !important;
-    max-width: 100% !important;
-}
-
-/* Ensure all content is centered in container */
-.chatbox-container {
-    margin: 0 auto !important;
-    width: 100% !important;
-}
-
-/* Keep the main container centered */
-.center-header {
-    margin: 0 auto !important;
-    text-align: center !important;
-    width: 100% !important;
 }
 
 /* Selection heading styling */
@@ -648,8 +589,6 @@ with gr.Blocks(css=custom_css) as demo:
             elem_classes="character-ai-style chatbox-container",
             show_label=True,
             show_copy_button=True,
-            bubble_full_width=False,
-            layout="bubble", # Explicitly set to bubble layout
         )
         
         # Input area with improved layout
@@ -754,12 +693,12 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to prevent chat from shifting left after new messages
+    # Simple JavaScript to keep avatars circular without boxes
     demo.load(None, None, None, js="""
     function() {
-        // Style fixing function for consistent chat layout
-        function fixChatStyles() {
-            // Basic avatar styles
+        // Function to handle avatar styling
+        function fixAvatars() {
+            // Fix avatar images
             document.querySelectorAll('img.avatar-image').forEach(img => {
                 img.style.width = '48px';
                 img.style.height = '48px';
@@ -768,61 +707,19 @@ with gr.Blocks(css=custom_css) as demo:
                 img.style.boxShadow = 'none';
                 img.style.padding = '0';
                 img.style.margin = '0';
-                img.style.backgroundColor = 'transparent';
                 
-                // Fix parent containers
+                // Set parent containers to have no borders/boxes
                 let parent = img.parentElement;
-                while (parent && !parent.classList.contains('gradio-chatbot')) {
+                if (parent) {
                     parent.style.border = 'none';
                     parent.style.boxShadow = 'none';
+                    parent.style.backgroundColor = 'transparent';
                     parent.style.padding = '0';
                     parent.style.margin = '0';
-                    parent.style.backgroundColor = 'transparent';
-                    parent = parent.parentElement;
                 }
             });
             
-            // Ensure chat container doesn't shift to one side
-            document.querySelectorAll('.gradio-chatbot').forEach(chatbot => {
-                chatbot.style.margin = '0 auto';
-                chatbot.style.width = '100%';
-                
-                // Fix all child containers to maintain stability
-                const childContainers = chatbot.querySelectorAll('div');
-                childContainers.forEach(container => {
-                    container.style.width = '100%';
-                    
-                    // Fix message alignment
-                    if (container.classList.contains('message-wrap')) {
-                        container.style.display = 'flex';
-                        container.style.alignItems = 'flex-start';
-                        container.style.marginBottom = '12px';
-                        container.style.width = '100%';
-                        
-                        if (container.classList.contains('user')) {
-                            // Keep user messages to the right, but avatar on left
-                            container.style.justifyContent = 'flex-end';
-                        } else {
-                            // Keep bot messages to the left
-                            container.style.justifyContent = 'flex-start';
-                        }
-                    }
-                });
-            });
-            
-            // Make the main chat container stable
-            document.querySelectorAll('.prose').forEach(prose => {
-                prose.style.width = '100%';
-                prose.style.maxWidth = '100%';
-            });
-            
-            // Ensure the chatbox container doesn't shift
-            document.querySelectorAll('.chatbox-container').forEach(box => {
-                box.style.margin = '0 auto';
-                box.style.width = '100%';
-            });
-            
-            // Make sure selection page avatars remain properly sized
+            // Make sure selection page avatars look right
             document.querySelectorAll('.avatar-container img').forEach(function(img) {
                 if (img.closest('.character-card')) {
                     img.style.display = 'block';
@@ -832,21 +729,9 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // Keep message bubbles properly styled
-            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
-                msg.style.borderRadius = '18px';
-                msg.style.padding = '12px 16px';
-                msg.style.maxWidth = '80%';
-                
-                if (msg.closest('.user')) {
-                    msg.style.backgroundColor = '#f7931e';
-                    msg.style.color = 'white';
-                    msg.style.borderBottomRightRadius = '4px';
-                } else {
-                    msg.style.backgroundColor = '#f1f1f1';
-                    msg.style.color = '#333';
-                    msg.style.borderBottomLeftRadius = '4px';
-                }
+            // Hide any model tags
+            document.querySelectorAll('.model-tag').forEach(function(tag) {
+                tag.style.display = 'none';
             });
             
             // Make character cards clickable
@@ -859,19 +744,14 @@ with gr.Blocks(css=custom_css) as demo:
                     }
                 });
             });
-            
-            // Hide model tags
-            document.querySelectorAll('.model-tag').forEach(function(tag) {
-                tag.style.display = 'none';
-            });
         }
         
         // Call fix function initially
-        fixChatStyles();
+        fixAvatars();
         
         // Set up mutation observer
         const observer = new MutationObserver(function(mutations) {
-            fixChatStyles();
+            fixAvatars();
         });
         
         // Observe DOM changes
@@ -881,7 +761,7 @@ with gr.Blocks(css=custom_css) as demo:
         });
         
         // Periodically call the fix function
-        setInterval(fixChatStyles, 500);
+        setInterval(fixAvatars, 1000);
     }
     """)
 
