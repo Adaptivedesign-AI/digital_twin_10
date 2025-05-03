@@ -522,6 +522,15 @@ img.avatar-image {
     display: flex !important;
     align-items: flex-start !important;
 }
+/* 修复用户消息气泡太靠头像的问题 */
+.gradio-chatbot .message-wrap.user > div:first-child {
+    margin-right: 10px !important;  /* user 头像与气泡间距 */
+}
+
+/* 修复机器人消息气泡离头像太远的问题 */
+.gradio-chatbot .message-wrap.bot > div:first-child {
+    margin-left: 10px !important;   /* bot 头像与气泡间距 */
+}
 """
 
 # --------------------------------------------
