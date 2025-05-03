@@ -481,46 +481,71 @@ img.avatar-image {
     padding: 0 !important;
 }
 
-/* Message bubble alignment fixes */
+/* Reset and simplify chat layout */
 .message-row, .message-wrap {
     display: flex !important;
     align-items: flex-start !important;
-    gap: 8px !important;  /* Reduce gap between avatar and bubble */
+    gap: 8px !important;
+    margin-bottom: 12px !important;
     width: 100% !important;
-    margin-bottom: 8px !important;
 }
 
-/* User message alignment */
 .message-row.user, .message-wrap.user {
-    flex-direction: row-reverse !important;
-    justify-content: flex-start !important;
+    flex-direction: row !important; /* Keep avatars on the left */
+    justify-content: flex-end !important; /* Push user messages to the right */
 }
 
-/* Bot message alignment */
 .message-row.bot, .message-wrap.bot {
-    flex-direction: row !important;
-    justify-content: flex-start !important;
+    flex-direction: row !important; /* Keep avatars on the left */
+    justify-content: flex-start !important; /* Keep bot messages to the left */
 }
 
-/* Message content positioning */
-.message-content {
-    margin: 0 !important;
+/* Clear fancy styling for avatar containers */
+.avatar-container {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* Message and bubble positioning */
-.message-bubble, .message {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+/* Standard avatar image size and style */
+img.avatar-image {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
 }
 
-/* Ensure messages stay close to avatars */
+/* Message bubble styling */
+.gradio-chatbot .message {
+    border-radius: 18px !important;
+    padding: 12px 16px !important;
+    margin: 0 !important;
+    max-width: 80% !important;
+}
+
 .gradio-chatbot .message.user {
-    margin-right: 8px !important;
+    background-color: #f7931e !important;
+    color: white !important;
+    border-bottom-right-radius: 4px !important;
 }
 
 .gradio-chatbot .message.bot {
-    margin-left: 8px !important;
+    background-color: #f1f1f1 !important;
+    color: #333 !important;
+    border-bottom-left-radius: 4px !important;
+}
+
+/* Force proper positioning for the message containers */
+.gradio-chatbot > div > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
 }
 
 /* Selection heading styling */
@@ -590,7 +615,7 @@ with gr.Blocks(css=custom_css) as demo:
                 name_display = gr.Markdown("Student Name")
                 model_display = gr.Markdown("", elem_classes="model-tag")  # Empty model display
             
-        # Chat area with avatars
+        # Chat area with avatars - use standard layout
         chatbot = gr.Chatbot(
             label="Conversation",
             avatar_images=("avatar/user.png", None),  # Will be updated dynamically
@@ -599,6 +624,7 @@ with gr.Blocks(css=custom_css) as demo:
             show_label=True,
             show_copy_button=True,
             bubble_full_width=False,
+            layout="bubble", # Explicitly set to bubble layout
         )
         
         # Input area with improved layout
@@ -703,58 +729,65 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to fix message bubble positioning
+    # JavaScript for a traditional chat layout with clean avatars
     demo.load(None, None, None, js="""
     function() {
-        // Define the style fix function
-        function fixChatStyles() {
-            // Fix avatar appearances
-            const avatarImages = document.querySelectorAll('img.avatar-image');
-            avatarImages.forEach(img => {
+        // Simplify the chat layout and fix avatar styling
+        function fixChatLayout() {
+            // Fix avatar appearance
+            document.querySelectorAll('img.avatar-image').forEach(img => {
+                img.style.width = '48px';
+                img.style.height = '48px';
+                img.style.borderRadius = '50%';
                 img.style.border = 'none';
                 img.style.boxShadow = 'none';
                 img.style.padding = '0';
                 img.style.margin = '0';
-                img.style.width = '48px';
-                img.style.height = '48px';
-                img.style.display = 'block';
-                img.style.borderRadius = '50%';
+                img.style.backgroundColor = 'transparent';
                 
-                // Set parent elements as well
-                if (img.parentElement) {
-                    img.parentElement.style.border = 'none';
-                    img.parentElement.style.boxShadow = 'none';
-                    img.parentElement.style.padding = '0';
-                    img.parentElement.style.margin = '0';
-                    img.parentElement.style.backgroundColor = 'transparent';
+                // Fix any parent containers
+                let parent = img.parentElement;
+                while (parent && !parent.classList.contains('gradio-chatbot')) {
+                    parent.style.border = 'none';
+                    parent.style.boxShadow = 'none';
+                    parent.style.padding = '0';
+                    parent.style.margin = '0';
+                    parent.style.backgroundColor = 'transparent';
+                    parent = parent.parentElement;
                 }
             });
             
-            // Fix message row and bubble positioning
-            document.querySelectorAll('.message-row, .message-wrap').forEach(row => {
-                row.style.display = 'flex';
-                row.style.alignItems = 'flex-start';
-                row.style.gap = '4px'; // Very small gap
-                row.style.width = '100%';
-                row.style.marginBottom = '8px';
+            // Apply standard bubble chat formatting
+            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
+                // For proper vertical alignment of messages
+                wrap.style.display = 'flex';
+                wrap.style.alignItems = 'flex-start';
+                wrap.style.gap = '8px';
+                wrap.style.marginBottom = '12px';
+                wrap.style.width = '100%';
                 
-                if (row.classList.contains('user')) {
-                    row.style.flexDirection = 'row-reverse';
-                    row.style.justifyContent = 'flex-start';
+                // Position user and bot messages differently
+                if (wrap.classList.contains('user')) {
+                    wrap.style.justifyContent = 'flex-end';
                 } else {
-                    row.style.flexDirection = 'row';
-                    row.style.justifyContent = 'flex-start';
+                    wrap.style.justifyContent = 'flex-start';
                 }
                 
-                // Style the actual message bubble
-                const messageBubble = row.querySelector('.message, .message-bubble');
-                if (messageBubble) {
-                    if (row.classList.contains('user')) {
-                        messageBubble.style.marginRight = '4px';
-                        messageBubble.style.marginLeft = 'auto';
+                // Style the actual message bubbles
+                const message = wrap.querySelector('.message');
+                if (message) {
+                    message.style.borderRadius = '18px';
+                    message.style.padding = '12px 16px';
+                    message.style.maxWidth = '80%';
+                    
+                    if (wrap.classList.contains('user')) {
+                        message.style.backgroundColor = '#f7931e';
+                        message.style.color = 'white';
+                        message.style.borderBottomRightRadius = '4px';
                     } else {
-                        messageBubble.style.marginLeft = '4px';
-                        messageBubble.style.marginRight = 'auto';
+                        message.style.backgroundColor = '#f1f1f1';
+                        message.style.color = '#333';
+                        message.style.borderBottomLeftRadius = '4px';
                     }
                 }
             });
@@ -766,23 +799,6 @@ with gr.Blocks(css=custom_css) as demo:
                     img.style.width = '100%';
                     img.style.height = '100%';
                     img.style.objectFit = 'cover';
-                }
-            });
-            
-            // Format message bubbles
-            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
-                msg.style.borderRadius = '18px';
-                msg.style.padding = '12px 16px';
-                msg.style.maxWidth = '80%';
-                
-                if (msg.classList.contains('user')) {
-                    msg.style.backgroundColor = '#f7931e';
-                    msg.style.color = 'white';
-                    msg.style.borderBottomRightRadius = '4px';
-                } else {
-                    msg.style.backgroundColor = '#f1f1f1';
-                    msg.style.color = '#333';
-                    msg.style.borderBottomLeftRadius = '4px';
                 }
             });
             
@@ -805,11 +821,11 @@ with gr.Blocks(css=custom_css) as demo:
         }
         
         // Call the fix function initially
-        fixChatStyles();
+        fixChatLayout();
         
         // Set up a mutation observer to watch for DOM changes
         const observer = new MutationObserver(function(mutations) {
-            fixChatStyles();
+            fixChatLayout();
         });
         
         // Start observing the entire document for changes
@@ -819,7 +835,7 @@ with gr.Blocks(css=custom_css) as demo:
         });
         
         // Also periodically call the fix function for reliability
-        setInterval(fixChatStyles, 1000);
+        setInterval(fixChatLayout, 1000);
     }
     """)
 
