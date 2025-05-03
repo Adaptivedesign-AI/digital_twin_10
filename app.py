@@ -577,7 +577,7 @@ with gr.Blocks(css=custom_css) as demo:
     # ── Selection page - Now with responsive 5-column grid like Character.ai ───────────────────────────
     with selection_page:
         with gr.Column(elem_classes="container"):
-            gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
+            gr.Markdown("# 🎓 Digital-Adolescent Chat Demo", elem_classes="main-title")
             gr.Markdown("### Choose a student to chat with", elem_classes="selection-heading")
             
             # Create a single responsive grid for all students - now 5 columns
