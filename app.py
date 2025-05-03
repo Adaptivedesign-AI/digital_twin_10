@@ -69,7 +69,7 @@ def chat(message, history, student_id, history_dict):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5",
+            model="gpt-4o-mini",
             messages=messages,
             temperature=0.7
         )
@@ -522,22 +522,6 @@ img.avatar-image {
     display: flex !important;
     align-items: flex-start !important;
 }
-
-/* NEW: MESSAGE BUBBLE ALIGNMENT FIXES - Critical fixes for message bubble alignment */
-.gradio-chatbot .message-wrap {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
-    margin-bottom: 12px !important;
-}
-
-.gradio-chatbot .message-wrap.bot {
-    margin-left: 12px !important;
-}
-
-.gradio-chatbot .message-wrap.user {
-    margin-right: 12px !important;
-}
 """
 
 # --------------------------------------------
@@ -680,220 +664,140 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to ensure avatars display correctly
     demo.load(None, None, None, js="""
     function() {
-        // 采用样式表注入方法，确保样式始终应用，优先级高
-        function injectChatStyles() {
-            // 创建新的样式元素
-            const styleElement = document.createElement('style');
-            styleElement.id = 'digital-twin-chat-fixes';
-            styleElement.innerHTML = `
-                /* 消息气泡容器对齐修复 */
-                .gradio-chatbot .message-wrap {
-                    display: flex !important;
-                    align-items: flex-start !important;
-                    gap: 8px !important;
-                    margin-bottom: 12px !important;
-                }
-                
-                /* 修复机器人消息的边距 */
-                .gradio-chatbot .message-wrap.bot {
-                    margin-left: 12px !important;
-                }
-                
-                /* 修复用户消息的边距 */
-                .gradio-chatbot .message-wrap.user {
-                    margin-right: 12px !important;
-                }
-
-                /* 确保消息气泡不会被Gradio样式覆盖 */
-                .gradio-chatbot .message {
-                    border-radius: 18px !important;
-                    padding: 12px 16px !important;
-                    max-width: 80% !important;
-                    display: inline-block !important;
-                }
-                
-                /* 用户消息样式 */
-                .gradio-chatbot .message.user {
-                    background-color: #f7931e !important;
-                    color: white !important;
-                    border-bottom-right-radius: 4px !important;
-                    margin-left: auto !important;
-                    margin-right: 0 !important;
-                }
-                
-                /* 机器人消息样式 */
-                .gradio-chatbot .message.bot {
-                    background-color: #f1f1f1 !important;
-                    color: #333 !important;
-                    border-bottom-left-radius: 4px !important;
-                    margin-right: auto !important;
-                    margin-left: 0 !important;
-                }
-                
-                /* 头像修复 */
-                .gradio-container .prose img.avatar-image {
-                    width: 48px !important;
-                    height: 48px !important;
-                    border-radius: 50% !important;
-                    border: none !important;
-                    box-shadow: none !important;
-                }
-                
-                /* 确保头像容器样式正确 */
-                .message-wrap > div:first-child {
-                    background-color: transparent !important;
-                    border: none !important;
-                    box-shadow: none !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                }
-            `;
+        // Define the style fix function
+        function fixAvatarStyles() {
+            // Find all avatar images and containers
+            const avatarImages = document.querySelectorAll('img.avatar-image');
+            const avatarContainers = document.querySelectorAll('.avatar-container, [class*="message"] .svelte-1y9ctm5');
             
-            // 如果已经存在，先移除旧的
-            const existingStyle = document.getElementById('digital-twin-chat-fixes');
-            if (existingStyle) {
-                existingStyle.remove();
-            }
-            
-            // 添加到文档头部
-            document.head.appendChild(styleElement);
-        }
-        
-        // 直接修复样式的备用方法
-        function fixMessageStyles() {
-            // 消息容器修复
-            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
-                wrap.style.cssText = `
-                    display: flex !important;
-                    align-items: flex-start !important;
-                    gap: 8px !important;
-                    margin-bottom: 12px !important;
-                `;
+            // Fix avatar images
+            avatarImages.forEach(img => {
+                img.style.border = 'none';
+                img.style.boxShadow = 'none';
+                img.style.padding = '0';
+                img.style.margin = '0';
+                img.style.width = '48px';
+                img.style.height = '48px';
+                img.style.display = 'block';
+                img.style.borderRadius = '50%';
+                
+                // Set parent elements as well
+                if (img.parentElement) {
+                    img.parentElement.style.border = 'none';
+                    img.parentElement.style.boxShadow = 'none';
+                    img.parentElement.style.padding = '0';
+                    img.parentElement.style.margin = '0';
+                    img.parentElement.style.backgroundColor = 'transparent';
+                }
             });
             
-            // 机器人消息容器
-            document.querySelectorAll('.gradio-chatbot .message-wrap.bot').forEach(msg => {
-                msg.style.cssText += `
-                    margin-left: 12px !important;
-                `;
+            // Fix avatar containers
+            avatarContainers.forEach(container => {
+                container.style.border = 'none';
+                container.style.boxShadow = 'none';
+                container.style.backgroundColor = 'transparent';
+                container.style.padding = '0';
+                container.style.margin = '0';
             });
             
-            // 用户消息容器
-            document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(msg => {
-                msg.style.cssText += `
-                    margin-right: 12px !important;
-                `;
+            // Find any element with class containing 'message'
+            document.querySelectorAll('[class*="message"]').forEach(el => {
+                // Find possible avatar containers within messages
+                const possibleContainers = el.querySelectorAll('div:first-child');
+                possibleContainers.forEach(container => {
+                    if (container.querySelector('img')) {
+                        container.style.border = 'none';
+                        container.style.boxShadow = 'none';
+                        container.style.backgroundColor = 'transparent';
+                        container.style.padding = '0';
+                        container.style.margin = '0';
+                    }
+                });
             });
             
-            // 消息气泡样式
-            document.querySelectorAll('.gradio-chatbot .message').forEach(msg => {
-                msg.style.cssText = `
-                    border-radius: 18px !important;
-                    padding: 12px 16px !important;
-                    max-width: 80% !important;
-                    display: inline-block !important;
-                    margin-top: 5px !important;
-                    word-wrap: break-word !important;
-                `;
+            // Make sure selection page avatars remain properly sized and visible
+            document.querySelectorAll('.avatar-container img').forEach(function(img) {
+                if (img.closest('.character-card')) {
+                    img.style.display = 'block';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                }
+            });
+            
+            // Format message bubbles
+            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
+                msg.style.borderRadius = '18px';
+                msg.style.padding = '12px 16px';
+                msg.style.maxWidth = '80%';
                 
                 if (msg.classList.contains('user')) {
-                    msg.style.cssText += `
-                        background-color: #f7931e !important;
-                        color: white !important;
-                        border-bottom-right-radius: 4px !important;
-                        margin-left: auto !important;
-                        margin-right: 0 !important;
-                    `;
+                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.color = 'white';
+                    msg.style.borderBottomRightRadius = '4px';
                 } else {
-                    msg.style.cssText += `
-                        background-color: #f1f1f1 !important;
-                        color: #333 !important;
-                        border-bottom-left-radius: 4px !important;
-                        margin-right: auto !important;
-                        margin-left: 0 !important;
-                    `;
+                    msg.style.backgroundColor = '#f1f1f1';
+                    msg.style.color = '#333';
+                    msg.style.borderBottomLeftRadius = '4px';
                 }
             });
             
-            // 头像样式修复
-            document.querySelectorAll('img.avatar-image').forEach(img => {
-                img.style.cssText = `
-                    width: 48px !important;
-                    height: 48px !important;
-                    border-radius: 50% !important;
-                    border: none !important;
-                    box-shadow: none !important;
-                    background-color: transparent !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    display: block !important;
-                `;
-                
-                if (img.parentElement) {
-                    img.parentElement.style.cssText = `
-                        border: none !important;
-                        box-shadow: none !important;
-                        background-color: transparent !important;
-                        padding: 0 !important;
-                        margin: 0 !important;
-                    `;
-                }
-            });
-            
-            // 卡片样式修复
-            document.querySelectorAll('.character-card').forEach(card => {
+            // Make character cards clickable (entire card, not just button)
+            document.querySelectorAll('.character-card').forEach(function(card) {
                 card.style.cursor = 'pointer';
-                
-                // 添加点击事件，让整个卡片可点击
                 card.addEventListener('click', function(e) {
+                    // Find and click the button within this card
                     const button = this.querySelector('.chat-btn');
                     if (button && e.target !== button) {
                         button.click();
                     }
                 });
             });
-        }
-        
-        // 定义修复函数 - 结合两种方法以确保最大兼容性
-        function applyAllFixes() {
-            injectChatStyles();  // 样式表注入方法
-            fixMessageStyles();  // 直接样式修复方法
             
-            console.log('聊天界面样式修复已应用');
+            // Hide any model tags that might appear
+            document.querySelectorAll('.model-tag').forEach(function(tag) {
+                tag.style.display = 'none';
+            });
+            
+            // Fix message bubble alignment - THIS IS THE IMPORTANT FIX
+            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
+                // Ensure consistent alignment for all messages
+                wrap.style.display = "flex";
+                wrap.style.alignItems = "flex-start";
+                wrap.style.gap = "8px"; // Controls spacing between avatar and message
+            });
+            
+            // Set specific margins for bot and user messages
+            document.querySelectorAll('.gradio-chatbot .message-wrap.bot').forEach(msg => {
+                msg.style.marginLeft = "12px"; // Reduced from 58px
+            });
+            document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(msg => {
+                msg.style.marginRight = "12px"; // Reduced from 58px
+            });
         }
         
-        // 初始执行样式修复
-        applyAllFixes();
+        // Call the fix function initially
+        fixAvatarStyles();
         
-        // 设置 MutationObserver 监听 DOM 变化
-        const observer = new MutationObserver(mutations => {
-            applyAllFixes();
+        // Set up a mutation observer to watch for DOM changes
+        const observer = new MutationObserver(function(mutations) {
+            fixAvatarStyles();
         });
         
-        // 页面加载后，开始监听 DOM 变化
-        setTimeout(() => {
-            observer.observe(document.body, {
-                childList: true, 
-                subtree: true,
-                attributes: true,
-                attributeFilter: ['style', 'class']
-            });
-        }, 100);
+        // Start observing the entire document for changes
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
         
-        // 每300毫秒定期执行修复函数，确保样式一致性
-        const fixInterval = setInterval(applyAllFixes, 300);
-        
-        // 在窗口大小变化时也应用修复
-        window.addEventListener('resize', applyAllFixes);
-        
-        // 创建辅助函数，用于强制修复样式（供用户在控制台使用）
-        window.fixChatStyles = applyAllFixes;
-        
-        // 返回清理函数（非必要，但是好习惯）
-        return () => {
-            clearInterval(fixInterval);
-            observer.disconnect();
-            window.removeEventListener('resize', applyAllFixes);
-        };
+        // Also periodically call the fix function for reliability
+        setInterval(fixAvatarStyles, 1000);
     }
     """)
+
+# Run the application
+if __name__ == "__main__":
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=int(os.environ.get("PORT", 7860))
+    )
