@@ -226,22 +226,21 @@ body {
     display: none;
 }
 
-/* Avatar styling in selection cards - square avatars */
+/* Avatar styling in selection cards - simple square styling */
 .avatar-container {
     width: 80px!important;
     height: 80px!important;
-    border-radius: 6px!important;  /* slight rounding on corners */
     overflow: hidden!important;
-    display: block !important;
-    margin: 10px auto !important;
-    position: relative !important;
+    margin: 10px auto!important;
+    border: 1px solid #e0e0e0!important;
+    border-radius: 8px!important;
 }
 
 .avatar-container img {
     width: 100%!important;
     height: 100%!important;
     object-fit: cover!important;
-    display: block !important;
+    display: block!important;
 }
 
 /* Chat button styling */
@@ -516,7 +515,7 @@ with gr.Blocks(css=custom_css) as demo:
                 send_btn = gr.Button("Send", elem_classes="send-btn")
                 clear_btn = gr.Button("Clear", elem_classes="clear-btn")
     
-            # ── Selection page - Now with responsive 5-column grid like Character.ai ───────────────────────────
+    # ── Selection page - Now with responsive 5-column grid like Character.ai ───────────────────────────
     with selection_page:
         with gr.Column(elem_classes="container"):
             gr.Markdown("# 🎓 Digital-Twin Chat Demo", elem_classes="main-title")
@@ -531,14 +530,12 @@ with gr.Blocks(css=custom_css) as demo:
                     with gr.Column(elem_classes="character-card"):
                         gr.Markdown("Digital Twin", elem_classes="card-header")
                         
-                        # Display avatar image with explicit height/width
-                        with gr.Box(elem_classes="avatar-container"):
+                        # Avatar container - simple column
+                        with gr.Column(elem_classes="avatar-container"):
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
-                                elem_classes="avatar-img",
-                                height=80,
-                                width=80
+                                elem_classes="avatar-img"
                             )
                             
                         gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
