@@ -758,12 +758,21 @@ with gr.Blocks(css=custom_css) as demo:
             document.querySelectorAll('.model-tag').forEach(function(tag) {
                 tag.style.display = 'none';
             });
-            // ✅ 修复消息框与头像距离
+            
+            // Fix message bubble alignment - THIS IS THE IMPORTANT FIX
+            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
+                // Ensure consistent alignment for all messages
+                wrap.style.display = "flex";
+                wrap.style.alignItems = "flex-start";
+                wrap.style.gap = "8px"; // Controls spacing between avatar and message
+            });
+            
+            // Set specific margins for bot and user messages
             document.querySelectorAll('.gradio-chatbot .message-wrap.bot').forEach(msg => {
-              msg.style.marginLeft = "58px";
+                msg.style.marginLeft = "12px"; // Reduced from 58px
             });
             document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(msg => {
-              msg.style.marginRight = "58px";
+                msg.style.marginRight = "12px"; // Reduced from 58px
             });
         }
         
