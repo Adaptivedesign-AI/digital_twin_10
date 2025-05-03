@@ -346,27 +346,33 @@ body {
     margin-bottom: 20px;
 }
 
-/* EVEN SMALLER AVATARS - now 12px instead of 20px */
+/* EVEN SMALLER AVATARS - now 8px instead of 12px */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 8px !important;
+    height: 8px !important;
     border-radius: 50% !important;
-    margin-right: 6px !important;
-    margin-top: 4px !important;
+    margin-right: 4px !important;
+    margin-top: 2px !important;
     flex-shrink: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
 }
 
 /* Make sure the avatars are visible and styled correctly with tiny size */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 8px !important;
+    height: 8px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 6px !important;
+    margin-right: 4px !important;
     flex-shrink: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    background-color: transparent !important;
 }
 
 /* Character.ai style chat bubbles */
@@ -419,8 +425,21 @@ body {
     display: inline-block !important;
     margin: 0 !important;
     border-radius: 50% !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 8px !important;
+    height: 8px !important;
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* Remove border boxes around avatar containers */
+.gradio-chatbot .avatar-container,
+.gradio-chatbot .message-wrap .avatar-container {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* Selection heading styling */
@@ -607,14 +626,27 @@ with gr.Blocks(css=custom_css) as demo:
     function() {
         // Keep checking and fixing the UI elements periodically
         setInterval(function() {
-            // Ensure chat avatars are visible but TINY (12px)
+            // Ensure chat avatars are visible but TINY (8px) without any border/box
             document.querySelectorAll('.gradio-chatbot .avatar').forEach(function(avatar) {
                 avatar.style.display = 'inline-block';
-                avatar.style.width = '12px';
-                avatar.style.height = '12px';
+                avatar.style.width = '8px';
+                avatar.style.height = '8px';
                 avatar.style.borderRadius = '50%';
-                avatar.style.marginRight = '6px';
-                avatar.style.marginTop = '4px';
+                avatar.style.marginRight = '4px';
+                avatar.style.marginTop = '2px';
+                avatar.style.border = 'none';
+                avatar.style.padding = '0';
+                avatar.style.boxShadow = 'none';
+                avatar.style.backgroundColor = 'transparent';
+                
+                // Look for parent elements that might be adding boxes and remove them
+                let parent = avatar.parentElement;
+                if (parent) {
+                    parent.style.border = 'none';
+                    parent.style.backgroundColor = 'transparent';
+                    parent.style.boxShadow = 'none';
+                    parent.style.padding = '0';
+                }
             });
             
             // Make sure selection page avatars are properly sized and visible
@@ -657,6 +689,18 @@ with gr.Blocks(css=custom_css) as demo:
             // Hide any model tags that might appear
             document.querySelectorAll('.model-tag').forEach(function(tag) {
                 tag.style.display = 'none';
+            });
+            
+            // Remove borders and boxes around avatar images in chatbot
+            document.querySelectorAll('.gradio-chatbot img.avatar-image').forEach(function(img) {
+                img.style.border = 'none';
+                img.style.boxShadow = 'none';
+                var parent = img.parentElement;
+                if (parent) {
+                    parent.style.backgroundColor = 'transparent';
+                    parent.style.border = 'none';
+                    parent.style.boxShadow = 'none';
+                }
             });
         }, 500);
     }
