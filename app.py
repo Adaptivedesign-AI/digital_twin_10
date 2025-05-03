@@ -69,7 +69,7 @@ def chat(message, history, student_id, history_dict):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-3.5",
             messages=messages,
             temperature=0.7
         )
