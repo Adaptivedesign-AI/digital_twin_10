@@ -420,19 +420,19 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
 
-/* Override default gradio chatbot styling for tiny avatars */
+/* Override default gradio chatbot styling for avatars */
 .gradio-container .prose img.avatar-image {
     display: inline-block !important;
     margin: 0 !important;
     border-radius: 50% !important;
-    width: 8px !important;
-    height: 8px !important;
+    width: 48px !important;
+    height: 48px !important;
     border: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
 }
 
-/* Additional CSS to remove avatar boxes */
+/* Additional CSS to remove avatar boxes but keep larger avatar size */
 .avatar-container {
     background-color: transparent !important;
     border: none !important;
@@ -443,8 +443,8 @@ body {
 
 .message-row .avatar-image, 
 .message-wrap .avatar-image {
-    width: 24px !important;
-    height: 24px !important;
+    width: 48px !important;
+    height: 48px !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -676,8 +676,8 @@ with gr.Blocks(css=custom_css) as demo:
                 img.style.boxShadow = 'none';
                 img.style.padding = '0';
                 img.style.margin = '0';
-                img.style.width = '24px';
-                img.style.height = '24px';
+                img.style.width = '48px';
+                img.style.height = '48px';
                 img.style.display = 'block';
                 img.style.borderRadius = '50%';
                 
