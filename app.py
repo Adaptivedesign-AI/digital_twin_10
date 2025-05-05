@@ -2,7 +2,7 @@ import gradio as gr
 import json
 import os
 from openai import OpenAI
-from custom_css import custom_css.py
+from custom_css import custom_css
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
