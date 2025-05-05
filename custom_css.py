@@ -459,4 +459,13 @@ body {
     box-shadow: none !important;
     border: none !important;
 }
+
+/* 更强匹配 */
+div[class*="image-actions"] {
+    display: none !important;
+}
+
+button[aria-label="Download"], button[aria-label="Fullscreen"] {
+    display: none !important;
+}
 """
