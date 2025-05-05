@@ -1,4 +1,3 @@
-# Enhanced CSS for better UI with updated color scheme and design
 custom_css = """
 /* Global styles for the entire application */
 body {
@@ -111,7 +110,7 @@ body {
 }
 
 /* Avatar styling - updated with circular design */
-.avatar-container {
+.character-card .avatar-container {
     width: 120px!important;
     height: 120px!important;
     overflow: hidden!important;
@@ -121,7 +120,7 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
 }
 
-.avatar-container img {
+.character-card .avatar-container img {
     width: 100%!important;
     height: 100%!important;
     object-fit: cover!important;
@@ -154,23 +153,36 @@ body {
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid #e0e0e0;
-    background-color: #f8f9fa;
+    background-color: #094067;
+    color: white;
+    border-radius: 12px 12px 0 0;
 }
 
 .back-btn {
-    background-color: #f5f5f5 !important;
-    border: 1px solid #ddd !important;
-    color: #555 !important;
+    background-color: transparent !important;
+    border: 1px solid #fffffe !important;
+    color: #fffffe !important;
     border-radius: 5px !important;
+    padding: 5px 10px !important;
     margin-right: 15px !important;
     margin-left: 0 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+.back-btn:hover {
+    background-color: rgba(255,255,255,0.1) !important;
 }
 
 /* Input and buttons styling for better aesthetics */
-.message-input {
+.message-input textarea {
+    background-color: #fffffe !important;
+    border: 1px solid #90b4ce !important;
     border-radius: 20px !important;
-    padding: 10px 15px !important;
-    border: 1px solid #e0e0e0 !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    color: #094067 !important;
+    resize: none !important;
 }
 
 /* Button container for vertical layout */
@@ -183,20 +195,34 @@ body {
 
 .send-btn {
     background-color: #3da9fc !important;
-    color: white !important;
-    border: none !important;
+    color: #fffffe !important;
+    font-weight: bold !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
     width: 100% !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+.send-btn:hover {
+    background-color: #2a93e0 !important;
 }
 
 .clear-btn {
-    background-color: #f0f0f0 !important;
-    color: #555 !important;
-    border: 1px solid #ddd !important;
+    background-color: #094067 !important;
+    color: #fffffe !important;
+    font-weight: bold !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
     width: 100% !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+.clear-btn:hover {
+    background-color: #073050 !important;
 }
 
 /* Character info styling in chat - simplified header without avatar */
@@ -209,9 +235,11 @@ body {
 
 /* Student name styling in header */
 .student-name-header {
-    font-size: 22px;
-    font-weight: bold;
-    margin: 0;
+    color: #fffffe !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    margin: 0 auto !important;
+    text-align: center !important;
 }
 
 /* Model display styling - hidden by default */
@@ -222,7 +250,7 @@ body {
 /* Character.ai style chat container */
 .character-ai-style {
     border-radius: 12px;
-    background-color: white;
+    background-color: #d8eefe !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -233,91 +261,77 @@ body {
 }
 
 /* Chat avatar styling */
-.gradio-chatbot .avatar {
-    display: block !important;
-    width: 32px !important;
-    height: 32px !important;
+.gradio-chatbot .avatar img {
+    width: 48px !important;
+    height: 48px !important;
     border-radius: 50% !important;
-    margin-right: 8px !important;
-    margin-top: 2px !important;
-    flex-shrink: 0 !important;
-    border: 1px solid #e0e0e0 !important;
-    background-color: transparent !important;
-    overflow: hidden !important;
+    border: 2px solid #094067 !important;
+    object-fit: cover !important;
 }
 
 /* Ensure avatars are visible and styled correctly */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 32px !important;
-    height: 32px !important;
+    width: 48px !important;
+    height: 48px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     margin-right: 8px !important;
     flex-shrink: 0 !important;
     box-shadow: none !important;
-    border: 1px solid #e0e0e0 !important;
+    border: 2px solid #094067 !important;
     padding: 0 !important;
     background-color: transparent !important;
 }
 
-/* Character.ai style chat bubbles */
-.gradio-chatbot .message {
-    border-radius: 18px !important;
-    padding: 12px 16px !important;
-    margin: 0 !important;
-    line-height: 1.5 !important;
-    max-width: 80% !important;
-    display: inline-block !important;
-    margin-top: 5px !important;
-    word-wrap: break-word !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-}
-
-/* User message styling with updated brand color */
-.gradio-chatbot .message.user {
-    background-color: #3da9fc !important;
-    color: white !important;
-    border-bottom-right-radius: 4px !important;
-    margin-left: auto !important;
-}
-
-/* Bot message styling with light background */
+/* Chat bubbles: AI is blue, user is white */
 .gradio-chatbot .message.bot {
-    background-color: #f1f1f1 !important;
-    color: #333 !important;
-    border-bottom-left-radius: 4px !important;
+    background-color: #3da9fc !important;
+    color: #fffffe !important;
+    border-bottom-left-radius: 6px !important;
+    border-top-left-radius: 18px !important;
+    border-top-right-radius: 18px !important;
+    border-bottom-right-radius: 18px !important;
+    margin-left: 12px !important;
     margin-right: auto !important;
+    max-width: 80%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    padding: 12px 16px !important;
+    word-wrap: break-word !important;
+}
+
+.gradio-chatbot .message.user {
+    background-color: #fffffe !important;
+    color: #094067 !important;
+    border-bottom-right-radius: 6px !important;
+    border-top-left-radius: 18px !important;
+    border-top-right-radius: 18px !important;
+    border-bottom-left-radius: 18px !important;
+    margin-right: 12px !important;
+    margin-left: auto !important;
+    max-width: 80%;
+    border: 1px solid #90b4ce !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    padding: 12px 16px !important;
+    word-wrap: break-word !important;
+}
+
+/* Chat area overall background (light blue) */
+.character-ai-style.chatbox-container {
+    background-color: #d8eefe !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
 }
 
 /* Emotion tag styling for emotional context */
 .emotion-tag {
-    font-style: italic;
-    display: block;
-    margin-top: 5px;
-    color: #888;
-    font-size: 0.9em;
-}
-
-/* Custom styling for chat container to match Character.ai */
-.chatbox-container {
-    padding: 20px !important;
-    background-color: #fff !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
-}
-
-/* Override default gradio chatbot styling for avatars */
-.gradio-container .prose img.avatar-image {
-    display: inline-block !important;
-    margin: 0 !important;
-    border-radius: 50% !important;
-    width: 32px !important;  /* Smaller avatar size in chat */
-    height: 32px !important; /* Smaller avatar size in chat */
-    border: none !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
+    font-style: italic !important;
+    font-size: 12px !important;
+    color: #666 !important;
+    margin-top: 4px !important;
+    display: block !important;
 }
 
 /* Project description styling */
@@ -332,74 +346,23 @@ body {
     font-style: italic;
 }
 
-/* Selection page avatar containers - keep larger size with border */
-.character-card .avatar-container {
-    background-color: transparent !important;
-    border: 2px solid #094067 !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-    padding: 0 !important;
-    border-radius: 50% !important;
-    width: 120px !important;
-    height: 120px !important;
-    margin: 15px auto !important;
-}
-
-/* Chat avatar containers - smaller with subtle styling */
+/* Chat avatar containers */
 .gradio-chatbot .avatar-container {
-    background-color: transparent !important;
-    border: 1px solid #e0e0e0 !important;
-    box-shadow: none !important;
-    padding: 0 !important;
+    width: 48px !important;
+    height: 48px !important;
     border-radius: 50% !important;
-    width: 32px !important;
-    height: 32px !important;
-    margin: 2px !important;
-}
-
-.message-row .avatar-image, 
-.message-wrap .avatar-image {
-    width: 32px !important;
-    height: 32px !important;
-    padding: 0 !important;
+    overflow: hidden !important;
+    border: 2px solid #094067 !important;
     margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    display: block !important;
+    padding: 0 !important;
+    background-color: transparent !important;
 }
 
-/* Target specific avatar container in messages */
-.message-row > .svelte-1y9ctm5,
-.message-wrap > .svelte-1y9ctm5 {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 32px !important;
-    height: 32px !important;
-}
-
-/* Target avatar in message bubbles */
-.message-bubble .avatar-container,
-.message .avatar-container {
-    background: transparent !important;
-    border: 1px solid #e0e0e0 !important;
-    padding: 0 !important;
-    margin: 2px !important;
-    box-shadow: none !important;
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-}
-
-/* Disable rectangular borders around avatar images */
-img.avatar-image {
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    background: transparent !important;
-    padding: 0 !important;
+/* Ensure proper message wrapping and alignment */
+.gradio-chatbot .message-wrap {
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: flex-start !important;
 }
 
 /* Selection heading styling for clear hierarchy */
@@ -434,14 +397,9 @@ img.avatar-image {
     text-align: center;
 }
 
-/* Add more whitespace around messages for readability */
-.gradio-chatbot .message-wrap {
-    margin-bottom: 10px !important;
-}
-
-/* Adjust spacing for better alignment with tiny avatars */
-.gradio-chatbot .message-wrap > div {
-    display: flex !important;
-    align-items: flex-start !important;
+/* Input row: transparent background, vertically centered */
+.gradio-container .row {
+    background-color: transparent !important;
+    align-items: center !important;
 }
 """
