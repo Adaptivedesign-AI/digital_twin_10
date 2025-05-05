@@ -427,6 +427,43 @@ body {
     text-align: center;
 }
 
+/* 对话框中头像容器放大 */
+.message-wrap > div:first-child {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 2px solid #094067 !important;
+    flex-shrink: 0 !important;
+}
+
+/* 对话框中头像图片放大 */
+.message-wrap > div:first-child img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block !important;
+}
+
+.card-header,
+.card-header * {
+    color: white !important;
+    font-weight: 900 !important;
+    font-size: 16px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    background-color: #094067 !important;
+    padding: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* 强制隐藏所有图片上的放大和下载按钮 */
+.gr-image-actions,
+.gr-image-actions * {
+    display: none !important;
+}
+
 /* Input row: transparent background, vertically centered */
 .gradio-container .row {
     background-color: #e5e5e5 !important;  /* 或你想要的灰色 */
