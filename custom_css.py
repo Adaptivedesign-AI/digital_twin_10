@@ -468,4 +468,13 @@ div[class*="image-actions"] {
 button[aria-label="Download"], button[aria-label="Fullscreen"] {
     display: none !important;
 }
+
+/* 强力隐藏所有放大/下载按钮 */
+div[class*="image-actions"],
+div[class*="image-actions"] * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
 """
