@@ -176,7 +176,7 @@ custom_css = """
 /* Global styles with light blue background */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #e6f2ff; /* Light blue background */
+    background-color: #d8eefe; /* Light blue background */
 }
 
 /* Container for main content with light blue background */
@@ -184,7 +184,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
-    background-color: #e6f2ff;
+    background-color: #d8eefe;
 }
 
 /* Header container styling */
@@ -192,7 +192,7 @@ body {
     display: flex;
     align-items: center;
     width: 100%;
-    background-color: #094067; /* Navy blue from the palette */
+    background-color: #d8eefe; /* Navy blue from the palette */
     border-radius: 8px 8px 0 0;
     padding: 0;
     margin: 0;
@@ -229,7 +229,7 @@ body {
 .selection-heading {
     text-align: center;
     margin: 20px 0 10px;
-    color: #094067; /* Navy blue */
+    color: #d8eefe; /* Navy blue */
     font-size: 20px;
 }
 
@@ -280,7 +280,7 @@ body {
 
 /* Card styling with navy theme */
 .character-card {
-    background: #094067; /* Navy blue */
+    background: #d8eefe; /* Navy blue */
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -380,7 +380,7 @@ body {
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid #90b4ce;
-    background-color: #094067; /* Navy blue */
+    background-color: #d8eefe; /* Navy blue */
     color: #fffffe; /* White text */
     border-radius: 8px 8px 0 0;
 }
@@ -516,7 +516,7 @@ body {
 /* Bot message styling with light background */
 .gradio-chatbot .message.bot {
     background-color: #fffffe !important; /* White background */
-    color: #094067 !important; /* Navy text */
+    color: #d8eefe !important; /* Navy text */
     border-bottom-left-radius: 4px !important;
     margin-right: auto !important;
     border: 1px solid #90b4ce !important; /* Secondary color border */
@@ -534,7 +534,7 @@ body {
 /* Custom styling for chat container */
 .chatbox-container {
     padding: 20px !important;
-    background-color: #e6f2ff !important; /* Light blue background */
+    background-color: #d8eefe !important; /* Light blue background */
     border-radius: 12px !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
