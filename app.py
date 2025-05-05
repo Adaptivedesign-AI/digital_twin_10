@@ -633,6 +633,79 @@ img.avatar-image {
 .main-title {
     display: none !important;
 }
+/* 聊天头像：圆形 + 深蓝边框 */
+.gradio-chatbot .avatar img {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    border: 2px solid #094067 !important;
+    object-fit: cover !important;
+}
+
+/* 聊天气泡：AI 的为蓝色，用户为白色 */
+.gradio-chatbot .message.bot {
+    background-color: #3da9fc !important;
+    color: #fffffe !important;
+    border-bottom-left-radius: 6px !important;
+    border-top-left-radius: 18px !important;
+    border-top-right-radius: 18px !important;
+    margin-left: 12px !important;
+    margin-right: auto !important;
+    max-width: 80%;
+}
+
+.gradio-chatbot .message.user {
+    background-color: #fffffe !important;
+    color: #094067 !important;
+    border-bottom-right-radius: 6px !important;
+    border-top-left-radius: 18px !important;
+    border-top-right-radius: 18px !important;
+    margin-right: 12px !important;
+    margin-left: auto !important;
+    max-width: 80%;
+    border: 1px solid #90b4ce !important;
+}
+
+/* 聊天区整体背景色（浅蓝） */
+.character-ai-style.chatbox-container {
+    background-color: #d8eefe !important;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* 聊天输入区样式 */
+.message-input textarea {
+    background-color: #fffffe !important;
+    border: 1px solid #90b4ce !important;
+    border-radius: 20px !important;
+    padding: 12px 16px !important;
+    font-size: 14px;
+    color: #094067;
+    resize: none !important;
+}
+
+/* 输入框所在行：无背景、垂直居中 */
+.gradio-container .row {
+    background-color: transparent !important;
+}
+
+/* 发送按钮 */
+.send-btn {
+    background-color: #3da9fc !important;
+    color: #fffffe !important;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
+/* 清除按钮 */
+.clear-btn {
+    background-color: #094067 !important;
+    color: #fffffe !important;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
 """
 
 # --------------------------------------------
@@ -694,7 +767,6 @@ with gr.Blocks(css=custom_css) as demo:
                         value="avatar/brain_with_title.png",
                         show_label=False,
                         interactive=False,
-                        tool=None,  
                         elem_classes="title-image no-interaction"  
                     )   
             
