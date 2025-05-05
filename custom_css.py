@@ -267,15 +267,21 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* Custom styling for chat rows */
-.chatbot-row {
-    display: flex;
-    margin-bottom: 20px;
+/* 强制修复 avatar 尺寸（适用于 chat 中的 bot/user） */
+.gradio-chatbot .message-wrap .avatar {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 2px solid #094067 !important;
+    background-color: transparent !important;
+    margin: 0 10px !important;
+    flex-shrink: 0 !important;
 }
 
-/* Chat avatar styling */
-.gradio-chatbot .avatar img,
-.gradio-chatbot img.avatar-image {
+/* 让头像图片自动填满容器 */
+.gradio-chatbot .message-wrap .avatar img,
+.gradio-chatbot .avatar img.avatar-image {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
@@ -284,21 +290,14 @@ body {
     border: none !important;
 }
 
-/* Ensure avatars are visible and styled correctly */
-.gradio-chatbot .message-wrap.user .avatar,
-.gradio-chatbot .message-wrap.bot .avatar {
-    display: inline-block !important;
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    margin-right: 8px !important;
-    flex-shrink: 0 !important;
-    box-shadow: none !important;
-    border: 2px solid #094067 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
+/* Custom styling for chat rows */
+.chatbot-row {
+    display: flex;
+    margin-bottom: 20px;
 }
+
+
+
 
 /* Chat bubbles: AI is blue, user is white */
 .gradio-chatbot .message.bot {
@@ -361,17 +360,7 @@ body {
     font-style: italic;
 }
 
-/* Chat avatar containers */
-.gradio-chatbot .avatar-container {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    border: 2px solid #094067 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
+
 
 /* Ensure proper message wrapping and alignment */
 .gradio-chatbot .message-wrap {
