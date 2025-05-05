@@ -75,11 +75,14 @@ body {
 
 .card-header {
     background-color: #094067;
-    color: white;
+    color: white !important;
     padding: 10px;
     text-align: center;
-    font-weight: bold;
-    font-size: 16px;
+    font-weight: 900 !important; /* Maximum bold weight */
+    font-size: 18px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 /* Student info styling - compact and readable */
