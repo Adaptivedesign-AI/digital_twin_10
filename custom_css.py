@@ -187,6 +187,7 @@ body {
     font-size: 14px !important;
     color: #094067 !important;
     resize: none !important;
+    height: 100px !important;
 }
 
 /* Button container for vertical layout */
@@ -405,5 +406,11 @@ body {
 .gradio-container .row {
     background-color: transparent !important;
     align-items: center !important;
+}
+
+.character-ai-style.chatbox-container + .gr-box {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 """
