@@ -1,83 +1,28 @@
-# 定义自定义CSS样式
+# Enhanced CSS for better UI with updated color scheme and design
 custom_css = """
-/* Global styles with light blue background */
+/* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #d8eefe;
+    background-color: #f9f9f9;
 }
 
-/* Hide the hover overlay and buttons for image viewer */
-.no-interaction .svelte-1ipelgc,
-.no-interaction .svelte-1ipelgc > button,
-.no-interaction .download, 
-.no-interaction .expand {
-    display: none !important;
-}
-
-/* Ensure the image is shown with transparent background */
-.title-image img {
-    background-color: transparent !important;
-    box-shadow: none !important;
-}
-
-/* Container for main content with light blue background */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    background-color: #d8eefe;
-}
-
-/* Header container styling */
-.header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: #d8eefe;
-    border-radius: 8px 8px 0 0;
-    padding: 15px 0;
+/* Header styling with updated brand color */
+.main-title {
+    background-color: #094067;
+    color: white;
+    padding: 15px;
     margin: 0;
-}
-
-/* Combined logo and title image container */
-.logo-title-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-/* Title image styling */
-.title-image {
-    max-width: 80%;
-    height: auto;
-    margin: 0 auto;
-}
-
-/* Selection heading styling */
-.selection-heading {
     text-align: center;
-    margin: 20px 0 10px;
-    color: #094067;
-    font-size: 20px;
-}
-
-/* Description text styling */
-.description-text {
-    text-align: center;
-    margin: 10px auto 20px;
-    max-width: 800px;
-    color: #094067;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0;
 }
 
 /* Character.ai style grid for selection page - 5 columns by default */
 .character-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
+    gap: 20px;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
@@ -108,356 +53,395 @@ body {
     }
 }
 
-.character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
-}
-
-.character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
-}
-
-/* 更广泛的卡片头部选择器 - 确保名字显示为白色加粗 */
-.card-header,
-.character-card > div:first-child,
-.character-card > div:first-of-type,
-.character-card > .markdown-text > h3,
-.character-card > .markdown-text > p:first-child,
-.character-card .markdown-text,
-.character-grid .character-card > div:nth-child(1) {
-    background-color: #094067 !important;
-    color: #fffffe !important; /* 纯白色文字 */
-    padding: 10px !important;
-    text-align: center !important;
-    font-weight: bold !important; /* 加粗 */
-    font-size: 16px !important; /* 稍微增大字号 */
-    letter-spacing: 0.5px !important; /* 增加字母间距提高可读性 */
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important; /* 添加轻微文字阴影增强对比度 */
-}
-
-/* 额外添加更多可能的卡片头部选择器 */
-.character-card div:first-of-type,
-.character-card .svelte-1pw0mi9,
-.character-card > .svelte-1adtsa9,
-.gradio-card-header,
-.character-card [class*="card-header"],
-.character-card [class*="header"] {
-    background-color: #094067 !important;
-    color: #fffffe !important;
-    font-weight: bold !important;
-}
-
-/* 学生信息样式 */
-.student-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px 0 5px;
-    text-align: center;
-    color: #094067;
-}
-
-/* 学生信息样式 - 改为与页面相同的浅蓝色背景 */
-.student-description {
-    color: #000000 !important;  /* 黑色文字 */
-    padding: 10px !important;
-    margin: 8px 12px !important;
-    background-color: transparent !important;  /* 透明背景 */
-    box-shadow: none !important;  /* 无阴影 */
-    border: none !important;  /* 无边框 */
-    text-align: center !important;
-}
-
-/* Also update the character-card style to ensure it uses the page background */
+/* Card styling - updated with rounded edges */
 .character-card {
-    background-color: #d8eefe !important;
-    border: none !important;
-    box-shadow: none !important;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #e0e0e0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    max-width: 220px;
+    margin: 0 auto;
 }
 
-/* 隐藏模型标签 */
+.character-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background-color: #094067;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Student info styling - compact and readable */
+.student-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 8px 0 4px;
+    text-align: center;
+}
+
+.student-description {
+    padding: 0 12px;
+    text-align: center;
+    color: #555;
+    font-size: 13px;
+    min-height: 45px;
+    overflow: hidden;
+    flex-grow: 1;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Hide model tag for cleaner interface */
 .model-tag {
     display: none;
 }
 
-/* 选择页面头像样式 - 圆形 */
-.character-card .avatar-container {
-    width: 100px !important;
-    height: 100px !important;
-    overflow: hidden !important;
-    margin: 15px auto !important;
-    border: 2px solid rgba(9,64,103,0.3) !important;
-    border-radius: 50% !important;
-    background-color: transparent !important;
+/* Avatar styling - updated with circular design */
+.avatar-container {
+    width: 120px!important;
+    height: 120px!important;
+    overflow: hidden!important;
+    margin: 15px auto!important;
+    border: 2px solid #094067!important;
+    border-radius: 50%!important; /* Circular avatars */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
 }
 
-.character-card .avatar-container img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    display: block !important;
+.avatar-container img {
+    width: 100%!important;
+    height: 100%!important;
+    object-fit: cover!important;
+    display: block!important;
 }
 
-/* 聊天按钮样式 */
+/* Chat button styling with updated brand color */
 .chat-btn {
     background-color: #3da9fc !important;
-    color: #fffffe !important;
+    color: white !important;
     border: none !important;
     border-radius: 20px !important;
-    padding: 6px 0 !important;
-    margin: 6px auto 10px !important;
+    padding: 8px 0 !important;
+    margin: 10px auto 16px !important;
     width: 85% !important;
     display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    font-size: 13px !important;
+    font-size: 14px !important;
+    transition: background-color 0.2s !important;
 }
 
 .chat-btn:hover {
-    background-color: #90b4ce !important;
+    background-color: #2a93e0 !important;
 }
 
-/* 聊天页面头部 */
+/* Chat interface styling for better user experience */
 .chat-header {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid #90b4ce;
-    background-color: #d8eefe;
-    color: #094067;
-    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
 }
 
 .back-btn {
-    background-color: #094067 !important;
-    border: none !important;
-    color: #fffffe !important;
+    background-color: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
+    color: #555 !important;
     border-radius: 5px !important;
     margin-right: 15px !important;
     margin-left: 0 !important;
 }
 
-/* 居中头部标题 */
+/* Input and buttons styling for better aesthetics */
+.message-input {
+    border-radius: 20px !important;
+    padding: 10px 15px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Button container for vertical layout */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.send-btn {
+    background-color: #3da9fc !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 15px !important;
+    width: 100% !important;
+}
+
+.clear-btn {
+    background-color: #f0f0f0 !important;
+    color: #555 !important;
+    border: 1px solid #ddd !important;
+    border-radius: 20px !important;
+    padding: 8px 15px !important;
+    width: 100% !important;
+}
+
+/* Character info styling in chat - simplified header without avatar */
+.character-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 5px;
+}
+
+/* Student name styling in header */
+.student-name-header {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Model display styling - hidden by default */
+.model-display {
+    display: none;
+}
+
+/* Character.ai style chat container */
+.character-ai-style {
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Custom styling for chat rows */
+.chatbot-row {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+/* Chat avatar styling */
+.gradio-chatbot .avatar {
+    display: block !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    margin-right: 8px !important;
+    margin-top: 2px !important;
+    flex-shrink: 0 !important;
+    border: 1px solid #e0e0e0 !important;
+    background-color: transparent !important;
+    overflow: hidden !important;
+}
+
+/* Ensure avatars are visible and styled correctly */
+.gradio-chatbot .message-wrap.user .avatar,
+.gradio-chatbot .message-wrap.bot .avatar {
+    display: inline-block !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    margin-right: 8px !important;
+    flex-shrink: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+/* Character.ai style chat bubbles */
+.gradio-chatbot .message {
+    border-radius: 18px !important;
+    padding: 12px 16px !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+    max-width: 80% !important;
+    display: inline-block !important;
+    margin-top: 5px !important;
+    word-wrap: break-word !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+/* User message styling with updated brand color */
+.gradio-chatbot .message.user {
+    background-color: #3da9fc !important;
+    color: white !important;
+    border-bottom-right-radius: 4px !important;
+    margin-left: auto !important;
+}
+
+/* Bot message styling with light background */
+.gradio-chatbot .message.bot {
+    background-color: #f1f1f1 !important;
+    color: #333 !important;
+    border-bottom-left-radius: 4px !important;
+    margin-right: auto !important;
+}
+
+/* Emotion tag styling for emotional context */
+.emotion-tag {
+    font-style: italic;
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 0.9em;
+}
+
+/* Custom styling for chat container to match Character.ai */
+.chatbox-container {
+    padding: 20px !important;
+    background-color: #fff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+}
+
+/* Override default gradio chatbot styling for avatars */
+.gradio-container .prose img.avatar-image {
+    display: inline-block !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    width: 32px !important;  /* Smaller avatar size in chat */
+    height: 32px !important; /* Smaller avatar size in chat */
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* Project description styling */
+.project-description {
+    text-align: center;
+    margin: 0 auto 20px;
+    max-width: 800px;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 0 20px;
+    font-style: italic;
+}
+
+/* Selection page avatar containers - keep larger size with border */
+.character-card .avatar-container {
+    background-color: transparent !important;
+    border: 2px solid #094067 !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    width: 120px !important;
+    height: 120px !important;
+    margin: 15px auto !important;
+}
+
+/* Chat avatar containers - smaller with subtle styling */
+.gradio-chatbot .avatar-container {
+    background-color: transparent !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    margin: 2px !important;
+}
+
+.message-row .avatar-image, 
+.message-wrap .avatar-image {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: block !important;
+}
+
+/* Target specific avatar container in messages */
+.message-row > .svelte-1y9ctm5,
+.message-wrap > .svelte-1y9ctm5 {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+}
+
+/* Target avatar in message bubbles */
+.message-bubble .avatar-container,
+.message .avatar-container {
+    background: transparent !important;
+    border: 1px solid #e0e0e0 !important;
+    padding: 0 !important;
+    margin: 2px !important;
+    box-shadow: none !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+}
+
+/* Disable rectangular borders around avatar images */
+img.avatar-image {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Selection heading styling for clear hierarchy */
+.selection-heading {
+    text-align: center;
+    margin: 20px 0 10px;
+    color: #094067;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Container for main content with reasonable max width */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Fix Gradio spacing issues */
+.gradio-container {
+    max-width: 100% !important;
+}
+
+/* Hide unnecessary margins in Gradio blocks */
+.block {
+    margin-bottom: 0 !important;
+}
+
+/* Center the name and model in the chat header */
 .center-header {
     margin: 0 auto;
     text-align: center;
 }
 
-/* 聊天区域名称标题 */
-.student-name-header {
-    font-size: 22px;
-    font-weight: bold;
-    margin: 0;
-    color: #094067;
-}
-
-/* ==== 聊天界面核心样式修复 ==== */
-
-/* 聊天区整体样式 */
-.character-ai-style.chatbox-container {
-    background-color: #d8eefe !important;
-    padding: 20px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-}
-
-/* 聊天容器 */
-.gradio-chatbot {
-    background-color: #d8eefe !important;
-}
-
-/* 消息行容器 */
+/* Add more whitespace around messages for readability */
 .gradio-chatbot .message-wrap {
-    display: flex !important;
-    align-items: flex-start !important;
-    margin-bottom: 15px !important;
-    position: relative !important;
-    width: 100% !important;
-}
-
-/* 用户消息行反向排列 */
-.gradio-chatbot .message-wrap.user {
-    flex-direction: row-reverse !important;
-}
-
-/* 头像大小增加50% - 从30px增至45px */
-.gradio-chatbot .avatar,
-.gradio-chatbot .avatar img,
-.gradio-chatbot img.avatar-image,
-.gradio-chatbot .message-wrap img,
-.gradio-chatbot .message-wrap .svelte-1y9ctm5 img,
-.gradio-chatbot .message-wrap > div:first-child img {
-    width: 45px !important;
-    height: 45px !important;
-    border-radius: 50% !important;
-    border: 2px solid #094067 !important;
-    object-fit: cover !important;
-    display: block !important;
-    box-shadow: none !important;
-}
-
-/* 头像容器尺寸同步增加 */
-.gradio-chatbot .avatar-container,
-.gradio-chatbot .message-wrap > div:first-child,
-.gradio-chatbot .message-wrap .svelte-1y9ctm5 {
-    width: 45px !important;
-    height: 45px !important;
-    min-width: 45px !important;
-    min-height: 45px !important;
-    max-width: 45px !important;
-    max-height: 45px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* 消息气泡通用样式 */
-.gradio-chatbot .message {
-    padding: 12px 16px !important;
-    margin: 0 8px !important;
-    max-width: 80% !important;
-    word-wrap: break-word !important;
-    line-height: 1.5 !important;
-}
-
-/* 强制设置用户消息气泡样式 - 白色背景深蓝文字 */
-.gradio-chatbot .message.user,
-.gradio-chatbot .message-wrap.user .message {
-    background-color: #fffffe !important;
-    color: #094067 !important;
-    border: 1px solid #90b4ce !important;
-    border-radius: 18px 18px 4px 18px !important;
-    margin-right: 8px !important;
-    margin-left: auto !important;
-}
-
-/* 强制设置机器人消息气泡样式 - 蓝色背景白色文字 */
-.gradio-chatbot .message.bot,
-.gradio-chatbot .message-wrap.bot .message {
-    background-color: #3da9fc !important;
-    color: #fffffe !important;
-    border: none !important;
-    border-radius: 18px 18px 18px 4px !important;
-    margin-left: 8px !important;
-    margin-right: auto !important;
-}
-
-/* 情感标签样式 */
-.emotion-tag {
-    font-style: italic !important;
-    display: block !important;
-    margin-top: 5px !important;
-    font-size: 0.9em !important;
-    color: #094067 !important;
-}
-
-/* 聊天输入区域样式 */
-.message-input {
-    background-color: #fffffe !important;
-    border-radius: 20px !important;
-    border: 1px solid #90b4ce !important;
     margin-bottom: 10px !important;
 }
 
-.message-input textarea {
-    background-color: #fffffe !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    color: #094067 !important;
-    resize: none !important;
-    width: 100% !important;
-    box-shadow: none !important;
-}
-
-/* 按钮容器样式 */
-.button-container {
+/* Adjust spacing for better alignment with tiny avatars */
+.gradio-chatbot .message-wrap > div {
     display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-}
-
-/* 发送按钮样式 */
-.send-btn {
-    background-color: #3da9fc !important;
-    color: #fffffe !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 10px 20px !important;
-    border: none !important;
-    width: 100% !important;
-}
-
-/* 清除按钮样式 */
-.clear-btn {
-    background-color: #094067 !important;
-    color: #fffffe !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 10px 20px !important;
-    border: none !important;
-    width: 100% !important;
-}
-
-/* 移除可能的行背景 */
-.gradio-container .row {
-    background-color: transparent !important;
-}
-
-/* 额外修复 - 消除所有可能干扰的样式 */
-.prose img, 
-.prose .avatar, 
-.prose .avatar-image, 
-.svelte-1adtsa9, 
-.svelte-1u4fftl {
-    border-radius: 50% !important;
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* 移除chatbot中任何可能的padding和margin */
-.gradio-chatbot {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* 强制修复JavaScript可能添加的样式 */
-.svelte-1adtsa9,
-.svelte-1y9ctm5 {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-/* 确保所有聊天气泡内容有正确的颜色 */
-.gradio-chatbot .message.bot *,
-.gradio-chatbot .message-wrap.bot .message * {
-    color: #fffffe !important;
-}
-
-.gradio-chatbot .message.user *,
-.gradio-chatbot .message-wrap.user .message * {
-    color: #094067 !important;
-}
-
-/* 确保任何可能的内嵌元素也正确着色 */
-.gradio-chatbot .bot .message p,
-.gradio-chatbot .bot .message div,
-.gradio-chatbot .bot .message span {
-    color: #fffffe !important;
-}
-
-.gradio-chatbot .user .message p,
-.gradio-chatbot .user .message div,
-.gradio-chatbot .user .message span {
-    color: #094067 !important;
+    align-items: flex-start !important;
 }
 """
