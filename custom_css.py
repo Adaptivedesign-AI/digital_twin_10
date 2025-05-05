@@ -160,7 +160,7 @@ body {
 /* 学生信息样式 - 修改为浅蓝色背景 */
 .student-description {
     background-color: #e6f3ff !important;  /* 浅蓝色背景 */
-    color: #000000 !important;             /* 黑色字体 */
+    color: #000000 !important;
     padding: 10px !important;
     margin: 8px 12px !important;
     border-radius: 8px !important;
