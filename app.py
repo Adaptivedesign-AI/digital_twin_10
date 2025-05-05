@@ -340,141 +340,168 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly across browsers and Gradio versions
-    demo.load(None, None, None, js="""
-    function() {
-        // Define the style fix function to ensure consistent avatar rendering
-        function fixAvatarStyles() {
-            // Find all avatar images and containers
-            const avatarImages = document.querySelectorAll('img.avatar-image');
-            const avatarContainers = document.querySelectorAll('.avatar-container, [class*="message"] .svelte-1y9ctm5');
-            
-            // Fix avatar images - remove borders and set consistent size
-            avatarImages.forEach(img => {
-                img.style.border = 'none';
-                img.style.boxShadow = 'none';
-                img.style.padding = '0';
-                img.style.margin = '0';
-                img.style.width = '48px';
-                img.style.height = '48px';
-                img.style.display = 'block';
-                img.style.borderRadius = '50%';
+    // JavaScript to ensure avatars display correctly across browsers and Gradio versions
+demo.load(None, None, None, js="""
+function() {
+    // Define the style fix function to ensure consistent rendering
+    function fixAllStyles() {
+        // Fix card headers - make names white on blue background
+        document.querySelectorAll('.character-card').forEach(card => {
+            // Find header element (first child div or specific class)
+            const headerDiv = card.querySelector('div:first-child');
+            if (headerDiv) {
+                headerDiv.style.backgroundColor = '#094067';
+                headerDiv.style.color = '#fffffe';
+                headerDiv.style.fontWeight = 'bold';
+                headerDiv.style.padding = '10px';
+                headerDiv.style.textAlign = 'center';
+                headerDiv.style.fontSize = '16px';
+                headerDiv.style.letterSpacing = '0.5px';
+                headerDiv.style.textShadow = '0 1px 2px rgba(0,0,0,0.2)';
                 
-                // Set parent elements as well for consistency
-                if (img.parentElement) {
-                    img.parentElement.style.border = 'none';
-                    img.parentElement.style.boxShadow = 'none';
-                    img.parentElement.style.padding = '0';
-                    img.parentElement.style.margin = '0';
-                    img.parentElement.style.backgroundColor = 'transparent';
-                }
-            });
-            
-            // Fix avatar containers - remove borders and backgrounds
-            avatarContainers.forEach(container => {
-                container.style.border = 'none';
-                container.style.boxShadow = 'none';
-                container.style.backgroundColor = 'transparent';
-                container.style.padding = '0';
-                container.style.margin = '0';
-            });
-            
-            // Find message elements and fix avatar containers within them
-            document.querySelectorAll('[class*="message"]').forEach(el => {
-                // Find possible avatar containers within messages
-                const possibleContainers = el.querySelectorAll('div:first-child');
-                possibleContainers.forEach(container => {
-                    if (container.querySelector('img')) {
-                        container.style.border = 'none';
-                        container.style.boxShadow = 'none';
-                        container.style.backgroundColor = 'transparent';
-                        container.style.padding = '0';
-                        container.style.margin = '0';
-                    }
+                // Also style any text elements inside
+                const textElements = headerDiv.querySelectorAll('*');
+                textElements.forEach(el => {
+                    el.style.color = '#fffffe';
+                    el.style.fontWeight = 'bold';
                 });
-            });
+            }
+        });
+        
+        // Find all avatar images in chat
+        const chatAvatarImages = document.querySelectorAll('.gradio-chatbot img.avatar-image, .gradio-chatbot .message-wrap img');
+        chatAvatarImages.forEach(img => {
+            img.style.width = '45px';  // Increased size by 50% from 30px
+            img.style.height = '45px';
+            img.style.borderRadius = '50%';
+            img.style.border = '2px solid #094067';
+            img.style.boxShadow = 'none';
+            img.style.padding = '0';
+            img.style.margin = '0';
+            img.style.display = 'block';
+            img.style.objectFit = 'cover';
+        });
+        
+        // Fix avatar containers in chat
+        const chatAvatarContainers = document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot .message-wrap > div:first-child');
+        chatAvatarContainers.forEach(container => {
+            container.style.width = '45px';
+            container.style.height = '45px';
+            container.style.minWidth = '45px';
+            container.style.minHeight = '45px';
+            container.style.maxWidth = '45px';
+            container.style.maxHeight = '45px';
+            container.style.borderRadius = '50%';
+            container.style.overflow = 'hidden';
+            container.style.backgroundColor = 'transparent';
+            container.style.border = 'none';
+            container.style.boxShadow = 'none';
+            container.style.padding = '0';
+            container.style.margin = '0';
+        });
+        
+        // Ensure selection page avatars remain properly sized
+        document.querySelectorAll('.character-card .avatar-container img').forEach(img => {
+            img.style.display = 'block';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+        });
+        
+        // Fix message bubble alignment
+        document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
+            wrap.style.display = "flex";
+            wrap.style.alignItems = "flex-start";
+            wrap.style.gap = "8px";
+            wrap.style.marginBottom = "15px";
+            wrap.style.width = "100%";
+        });
+        
+        // Set user messages to right side
+        document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(wrap => {
+            wrap.style.flexDirection = "row-reverse";
+        });
+        
+        // Format message bubbles with correct colors
+        document.querySelectorAll('.gradio-chatbot .message').forEach(msg => {
+            msg.style.padding = '12px 16px';
+            msg.style.margin = '0 8px';
+            msg.style.maxWidth = '80%';
+            msg.style.wordWrap = 'break-word';
+            msg.style.lineHeight = '1.5';
             
-            // Ensure selection page avatars remain properly sized and visible
-            document.querySelectorAll('.avatar-container img').forEach(function(img) {
-                if (img.closest('.character-card')) {
-                    img.style.display = 'block';
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                }
-            });
-            
-            // Format message bubbles with consistent styling
-            document.querySelectorAll('.gradio-chatbot .message').forEach(function(msg) {
-                msg.style.borderRadius = '18px';
-                msg.style.padding = '12px 16px';
-                msg.style.maxWidth = '80%';
+            // Bot messages: blue background, white text
+            if (msg.closest('.message-wrap.bot') || msg.classList.contains('bot')) {
+                msg.style.backgroundColor = '#3da9fc';
+                msg.style.color = '#fffffe';
+                msg.style.border = 'none';
+                msg.style.borderRadius = '18px 18px 18px 4px';
+                msg.style.marginLeft = '8px';
+                msg.style.marginRight = 'auto';
                 
-                // Apply different styles for user vs bot messages
-                if (msg.classList.contains('user')) {
-                    msg.style.backgroundColor = '#4299e1';
-                    msg.style.color = 'white';
-                    msg.style.borderBottomRightRadius = '4px';
-                } else {
-                    msg.style.backgroundColor = '#f1f1f1';
-                    msg.style.color = '#333';
-                    msg.style.borderBottomLeftRadius = '4px';
-                }
-            });
+                // Also style all child elements
+                const elements = msg.querySelectorAll('*');
+                elements.forEach(el => {
+                    el.style.color = '#fffffe';
+                });
+            } 
+            // User messages: white background, dark blue text
+            else if (msg.closest('.message-wrap.user') || msg.classList.contains('user')) {
+                msg.style.backgroundColor = '#fffffe';
+                msg.style.color = '#094067';
+                msg.style.border = '1px solid #90b4ce';
+                msg.style.borderRadius = '18px 18px 4px 18px';
+                msg.style.marginRight = '8px';
+                msg.style.marginLeft = 'auto';
+                
+                // Also style all child elements
+                const elements = msg.querySelectorAll('*');
+                elements.forEach(el => {
+                    el.style.color = '#094067';
+                });
+            }
+        });
+        
+        // Make entire character cards clickable for better UX
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.style.cursor = 'pointer';
             
-            // Make entire character cards clickable for better UX
-            document.querySelectorAll('.character-card').forEach(function(card) {
-                card.style.cursor = 'pointer';
+            // Only add event listener once
+            if (!card.hasAttribute('listener-added')) {
+                card.setAttribute('listener-added', 'true');
                 card.addEventListener('click', function(e) {
-                    // Find and click the button within this card
                     const button = this.querySelector('.chat-btn');
                     if (button && e.target !== button) {
                         button.click();
                     }
                 });
-            });
-            
-            // Hide any model tags that might appear
-            document.querySelectorAll('.model-tag').forEach(function(tag) {
-                tag.style.display = 'none';
-            });
-            
-            // Fix message bubble alignment for consistent layout
-            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
-                // Ensure consistent alignment for all messages
-                wrap.style.display = "flex";
-                wrap.style.alignItems = "flex-start";
-                wrap.style.gap = "8px"; // Controls spacing between avatar and message
-            });
-            
-            // Set specific margins for bot and user messages
-            document.querySelectorAll('.gradio-chatbot .message-wrap.bot').forEach(msg => {
-                msg.style.marginLeft = "12px"; // Reduced from 58px for more compact layout
-            });
-            document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(msg => {
-                msg.style.marginRight = "12px"; // Reduced from 58px for more compact layout
-            });
-        }
-        
-        // Call the fix function initially to apply styles
-        fixAvatarStyles();
-        
-        // Set up a mutation observer to watch for DOM changes and reapply styles
-        const observer = new MutationObserver(function(mutations) {
-            fixAvatarStyles();
+            }
         });
         
-        // Start observing the entire document for changes to catch all UI updates
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+        // Hide any model tags
+        document.querySelectorAll('.model-tag').forEach(tag => {
+            tag.style.display = 'none';
         });
-        
-        // Also periodically call the fix function for reliability
-        setInterval(fixAvatarStyles, 1000);
     }
-    """)
-
+    
+    // Call the fix function initially to apply styles
+    fixAllStyles();
+    
+    // Set up a mutation observer to watch for DOM changes
+    const observer = new MutationObserver(function(mutations) {
+        fixAllStyles();
+    });
+    
+    // Start observing the entire document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Also periodically call the fix function for reliability
+    setInterval(fixAllStyles, 500);
+}
+""")
 # Run the application when script is executed directly
 if __name__ == "__main__":
     demo.launch(
