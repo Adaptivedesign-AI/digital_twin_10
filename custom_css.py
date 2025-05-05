@@ -284,26 +284,25 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* 强制设置对话框中头像大小和样式 */
-.gradio-chatbot .message-wrap .avatar,
-.gradio-chatbot .message-wrap > div:first-child {
+/* 正确仅选中头像容器，而不是任意第一个 div */
+.message-wrap .avatar {
     width: 60px !important;
     height: 60px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     border: 2px solid #094067 !important;
-    margin-right: 10px !important;
+    flex-shrink: 0 !important;
     background-color: transparent !important;
 }
 
-.gradio-chatbot .message-wrap .avatar img,
-.gradio-chatbot .message-wrap img.avatar-image {
+.message-wrap .avatar img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     border-radius: 50% !important;
     display: block !important;
 }
+
 
 .card-header {
     color: white !important;
@@ -427,24 +426,8 @@ body {
     text-align: center;
 }
 
-/* 对话框中头像容器放大 */
-.message-wrap > div:first-child {
-    width: 60px !important;
-    height: 60px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    border: 2px solid #094067 !important;
-    flex-shrink: 0 !important;
-}
 
-/* 对话框中头像图片放大 */
-.message-wrap > div:first-child img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 50% !important;
-    display: block !important;
-}
+
 
 .card-header,
 .card-header * {
