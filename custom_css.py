@@ -162,19 +162,20 @@ body {
 }
 
 .back-btn {
-    background-color: transparent !important;
-    border: 1px solid #fffffe !important;
-    color: #fffffe !important;
-    border-radius: 5px !important;
-    padding: 5px 10px !important;
+    background-color: #3da9fc !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 5px 15px !important;
     margin-right: 15px !important;
-    margin-left: 0 !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
     cursor: pointer !important;
     transition: background-color 0.2s !important;
 }
 
 .back-btn:hover {
-    background-color: rgba(255,255,255,0.1) !important;
+    background-color: #2a93e0 !important;
 }
 
 /* Input and buttons styling for better aesthetics */
