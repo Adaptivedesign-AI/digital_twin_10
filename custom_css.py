@@ -293,7 +293,7 @@ body {
 /* Character.ai style chat container */
 .character-ai-style {
     border-radius: 12px;
-    background-color: #d8eefe !important;
+    background-color: #ffffff !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -362,7 +362,7 @@ body {
 
 /* Chat area overall background (light blue) */
 .character-ai-style.chatbox-container {
-    background-color: #d8eefe !important;
+    background-color: #ffffff !important;
     padding: 20px !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
