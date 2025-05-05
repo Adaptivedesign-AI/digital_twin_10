@@ -117,7 +117,6 @@ body {
     border-radius: 50% !important;
     overflow: hidden !important;
     margin: 12px auto 8px !important;  /* 垂直居中 */
-    border: 2px solid #094067 !important;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
     display: flex !important;
     align-items: center !important;
