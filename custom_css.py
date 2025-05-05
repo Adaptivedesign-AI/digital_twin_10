@@ -157,14 +157,14 @@ body {
     color: #094067;
 }
 
-/* Replace the current student-description style with this */
+/* 学生信息样式 - 改为与页面相同的浅蓝色背景 */
 .student-description {
-    color: #000000 !important;
+    color: #000000 !important;  /* 黑色文字 */
     padding: 10px !important;
     margin: 8px 12px !important;
-    background-color: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
+    background-color: transparent !important;  /* 透明背景 */
+    box-shadow: none !important;  /* 无阴影 */
+    border: none !important;  /* 无边框 */
     text-align: center !important;
 }
 
