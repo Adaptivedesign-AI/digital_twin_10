@@ -172,74 +172,65 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Enhanced CSS for better UI with improved design
 custom_css = """
-/* Global styles for the entire application */
+/* Global styles with light blue background */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #e6f2ff; /* Light blue background */
 }
 
-/* Header styling with deep blue brand color */
-.main-title {
-    background-color: #1a365d;
-    color: white;
-    padding: 15px;
-    margin: 0;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 8px 8px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Container for main content with light blue background */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    background-color: #e6f2ff;
 }
 
-
-/* White title text */
-.white-title h1 {
-    color: white !important;
-}
-
-/* Header container */
+/* Header container styling */
 .header-container {
     display: flex;
     align-items: center;
     width: 100%;
-    background-color: #1a365d;
+    background-color: #094067; /* Navy blue from the palette */
     border-radius: 8px 8px 0 0;
     padding: 0;
+    margin: 0;
 }
 
-/* Logo container */
+/* Logo container in top-left corner */
 .logo-container {
     width: 40px !important;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    flex: 0 0 40px !important;
+    padding: 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
-/* Title container */
+/* Title container for the centered text */
 .title-container {
-    flex-grow: 1;
-    text-align: center;
-    padding: 10px 0;
+    flex-grow: 1 !important;
+    text-align: center !important;
+    padding: 10px 0 !important;
 }
 
-/* Title text */
-.main-title h1 {
-    color: white !important;
-    margin: 0;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
+/* Title text styling */
+.title-text h1 {
+    color: #fffffe !important; /* White text */
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
 }
 
-.main-title img {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+/* Selection heading styling */
+.selection-heading {
+    text-align: center;
+    margin: 20px 0 10px;
+    color: #094067; /* Navy blue */
+    font-size: 20px;
 }
 
 /* Description text styling */
@@ -247,7 +238,7 @@ body {
     text-align: center;
     margin: 10px auto 20px;
     max-width: 800px;
-    color: #555;
+    color: #5f6c7b; /* Paragraph color from palette */
     font-size: 14px;
     line-height: 1.5;
 }
@@ -287,31 +278,31 @@ body {
     }
 }
 
-/* Card styling - updated with deep blue theme and rounded corners */
+/* Card styling with navy theme */
 .character-card {
-    background: rgba(26, 54, 93, 0.85);
+    background: #094067; /* Navy blue */
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid #5f6c7b; /* Border color from palette */
     height: 100%;
     display: flex;
     flex-direction: column;
     cursor: pointer;
     max-width: 220px;
     margin: 0 auto;
-    color: white;
+    color: #fffffe; /* White text */
 }
 
 .character-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
 .card-header {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: #5f6c7b; /* Paragraph color from palette */
+    color: #fffffe; /* White text */
     padding: 10px;
     text-align: center;
     font-weight: bold;
@@ -324,7 +315,7 @@ body {
     font-weight: bold;
     margin: 10px 0 5px;
     text-align: center;
-    color: white;
+    color: #fffffe; /* White text */
 }
 
 .student-description {
@@ -364,10 +355,10 @@ body {
     display: block !important;
 }
 
-/* Chat button styling with deep blue */
+/* Chat button styling with blue */
 .chat-btn {
-    background-color: #4299e1 !important;
-    color: white !important;
+    background-color: #3da9fc !important; /* Button color from palette */
+    color: #fffffe !important; /* White text */
     border: none !important;
     border-radius: 20px !important;
     padding: 6px 0 !important;
@@ -380,24 +371,24 @@ body {
 }
 
 .chat-btn:hover {
-    background-color: #3182ce !important;
+    background-color: #90b4ce !important; /* Secondary color from palette */
 }
 
-/* Chat interface styling for better user experience */
+/* Chat header */
 .chat-header {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid #eee;
-    background-color: #1a365d;
-    color: white;
+    border-bottom: 1px solid #90b4ce;
+    background-color: #094067; /* Navy blue */
+    color: #fffffe; /* White text */
     border-radius: 8px 8px 0 0;
 }
 
 .back-btn {
-    background-color: rgba(255,255,255,0.2) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    color: white !important;
+    background-color: #5f6c7b !important; /* Paragraph color */
+    border: none !important;
+    color: #fffffe !important; /* White text */
     border-radius: 5px !important;
     margin-right: 15px !important;
     margin-left: 0 !important;
@@ -407,7 +398,8 @@ body {
 .message-input {
     border-radius: 20px !important;
     padding: 10px 15px !important;
-    border: 1px solid #e0e0e0 !important;
+    border: 1px solid #90b4ce !important; /* Secondary color */
+    background-color: #fffffe !important; /* White background */
 }
 
 /* Button container for vertical layout */
@@ -418,19 +410,21 @@ body {
     width: 100%;
 }
 
+/* Send button styling */
 .send-btn {
-    background-color: #4299e1 !important;
-    color: white !important;
+    background-color: #3da9fc !important; /* Button color */
+    color: #fffffe !important; /* White text */
     border: none !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
     width: 100% !important;
 }
 
+/* Clear button styling */
 .clear-btn {
-    background-color: rgba(255,255,255,0.2) !important;
-    color: #1a365d !important;
-    border: 1px solid #ddd !important;
+    background-color: #5f6c7b !important; /* Paragraph color */
+    color: #fffffe !important; /* White text */
+    border: none !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
     width: 100% !important;
@@ -449,7 +443,7 @@ body {
     font-size: 22px;
     font-weight: bold;
     margin: 0;
-    color: white;
+    color: #fffffe; /* White text */
 }
 
 /* Model display styling - hidden by default */
@@ -460,7 +454,7 @@ body {
 /* Character.ai style chat container */
 .character-ai-style {
     border-radius: 12px;
-    background-color: white;
+    background-color: #fffffe; /* White */
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -513,18 +507,19 @@ body {
 
 /* User message styling with brand color */
 .gradio-chatbot .message.user {
-    background-color: #4299e1 !important;
-    color: white !important;
+    background-color: #3da9fc !important; /* Button color */
+    color: #fffffe !important; /* White text */
     border-bottom-right-radius: 4px !important;
     margin-left: auto !important;
 }
 
 /* Bot message styling with light background */
 .gradio-chatbot .message.bot {
-    background-color: #f1f1f1 !important;
-    color: #333 !important;
+    background-color: #fffffe !important; /* White background */
+    color: #094067 !important; /* Navy text */
     border-bottom-left-radius: 4px !important;
     margin-right: auto !important;
+    border: 1px solid #90b4ce !important; /* Secondary color border */
 }
 
 /* Emotion tag styling for emotional context */
@@ -532,14 +527,14 @@ body {
     font-style: italic;
     display: block;
     margin-top: 5px;
-    color: #888;
+    color: #5f6c7b; /* Paragraph color */
     font-size: 0.9em;
 }
 
-/* Custom styling for chat container to match Character.ai */
+/* Custom styling for chat container */
 .chatbox-container {
     padding: 20px !important;
-    background-color: #fff !important;
+    background-color: #e6f2ff !important; /* Light blue background */
     border-radius: 12px !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
@@ -605,21 +600,6 @@ img.avatar-image {
     padding: 0 !important;
 }
 
-/* Selection heading styling for clear hierarchy */
-.selection-heading {
-    text-align: center;
-    margin: 20px 0 10px;
-    color: #1a365d;
-    font-size: 20px;
-}
-
-/* Container for main content with reasonable max width */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
 /* Fix Gradio spacing issues */
 .gradio-container {
     max-width: 100% !important;
@@ -645,6 +625,11 @@ img.avatar-image {
 .gradio-chatbot .message-wrap > div {
     display: flex !important;
     align-items: flex-start !important;
+}
+
+/* Remove any old classes that might conflict */
+.main-title {
+    display: none !important;
 }
 """
 
