@@ -179,6 +179,14 @@ body {
 }
 
 /* Input and buttons styling for better aesthetics */
+/* 移除输入区域的背景白色块 */
+.message-input {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* 输入框本身内部是白色 */
 .message-input textarea {
     background-color: #fffffe !important;
     border: 1px solid #90b4ce !important;
@@ -187,7 +195,7 @@ body {
     font-size: 14px !important;
     color: #094067 !important;
     resize: none !important;
-    height: 100px !important;
+    height: 70px !important;  /* 你想要更高一点就调这个 */
 }
 
 /* Button container for vertical layout */
@@ -273,7 +281,7 @@ body {
     object-fit: cover !important;
     display: block !important;
     border-radius: 50% !important;
-    border: none !important; /* 外边框由父容器控制 */
+    border: none !important;
 }
 
 /* Ensure avatars are visible and styled correctly */
