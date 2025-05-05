@@ -2,7 +2,7 @@ custom_css = """
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
 }
 
 /* Header styling with updated brand color */
