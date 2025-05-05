@@ -159,11 +159,11 @@ body {
 
 .card-header {
     background-color: #094067 !important;
-    height: 38px !important;  /* 控制高度 */
-    padding: 0 8px !important;
+    height: 40px !important;  /* 控制 header 高度 */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    padding: 0 !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
     overflow: hidden !important;
@@ -171,12 +171,14 @@ body {
 
 .card-header p {
     color: white !important;
-    font-weight: 800 !important;
+    font-weight: 900 !important;
     font-size: 14px !important;
-    margin: 0 !important;
-    font-family: 'Inter', sans-serif !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin: 0 !important;
+    font-family: 'Inter', sans-serif !important;
+    line-height: 1 !important;   /* 避免撑高 */
+    white-space: nowrap !important;  /* 避免换行 */
 }
 
 
