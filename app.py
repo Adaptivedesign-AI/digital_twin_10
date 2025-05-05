@@ -245,8 +245,8 @@ with gr.Blocks(css=custom_css) as demo:
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        # Replace "Digital Twin" with student's name in white bold font
-                        gr.Markdown(f"**{student_name}**", elem_classes="card-header")
+                        # Replace "Digital Twin" with student's name using maximum emphasis styling
+                        gr.Markdown(f"<strong style='color:white;font-weight:900;text-transform:uppercase;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
                         
                         # Avatar container - circular design
                         with gr.Column(elem_classes="avatar-container"):
@@ -337,10 +337,30 @@ with gr.Blocks(css=custom_css) as demo:
     function() {
         // Define the style fix function to ensure consistent avatar rendering
         function fixChatStyles() {
-            // Style chat avatars
+            // Apply maximum emphasis to student names in card headers
+            document.querySelectorAll('.card-header').forEach(header => {
+                // Maximum styling for card headers
+                header.style.backgroundColor = '#094067';
+                header.style.color = '#FFFFFF';
+                header.style.fontWeight = '900'; // Maximum bold weight
+                header.style.fontSize = '20px';
+                header.style.textTransform = 'uppercase';
+                header.style.letterSpacing = '1px';
+                header.style.textShadow = '0 1px 2px rgba(0,0,0,0.3)';
+                header.style.padding = '10px';
+                
+                // Add extra emphasis with HTML
+                if (!header.innerHTML.includes('<strong>')) {
+                    // Only modify if not already emphasized
+                    let text = header.textContent.trim();
+                    header.innerHTML = `<strong style="font-weight:900;color:white;text-transform:uppercase;">${text}</strong>`;
+                }
+            });
+
+            // Style chat avatars to fill entire container
             document.querySelectorAll('.gradio-chatbot .avatar img, .gradio-chatbot img.avatar-image').forEach(img => {
-                img.style.width = '48px';
-                img.style.height = '48px';
+                img.style.width = '100%';
+                img.style.height = '100%';
                 img.style.borderRadius = '50%';
                 img.style.border = 'none';
                 img.style.objectFit = 'cover';
@@ -358,26 +378,6 @@ with gr.Blocks(css=custom_css) as demo:
                     img.parentElement.style.margin = '0';
                     img.parentElement.style.backgroundColor = 'transparent';
                     img.parentElement.style.boxShadow = 'none';
-                }
-            });
-            
-            // Apply maximum emphasis to student names in card headers
-            document.querySelectorAll('.card-header').forEach(header => {
-                // Maximum styling for card headers
-                header.style.backgroundColor = '#094067';
-                header.style.color = '#FFFFFF';
-                header.style.fontWeight = '900'; // Maximum bold weight
-                header.style.fontSize = '18px';
-                header.style.textTransform = 'uppercase';
-                header.style.letterSpacing = '0.5px';
-                header.style.textShadow = '0 1px 2px rgba(0,0,0,0.2)';
-                header.style.padding = '10px';
-                
-                // Add extra emphasis with HTML
-                if (!header.innerHTML.includes('<strong>')) {
-                    // Only modify if not already emphasized
-                    let text = header.textContent.trim();
-                    header.innerHTML = `<strong style="font-weight:900;">${text}</strong>`;
                 }
             });
             
@@ -488,6 +488,16 @@ with gr.Blocks(css=custom_css) as demo:
                 header.style.marginBottom = '0';
             });
             
+            // Style back button to blue (#3da9fc)
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.style.backgroundColor = '#3da9fc';
+                btn.style.border = 'none';
+                btn.style.color = '#fffffe';
+                btn.style.borderRadius = '5px';
+                btn.style.padding = '5px 10px';
+                btn.style.fontWeight = 'bold';
+            });
+            
             // Style student name in header
             document.querySelectorAll('.student-name-header').forEach(name => {
                 name.style.color = '#fffffe';
@@ -495,15 +505,6 @@ with gr.Blocks(css=custom_css) as demo:
                 name.style.fontWeight = 'bold';
                 name.style.margin = '0 auto';
                 name.style.textAlign = 'center';
-            });
-            
-            // Style back button
-            document.querySelectorAll('.back-btn').forEach(btn => {
-                btn.style.backgroundColor = 'transparent';
-                btn.style.border = '1px solid #fffffe';
-                btn.style.color = '#fffffe';
-                btn.style.borderRadius = '5px';
-                btn.style.padding = '5px 10px';
             });
         }
         
