@@ -171,17 +171,20 @@ body {
 
 /* 学生信息样式 - 修改为浅蓝色背景 */
 .student-description {
-    background-color: #e6f3ff;  /* 浅蓝色 */
-    padding: 10px;
-    border-radius: 8px;
-    color: #000000;
-    margin: 10px 12px;
-    text-align: center;
+    background-color: #e6f3ff !important;  /* 浅蓝色背景 */
+    color: #000000 !important;             /* 黑色字体 */
+    padding: 10px !important;
+    margin: 8px 12px !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    border: none !important;
+    text-align: center !important;
 }
-.card {
-    background-color: transparent !important;  /* 或注释这一行 */
-    border: none;
-    box-shadow: none;
+
+.character-card {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* 隐藏模型标签 */
