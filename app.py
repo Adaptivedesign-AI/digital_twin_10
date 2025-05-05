@@ -2,7 +2,7 @@ import gradio as gr
 import json
 import os
 from openai import OpenAI
-from custom_css import custom_css
+from custom_css import custom_css  # Import the custom CSS from separate file
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -332,173 +332,199 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    
-    // JavaScript to ensure correct styling for chat interface
-    function fixChatStyles() {
-        // Style chat avatars
-        document.querySelectorAll('.gradio-chatbot .avatar img, .gradio-chatbot img.avatar-image').forEach(img => {
-            img.style.width = '48px';
-            img.style.height = '48px';
-            img.style.borderRadius = '50%';
-            img.style.border = 'none';
-            img.style.objectFit = 'cover';
-            img.style.padding = '0';
-            img.style.margin = '0';
+    # JavaScript to ensure avatars display correctly across browsers and Gradio versions
+    demo.load(None, None, None, js="""
+    function() {
+        // Define the style fix function to ensure consistent avatar rendering
+        function fixChatStyles() {
+            // Style chat avatars
+            document.querySelectorAll('.gradio-chatbot .avatar img, .gradio-chatbot img.avatar-image').forEach(img => {
+                img.style.width = '48px';
+                img.style.height = '48px';
+                img.style.borderRadius = '50%';
+                img.style.border = 'none';
+                img.style.objectFit = 'cover';
+                img.style.padding = '0';
+                img.style.margin = '0';
+                
+                // Style parent container
+                if (img.parentElement) {
+                    img.parentElement.style.width = '48px';
+                    img.parentElement.style.height = '48px';
+                    img.parentElement.style.border = '2px solid #094067';
+                    img.parentElement.style.borderRadius = '50%';
+                    img.parentElement.style.overflow = 'hidden';
+                    img.parentElement.style.padding = '0';
+                    img.parentElement.style.margin = '0';
+                    img.parentElement.style.backgroundColor = 'transparent';
+                    img.parentElement.style.boxShadow = 'none';
+                }
+            });
             
-            // Style parent container
-            if (img.parentElement) {
-                img.parentElement.style.width = '48px';
-                img.parentElement.style.height = '48px';
-                img.parentElement.style.border = '2px solid #094067';
-                img.parentElement.style.borderRadius = '50%';
-                img.parentElement.style.overflow = 'hidden';
-                img.parentElement.style.padding = '0';
-                img.parentElement.style.margin = '0';
-                img.parentElement.style.backgroundColor = 'transparent';
-                img.parentElement.style.boxShadow = 'none';
-            }
-        });
+            // Apply maximum emphasis to student names in card headers
+            document.querySelectorAll('.card-header').forEach(header => {
+                // Maximum styling for card headers
+                header.style.backgroundColor = '#094067';
+                header.style.color = '#FFFFFF';
+                header.style.fontWeight = '900'; // Maximum bold weight
+                header.style.fontSize = '18px';
+                header.style.textTransform = 'uppercase';
+                header.style.letterSpacing = '0.5px';
+                header.style.textShadow = '0 1px 2px rgba(0,0,0,0.2)';
+                header.style.padding = '10px';
+                
+                // Add extra emphasis with HTML
+                if (!header.innerHTML.includes('<strong>')) {
+                    // Only modify if not already emphasized
+                    let text = header.textContent.trim();
+                    header.innerHTML = `<strong style="font-weight:900;">${text}</strong>`;
+                }
+            });
+            
+            // Fix avatar containers in messages
+            document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot [class*="message"] > div:first-child').forEach(container => {
+                if (!container.closest('.character-card')) {
+                    container.style.width = '48px';
+                    container.style.height = '48px'; 
+                    container.style.borderRadius = '50%';
+                    container.style.overflow = 'hidden';
+                    container.style.border = '2px solid #094067';
+                    container.style.padding = '0';
+                    container.style.margin = '0';
+                    container.style.boxShadow = 'none';
+                    container.style.backgroundColor = 'transparent';
+                    container.style.minWidth = '48px';
+                    container.style.minHeight = '48px';
+                    container.style.flexShrink = '0';
+                }
+            });
+            
+            // Style bot messages (blue)
+            document.querySelectorAll('.gradio-chatbot .message.bot').forEach(msg => {
+                msg.style.backgroundColor = '#3da9fc';
+                msg.style.color = '#fffffe';
+                msg.style.borderBottomLeftRadius = '6px';
+                msg.style.borderTopLeftRadius = '18px';
+                msg.style.borderTopRightRadius = '18px';
+                msg.style.borderBottomRightRadius = '18px';
+                msg.style.marginLeft = '12px';
+                msg.style.marginRight = 'auto';
+                msg.style.maxWidth = '80%';
+                msg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+                msg.style.padding = '12px 16px';
+                msg.style.wordWrap = 'break-word';
+            });
+            
+            // Style user messages (white)
+            document.querySelectorAll('.gradio-chatbot .message.user').forEach(msg => {
+                msg.style.backgroundColor = '#fffffe';
+                msg.style.color = '#094067';
+                msg.style.borderBottomRightRadius = '6px';
+                msg.style.borderTopLeftRadius = '18px';
+                msg.style.borderTopRightRadius = '18px';
+                msg.style.borderBottomLeftRadius = '18px';
+                msg.style.marginRight = '12px';
+                msg.style.marginLeft = 'auto';
+                msg.style.maxWidth = '80%';
+                msg.style.border = '1px solid #90b4ce';
+                msg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
+                msg.style.padding = '12px 16px';
+                msg.style.wordWrap = 'break-word';
+            });
+            
+            // Style chat container background
+            document.querySelectorAll('.character-ai-style.chatbox-container').forEach(container => {
+                container.style.backgroundColor = '#d8eefe';
+                container.style.padding = '20px';
+                container.style.borderRadius = '12px';
+                container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+            });
+            
+            // Style input textarea
+            document.querySelectorAll('.message-input textarea').forEach(input => {
+                input.style.backgroundColor = '#fffffe';
+                input.style.border = '1px solid #90b4ce';
+                input.style.borderRadius = '20px';
+                input.style.padding = '12px 16px';
+                input.style.fontSize = '14px';
+                input.style.color = '#094067';
+                input.style.resize = 'none';
+            });
+            
+            // Style send button
+            document.querySelectorAll('.send-btn').forEach(btn => {
+                btn.style.backgroundColor = '#3da9fc';
+                btn.style.color = '#fffffe';
+                btn.style.fontWeight = 'bold';
+                btn.style.borderRadius = '20px';
+                btn.style.padding = '8px 16px';
+                btn.style.border = 'none';
+            });
+            
+            // Style clear button
+            document.querySelectorAll('.clear-btn').forEach(btn => {
+                btn.style.backgroundColor = '#094067';
+                btn.style.color = '#fffffe';
+                btn.style.fontWeight = 'bold';
+                btn.style.borderRadius = '20px';
+                btn.style.padding = '8px 16px';
+                btn.style.border = 'none';
+            });
+            
+            // Fix message bubble alignment for consistent layout
+            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
+                wrap.style.display = "flex";
+                wrap.style.alignItems = "flex-start";
+                wrap.style.gap = "8px";
+                wrap.style.marginBottom = "16px";
+            });
+            
+            // Style chat header
+            document.querySelectorAll('.chat-header').forEach(header => {
+                header.style.backgroundColor = '#094067';
+                header.style.color = '#fffffe';
+                header.style.padding = '15px';
+                header.style.borderRadius = '12px 12px 0 0';
+                header.style.marginBottom = '0';
+            });
+            
+            // Style student name in header
+            document.querySelectorAll('.student-name-header').forEach(name => {
+                name.style.color = '#fffffe';
+                name.style.fontSize = '24px';
+                name.style.fontWeight = 'bold';
+                name.style.margin = '0 auto';
+                name.style.textAlign = 'center';
+            });
+            
+            // Style back button
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.style.backgroundColor = 'transparent';
+                btn.style.border = '1px solid #fffffe';
+                btn.style.color = '#fffffe';
+                btn.style.borderRadius = '5px';
+                btn.style.padding = '5px 10px';
+            });
+        }
         
-        // Fix avatar containers in messages
-        document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot [class*="message"] > div:first-child').forEach(container => {
-            if (!container.closest('.character-card')) {
-                container.style.width = '48px';
-                container.style.height = '48px'; 
-                container.style.borderRadius = '50%';
-                container.style.overflow = 'hidden';
-                container.style.border = '2px solid #094067';
-                container.style.padding = '0';
-                container.style.margin = '0';
-                container.style.boxShadow = 'none';
-                container.style.backgroundColor = 'transparent';
-                container.style.minWidth = '48px';
-                container.style.minHeight = '48px';
-                container.style.flexShrink = '0';
-            }
-        });
-        
-        // Style bot messages (blue)
-        document.querySelectorAll('.gradio-chatbot .message.bot').forEach(msg => {
-            msg.style.backgroundColor = '#3da9fc';
-            msg.style.color = '#fffffe';
-            msg.style.borderBottomLeftRadius = '6px';
-            msg.style.borderTopLeftRadius = '18px';
-            msg.style.borderTopRightRadius = '18px';
-            msg.style.borderBottomRightRadius = '18px';
-            msg.style.marginLeft = '12px';
-            msg.style.marginRight = 'auto';
-            msg.style.maxWidth = '80%';
-            msg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-            msg.style.padding = '12px 16px';
-            msg.style.wordWrap = 'break-word';
-        });
-        
-        // Style user messages (white)
-        document.querySelectorAll('.gradio-chatbot .message.user').forEach(msg => {
-            msg.style.backgroundColor = '#fffffe';
-            msg.style.color = '#094067';
-            msg.style.borderBottomRightRadius = '6px';
-            msg.style.borderTopLeftRadius = '18px';
-            msg.style.borderTopRightRadius = '18px';
-            msg.style.borderBottomLeftRadius = '18px';
-            msg.style.marginRight = '12px';
-            msg.style.marginLeft = 'auto';
-            msg.style.maxWidth = '80%';
-            msg.style.border = '1px solid #90b4ce';
-            msg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
-            msg.style.padding = '12px 16px';
-            msg.style.wordWrap = 'break-word';
-        });
-        
-        // Style chat container background
-        document.querySelectorAll('.character-ai-style.chatbox-container').forEach(container => {
-            container.style.backgroundColor = '#d8eefe';
-            container.style.padding = '20px';
-            container.style.borderRadius = '12px';
-            container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
-        });
-        
-        // Style input textarea
-        document.querySelectorAll('.message-input textarea').forEach(input => {
-            input.style.backgroundColor = '#fffffe';
-            input.style.border = '1px solid #90b4ce';
-            input.style.borderRadius = '20px';
-            input.style.padding = '12px 16px';
-            input.style.fontSize = '14px';
-            input.style.color = '#094067';
-            input.style.resize = 'none';
-        });
-        
-        // Style send button
-        document.querySelectorAll('.send-btn').forEach(btn => {
-            btn.style.backgroundColor = '#3da9fc';
-            btn.style.color = '#fffffe';
-            btn.style.fontWeight = 'bold';
-            btn.style.borderRadius = '20px';
-            btn.style.padding = '8px 16px';
-            btn.style.border = 'none';
-        });
-        
-        // Style clear button
-        document.querySelectorAll('.clear-btn').forEach(btn => {
-            btn.style.backgroundColor = '#094067';
-            btn.style.color = '#fffffe';
-            btn.style.fontWeight = 'bold';
-            btn.style.borderRadius = '20px';
-            btn.style.padding = '8px 16px';
-            btn.style.border = 'none';
-        });
-        
-        // Fix message bubble alignment for consistent layout
-        document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
-            wrap.style.display = "flex";
-            wrap.style.alignItems = "flex-start";
-            wrap.style.gap = "8px";
-            wrap.style.marginBottom = "16px";
-        });
-        
-        // Style chat header
-        document.querySelectorAll('.chat-header').forEach(header => {
-            header.style.backgroundColor = '#094067';
-            header.style.color = '#fffffe';
-            header.style.padding = '15px';
-            header.style.borderRadius = '12px 12px 0 0';
-            header.style.marginBottom = '0';
-        });
-        
-        // Style student name in header
-        document.querySelectorAll('.student-name-header').forEach(name => {
-            name.style.color = '#fffffe';
-            name.style.fontSize = '24px';
-            name.style.fontWeight = 'bold';
-            name.style.margin = '0 auto';
-            name.style.textAlign = 'center';
-        });
-        
-        // Style back button
-        document.querySelectorAll('.back-btn').forEach(btn => {
-            btn.style.backgroundColor = 'transparent';
-            btn.style.border = '1px solid #fffffe';
-            btn.style.color = '#fffffe';
-            btn.style.borderRadius = '5px';
-            btn.style.padding = '5px 10px';
-        });
-    }
-    
-    // Call the styling function initially and then periodically to ensure consistent appearance
-    fixChatStyles();
-    setInterval(fixChatStyles, 1000);
-    
-    // Set up a mutation observer to watch for DOM changes and reapply styles
-    const observer = new MutationObserver(function(mutations) {
+        // Call the fix function initially to apply styles
         fixChatStyles();
-    });
-    
-    // Start observing the document body for changes
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+        
+        // Set up a mutation observer to watch for DOM changes and reapply styles
+        const observer = new MutationObserver(function(mutations) {
+            fixChatStyles();
+        });
+        
+        // Start observing the entire document for changes to catch all UI updates
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // Also periodically call the fix function for reliability
+        setInterval(fixChatStyles, 1000);
+    }
+    """)
 
 # Run the application when script is executed directly
 if __name__ == "__main__":
