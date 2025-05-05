@@ -841,3 +841,9 @@ with gr.Blocks(css=custom_css) as demo:
                 msg.style.padding = '12px 16px';
                 msg.style.wordWrap = 'break-word';
             });
+# Run the application when script is executed directly
+if __name__ == "__main__":
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=int(os.environ.get("PORT", 7860))
+    )
