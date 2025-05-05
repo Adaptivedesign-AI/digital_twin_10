@@ -148,6 +148,18 @@ body {
     text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important; /* 添加轻微文字阴影增强对比度 */
 }
 
+/* 额外添加更多可能的卡片头部选择器 */
+.character-card div:first-of-type,
+.character-card .svelte-1pw0mi9,
+.character-card > .svelte-1adtsa9,
+.gradio-card-header,
+.character-card [class*="card-header"],
+.character-card [class*="header"] {
+    background-color: #094067 !important;
+    color: #fffffe !important;
+    font-weight: bold !important;
+}
+
 /* 学生信息样式 */
 .student-name {
     font-size: 18px;
