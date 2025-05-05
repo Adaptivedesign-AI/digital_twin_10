@@ -195,6 +195,47 @@ body {
     justify-content: center;
 }
 
+
+/* White title text */
+.white-title h1 {
+    color: white !important;
+}
+
+/* Header container */
+.header-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: #1a365d;
+    border-radius: 8px 8px 0 0;
+    padding: 0;
+}
+
+/* Logo container */
+.logo-container {
+    width: 40px !important;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Title container */
+.title-container {
+    flex-grow: 1;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Title text */
+.main-title h1 {
+    color: white !important;
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
 .main-title img {
     width: 40px;
     height: 40px;
@@ -661,9 +702,11 @@ with gr.Blocks(css=custom_css) as demo:
     with selection_page:
         with gr.Column(elem_classes="container"):
             # Updated title with brain icon and no hyphen
-            with gr.Row(elem_classes="main-title"):
-                gr.Image(value="avatar/brain.png", show_label=False, height=40, width=40)
-                gr.Markdown("# Generative Digital Adolescent Cohort")
+            with gr.Row(elem_classes="header-container"):
+                with gr.Column(elem_classes="logo-container", scale=1):
+                    gr.Image(value="avatar/brain.png", show_label=False, height=40, width=40)
+                with gr.Column(elem_classes="title-container", scale=10):
+                    gr.Markdown("# Generative Digital Adolescent Cohort", elem_classes="main-title")
             
             # Updated subtitle with new text and description
             gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
