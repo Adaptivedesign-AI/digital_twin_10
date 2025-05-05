@@ -279,27 +279,36 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* 强制修复 avatar 尺寸（适用于 chat 中的 bot/user） */
-.gradio-chatbot .message-wrap .avatar {
+/* 强制设置对话框中头像大小和样式 */
+.gradio-chatbot .message-wrap .avatar,
+.gradio-chatbot .message-wrap > div:first-child {
     width: 60px !important;
     height: 60px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     border: 2px solid #094067 !important;
+    margin-right: 10px !important;
     background-color: transparent !important;
-    margin: 0 10px !important;
-    flex-shrink: 0 !important;
 }
 
-/* 让头像图片自动填满容器 */
 .gradio-chatbot .message-wrap .avatar img,
-.gradio-chatbot .avatar img.avatar-image {
+.gradio-chatbot .message-wrap img.avatar-image {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    display: block !important;
     border-radius: 50% !important;
-    border: none !important;
+    display: block !important;
+}
+
+.card-header {
+    color: white !important;
+    font-weight: 800 !important;
+    font-size: 16px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    background-color: #094067 !important;
+    padding: 10px !important;
+    font-family: 'Inter', sans-serif !important;
 }
 
 /* Custom styling for chat rows */
