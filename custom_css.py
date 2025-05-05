@@ -376,7 +376,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 10px;
     max-width: 800px;
     color: #555;
     font-size: 14px;
