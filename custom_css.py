@@ -471,4 +471,15 @@ div[class*="image-actions"] * {
     opacity: 0 !important;
     pointer-events: none !important;
 }
+/* 覆盖页面背景容器的默认灰色 */
+body,
+.gradio-container,
+.gr-block,
+.gr-box,
+.gr-container,
+div[class*="container"],
+div[class*="block"],
+div[class*="box"] {
+    background-color: #ffffff !important;
+}
 """
