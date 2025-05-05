@@ -108,21 +108,9 @@ body {
     }
 }
 
-/* Card styling with navy theme */
-.character-card {
-    background: #d8eefe;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid #094067;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    max-width: 220px;
-    margin: 0 auto;
-    color: #fffffe;
+.character-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
 .character-card:hover {
