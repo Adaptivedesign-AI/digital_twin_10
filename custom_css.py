@@ -159,20 +159,24 @@ body {
 
 .card-header {
     background-color: #094067 !important;
-    color: white !important;
-    text-align: center !important;
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    padding: 6px 0 !important;  /* 更小的内边距 */
-    height: 38px !important;   /* 固定高度可以控制外观一致 */
+    height: 38px !important;  /* 控制高度 */
+    padding: 0 8px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
     overflow: hidden !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.3px;
+}
+
+.card-header p {
+    color: white !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+    font-family: 'Inter', sans-serif !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 
