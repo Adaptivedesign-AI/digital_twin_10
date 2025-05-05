@@ -87,7 +87,7 @@ body {
 .card-header {
     background-color: #094067;
     color: white !important;
-    padding: 10px;
+     padding: 6px 10px !important;
     text-align: center;
     font-weight: 900 !important; /* Maximum bold weight */
     font-size: 18px !important;
