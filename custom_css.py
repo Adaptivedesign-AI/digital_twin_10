@@ -157,20 +157,20 @@ body {
     color: #094067;
 }
 
-/* 学生信息样式 - 修改为浅蓝色背景 */
+/* Replace the current student-description style with this */
 .student-description {
-    background-color: #e6f3ff !important;  /* 浅蓝色背景 */
     color: #000000 !important;
     padding: 10px !important;
     margin: 8px 12px !important;
-    border-radius: 8px !important;
+    background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
     text-align: center !important;
 }
 
+/* Also update the character-card style to ensure it uses the page background */
 .character-card {
-    background-color: transparent !important;
+    background-color: #d8eefe !important;
     border: none !important;
     box-shadow: none !important;
 }
