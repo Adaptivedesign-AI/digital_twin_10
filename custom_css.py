@@ -125,20 +125,26 @@ body {
 
 /* Avatar styling - updated with circular design */
 .character-card .avatar-container {
-    width: 120px!important;
-    height: 120px!important;
-    overflow: hidden!important;
-    margin: 15px auto!important;
-    border: 2px solid #094067!important;
-    border-radius: 50%!important; /* Circular avatars */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
+    width: 120px !important;
+    aspect-ratio: 1 / 1 !important;  /* 保持正圆 */
+    background-color: #fbe5bd !important;  /* 填充底色 */
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    margin: 15px auto !important;
+    border: 2px solid #094067 !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .character-card .avatar-container img {
-    width: 100%!important;
-    height: 100%!important;
-    object-fit: cover!important;
-    display: block!important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block !important;
 }
 
 /* Chat button styling with updated brand color */
