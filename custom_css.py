@@ -73,6 +73,12 @@ body {
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
+.card-header p {
+    color: white !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+}
+
 .card-header {
     background-color: #094067;
     color: white !important;
