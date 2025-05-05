@@ -227,7 +227,7 @@ body {
     text-align: center;
     margin: 10px auto 20px;
     max-width: 800px;
-    color: #5f6c7b; /* Paragraph color from palette */
+    color: #094067; /* Paragraph color from palette */
     font-size: 14px;
     line-height: 1.5;
 }
@@ -274,7 +274,7 @@ body {
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid #5f6c7b; /* Border color from palette */
+    border: 1px solid #094067; /* Border color from palette */
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -290,7 +290,7 @@ body {
 }
 
 .card-header {
-    background-color: #5f6c7b; /* Paragraph color from palette */
+    background-color: #094067; /* Paragraph color from palette */
     color: #fffffe; /* White text */
     padding: 10px;
     text-align: center;
@@ -375,7 +375,7 @@ body {
 }
 
 .back-btn {
-    background-color: #5f6c7b !important; /* Paragraph color */
+    background-color: #094067 !important; /* Paragraph color */
     border: none !important;
     color: #fffffe !important; /* White text */
     border-radius: 5px !important;
@@ -411,7 +411,7 @@ body {
 
 /* Clear button styling */
 .clear-btn {
-    background-color: #5f6c7b !important; /* Paragraph color */
+    background-color: #094067 !important; /* Paragraph color */
     color: #fffffe !important; /* White text */
     border: none !important;
     border-radius: 20px !important;
@@ -516,7 +516,7 @@ body {
     font-style: italic;
     display: block;
     margin-top: 5px;
-    color: #5f6c7b; /* Paragraph color */
+    color: #094067; /* Paragraph color */
     font-size: 0.9em;
 }
 
@@ -675,62 +675,66 @@ with gr.Blocks(css=custom_css) as demo:
     # Define selection page with responsive 5-column grid like Character.ai
     with selection_page:
         with gr.Column(elem_classes="container"):
-            # Updated title with brain icon and no hyphen
-            with selection_page:
-    with gr.Column(elem_classes="container"):
-        with gr.Row(elem_classes="header-container"):
-            with gr.Column(elem_classes="logo-title-container"):
-                gr.Image(
-                    value="avatar/brain_with_title.png", 
-                    show_label=False,
-                    elem_classes="title-image"
-                )     
+            with gr.Row(elem_classes="header-container"):
+                with gr.Column(elem_classes="logo-title-container"):
+                    gr.Image(
+                        value="avatar/brain_with_title.png", 
+                        show_label=False,
+                        elem_classes="title-image"
+                    )     
+            
             # Updated subtitle with new text and description
-            gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
-            gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", elem_classes="description-text")
+            gr.Markdown(
+                "### Choose a digital adolescent to chat with", 
+                elem_classes="selection-heading"
+            )
+            gr.Markdown(
+                "*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", 
+                elem_classes="description-text"
+            )
             
             # Create a responsive grid for all adolescents - 5 columns that adapt to screen size
             with gr.Column(elem_classes="character-grid"):
                 # Loop through all 10 adolescents to create a 5-column grid
-                for i in range(0, 10):
+                for i in range(10):
                     student_id = f"student{i+1:03d}"
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        # Changed from "Digital Twin" to actual name
+                        # Name header
                         gr.Markdown(f"{student_name}", elem_classes="card-header")
                         
-                        # Avatar container - circular with student image
+                        # Avatar container
                         with gr.Column(elem_classes="avatar-container"):
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
                                 elem_classes="avatar-img"
                             )
-                            
-                        # No need for name here as it's already in the header
+                        
+                        # Description
                         gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
-                        # Empty model tag (hidden)
+                        
+                        # Empty model tag
                         gr.Markdown("", elem_classes="model-tag")
                         
-                        # Chat button with click handler
+                        # Define hidden student ID to pass into callback
+                        hidden_student_id = gr.Textbox(value=student_id, visible=False, interactive=False, show_label=False)
+                        
+                        # Chat button with correct event binding
                         btn = gr.Button("Start Chat", elem_classes="chat-btn")
                         btn.click(
                             select_student_direct,
-                            inputs=[
-                                gr.Textbox(value=student_id, visible=False),
-                                history_dict_state
-                            ],
+                            inputs=[hidden_student_id, history_dict_state],
                             outputs=[
                                 selection_page, 
                                 chat_page, 
                                 selected_id_state, 
                                 name_display, 
                                 model_display,
-                                chatbot
+                                chatbot  # ✅ 如果你在 select_student_direct 中更新 avatar_images，这里会自动刷新头像
                             ]
                         )
-
     # Function to update avatar images in chatbot based on selected adolescent
     def update_chatbot_avatars(student_id):
         """
