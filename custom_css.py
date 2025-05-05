@@ -266,12 +266,14 @@ body {
 }
 
 /* Chat avatar styling */
-.gradio-chatbot .avatar img {
-    width: 48px !important!important;
-    height: 48px !important!important;
-    border-radius: 50% !important!important;
-    border: 2px solid #094067 !important!important;
-    object-fit: cover !important!important;
+.gradio-chatbot .avatar img,
+.gradio-chatbot img.avatar-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 50% !important;
+    border: none !important; /* 外边框由父容器控制 */
 }
 
 /* Ensure avatars are visible and styled correctly */
