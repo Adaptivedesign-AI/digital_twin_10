@@ -190,39 +190,28 @@ body {
 /* Header container styling */
 .header-container {
     display: flex;
+    justify-content: center;
     align-items: center;
     width: 100%;
-    background-color: #d8eefe; /* Navy blue from the palette */
+    background-color: #d8eefe; /* Light blue background */
     border-radius: 8px 8px 0 0;
-    padding: 0;
+    padding: 15px 0;
     margin: 0;
 }
 
-/* Logo container in top-left corner */
-.logo-container {
-    width: 40px !important;
-    flex: 0 0 40px !important;
-    padding: 10px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+/* Combined logo and title image container */
+.logo-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
-/* Title container for the centered text */
-.title-container {
-    flex-grow: 1 !important;
-    text-align: center !important;
-    padding: 10px 0 !important;
-}
-
-/* Title text styling */
-.title-text h1 {
-    color: #fffffe !important; /* White text */
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    font-size: 24px !important;
-    font-weight: bold !important;
+/* Title image styling */
+.title-image {
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto;
 }
 
 /* Selection heading styling */
@@ -687,12 +676,15 @@ with gr.Blocks(css=custom_css) as demo:
     with selection_page:
         with gr.Column(elem_classes="container"):
             # Updated title with brain icon and no hyphen
-            with gr.Row(elem_classes="header-container"):
-                with gr.Column(elem_classes="logo-container", scale=1):
-                    gr.Image(value="avatar/brain.png", show_label=False, height=40, width=40)
-                with gr.Column(elem_classes="title-container", scale=10):
-                    gr.Markdown("# Generative Digital Adolescent Cohort", elem_classes="main-title")
-            
+            with selection_page:
+    with gr.Column(elem_classes="container"):
+        with gr.Row(elem_classes="header-container"):
+            with gr.Column(elem_classes="logo-title-container"):
+                gr.Image(
+                    value="avatar/brain_with_title.png", 
+                    show_label=False,
+                    elem_classes="title-image"
+                )     
             # Updated subtitle with new text and description
             gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
             gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", elem_classes="description-text")
