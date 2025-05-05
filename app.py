@@ -178,6 +178,19 @@ body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
     background-color: #d8eefe; /* Light blue background */
 }
+/* Hide the hover overlay and buttons for image viewer */
+.no-interaction .svelte-1ipelgc,  /* download button wrapper */
+.no-interaction .svelte-1ipelgc > button,  /* individual buttons */
+.no-interaction .download, 
+.no-interaction .expand {
+    display: none !important;
+}
+
+/* Ensure the image is shown with transparent background */
+.title-image img {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
 
 /* Container for main content with light blue background */
 .container {
@@ -678,10 +691,12 @@ with gr.Blocks(css=custom_css) as demo:
             with gr.Row(elem_classes="header-container"):
                 with gr.Column(elem_classes="logo-title-container"):
                     gr.Image(
-                        value="avatar/brain_with_title.png", 
+                        value="avatar/brain_with_title.png",
                         show_label=False,
-                        elem_classes="title-image"
-                    )     
+                        interactive=False,
+                        tool=None,  
+                        elem_classes="title-image no-interaction"  
+                    )   
             
             # Updated subtitle with new text and description
             gr.Markdown(
