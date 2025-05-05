@@ -1,3 +1,5 @@
+# 定义自定义CSS样式
+custom_css = """
 /* Global styles with light blue background */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -454,3 +456,4 @@ body {
 .gradio-chatbot .user .message span {
     color: #094067 !important;
 }
+"""
