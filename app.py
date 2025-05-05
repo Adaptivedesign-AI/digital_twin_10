@@ -2,6 +2,7 @@ import gradio as gr
 import json
 import os
 from openai import OpenAI
+from custom_css import custom_css  # Import the custom CSS from separate file
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -171,417 +172,6 @@ def return_to_selection():
         gr.update(visible=True),   # Show selection page
         gr.update(visible=False)   # Hide chat page
     )
-
-# Custom CSS with updated styling
-custom_css = """
-/* Global styles for the entire application */
-body {
-    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #f9f9f9;
-}
-
-/* Header styling with updated brand color */
-.main-title {
-    background-color: #094067;
-    color: white;
-    padding: 15px;
-    margin: 0;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 8px 8px 0 0;
-}
-
-/* Character.ai style grid for selection page - 5 columns by default */
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Responsive breakpoints for character grid at different screen sizes */
-@media (max-width: 1200px) {
-    .character-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 992px) {
-    .character-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .character-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .character-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Card styling - updated with rounded edges */
-.character-card {
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #e0e0e0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    max-width: 220px;
-    margin: 0 auto;
-}
-
-.character-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-}
-
-/* Card header with maximum emphasis for student names */
-.card-header {
-    background-color: #094067;
-    color: white !important;
-    padding: 10px;
-    text-align: center;
-    font-weight: 900 !important; /* Maximum bold weight */
-    font-size: 18px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-/* Student info styling - compact and readable */
-.student-name {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 8px 0 4px;
-    text-align: center;
-}
-
-.student-description {
-    padding: 0 12px;
-    text-align: center;
-    color: #555;
-    font-size: 13px;
-    min-height: 45px;
-    overflow: hidden;
-    flex-grow: 1;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-}
-
-/* Hide model tag for cleaner interface */
-.model-tag {
-    display: none;
-}
-
-/* Avatar styling - updated with circular design */
-.character-card .avatar-container {
-    width: 120px!important;
-    height: 120px!important;
-    overflow: hidden!important;
-    margin: 15px auto!important;
-    border: 2px solid #094067!important;
-    border-radius: 50%!important; /* Circular avatars */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
-}
-
-.character-card .avatar-container img {
-    width: 100%!important;
-    height: 100%!important;
-    object-fit: cover!important;
-    display: block!important;
-}
-
-/* Chat button styling with updated brand color */
-.chat-btn {
-    background-color: #3da9fc !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 8px 0 !important;
-    margin: 10px auto 16px !important;
-    width: 85% !important;
-    display: block !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    font-size: 14px !important;
-    transition: background-color 0.2s !important;
-}
-
-.chat-btn:hover {
-    background-color: #2a93e0 !important;
-}
-
-/* Chat interface styling for better user experience */
-.chat-header {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: #094067;
-    color: white;
-    border-radius: 12px 12px 0 0;
-}
-
-.back-btn {
-    background-color: transparent !important;
-    border: 1px solid #fffffe !important;
-    color: #fffffe !important;
-    border-radius: 5px !important;
-    padding: 5px 10px !important;
-    margin-right: 15px !important;
-    margin-left: 0 !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s !important;
-}
-
-.back-btn:hover {
-    background-color: rgba(255,255,255,0.1) !important;
-}
-
-/* Input and buttons styling for better aesthetics */
-.message-input textarea {
-    background-color: #fffffe !important;
-    border: 1px solid #90b4ce !important;
-    border-radius: 20px !important;
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    color: #094067 !important;
-    resize: none !important;
-}
-
-/* Button container for vertical layout */
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-}
-
-.send-btn {
-    background-color: #3da9fc !important;
-    color: #fffffe !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    width: 100% !important;
-    border: none !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s !important;
-}
-
-.send-btn:hover {
-    background-color: #2a93e0 !important;
-}
-
-.clear-btn {
-    background-color: #094067 !important;
-    color: #fffffe !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    width: 100% !important;
-    border: none !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s !important;
-}
-
-.clear-btn:hover {
-    background-color: #073050 !important;
-}
-
-/* Character info styling in chat - simplified header without avatar */
-.character-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 5px;
-}
-
-/* Student name styling in header */
-.student-name-header {
-    color: #fffffe !important;
-    font-size: 24px !important;
-    font-weight: bold !important;
-    margin: 0 auto !important;
-    text-align: center !important;
-}
-
-/* Model display styling - hidden by default */
-.model-display {
-    display: none;
-}
-
-/* Character.ai style chat container */
-.character-ai-style {
-    border-radius: 12px;
-    background-color: #d8eefe !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-/* Custom styling for chat rows */
-.chatbot-row {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-/* Chat avatar styling */
-.gradio-chatbot .avatar img {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    border: 2px solid #094067 !important;
-    object-fit: cover !important;
-}
-
-/* Ensure avatars are visible and styled correctly */
-.gradio-chatbot .message-wrap.user .avatar,
-.gradio-chatbot .message-wrap.bot .avatar {
-    display: inline-block !important;
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    margin-right: 8px !important;
-    flex-shrink: 0 !important;
-    box-shadow: none !important;
-    border: 2px solid #094067 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
-
-/* Chat bubbles: AI is blue, user is white */
-.gradio-chatbot .message.bot {
-    background-color: #3da9fc !important;
-    color: #fffffe !important;
-    border-bottom-left-radius: 6px !important;
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
-    border-bottom-right-radius: 18px !important;
-    margin-left: 12px !important;
-    margin-right: auto !important;
-    max-width: 80%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-    padding: 12px 16px !important;
-    word-wrap: break-word !important;
-}
-
-.gradio-chatbot .message.user {
-    background-color: #fffffe !important;
-    color: #094067 !important;
-    border-bottom-right-radius: 6px !important;
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
-    border-bottom-left-radius: 18px !important;
-    margin-right: 12px !important;
-    margin-left: auto !important;
-    max-width: 80%;
-    border: 1px solid #90b4ce !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-    padding: 12px 16px !important;
-    word-wrap: break-word !important;
-}
-
-/* Chat area overall background (light blue) */
-.character-ai-style.chatbox-container {
-    background-color: #d8eefe !important;
-    padding: 20px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-}
-
-/* Emotion tag styling for emotional context */
-.emotion-tag {
-    font-style: italic !important;
-    font-size: 12px !important;
-    color: #666 !important;
-    margin-top: 4px !important;
-    display: block !important;
-}
-
-/* Project description styling */
-.project-description {
-    text-align: center;
-    margin: 0 auto 20px;
-    max-width: 800px;
-    color: #555;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 0 20px;
-    font-style: italic;
-}
-
-/* Chat avatar containers */
-.gradio-chatbot .avatar-container {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    border: 2px solid #094067 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
-
-/* Ensure proper message wrapping and alignment */
-.gradio-chatbot .message-wrap {
-    margin-bottom: 16px !important;
-    display: flex !important;
-    align-items: flex-start !important;
-}
-
-/* Selection heading styling for clear hierarchy */
-.selection-heading {
-    text-align: center;
-    margin: 20px 0 10px;
-    color: #094067;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* Container for main content with reasonable max width */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-/* Fix Gradio spacing issues */
-.gradio-container {
-    max-width: 100% !important;
-}
-
-/* Hide unnecessary margins in Gradio blocks */
-.block {
-    margin-bottom: 0 !important;
-}
-
-/* Center the name and model in the chat header */
-.center-header {
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* Input row: transparent background, vertically centered */
-.gradio-container .row {
-    background-color: transparent !important;
-    align-items: center !important;
-}
-"""
 
 # --------------------------------------------
 # = UI BUILDING =
@@ -841,6 +431,101 @@ with gr.Blocks(css=custom_css) as demo:
                 msg.style.padding = '12px 16px';
                 msg.style.wordWrap = 'break-word';
             });
+            
+            // Style chat container background
+            document.querySelectorAll('.character-ai-style.chatbox-container').forEach(container => {
+                container.style.backgroundColor = '#d8eefe';
+                container.style.padding = '20px';
+                container.style.borderRadius = '12px';
+                container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+            });
+            
+            // Style input textarea
+            document.querySelectorAll('.message-input textarea').forEach(input => {
+                input.style.backgroundColor = '#fffffe';
+                input.style.border = '1px solid #90b4ce';
+                input.style.borderRadius = '20px';
+                input.style.padding = '12px 16px';
+                input.style.fontSize = '14px';
+                input.style.color = '#094067';
+                input.style.resize = 'none';
+            });
+            
+            // Style send button
+            document.querySelectorAll('.send-btn').forEach(btn => {
+                btn.style.backgroundColor = '#3da9fc';
+                btn.style.color = '#fffffe';
+                btn.style.fontWeight = 'bold';
+                btn.style.borderRadius = '20px';
+                btn.style.padding = '8px 16px';
+                btn.style.border = 'none';
+            });
+            
+            // Style clear button
+            document.querySelectorAll('.clear-btn').forEach(btn => {
+                btn.style.backgroundColor = '#094067';
+                btn.style.color = '#fffffe';
+                btn.style.fontWeight = 'bold';
+                btn.style.borderRadius = '20px';
+                btn.style.padding = '8px 16px';
+                btn.style.border = 'none';
+            });
+            
+            // Fix message bubble alignment for consistent layout
+            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
+                wrap.style.display = "flex";
+                wrap.style.alignItems = "flex-start";
+                wrap.style.gap = "8px";
+                wrap.style.marginBottom = "16px";
+            });
+            
+            // Style chat header
+            document.querySelectorAll('.chat-header').forEach(header => {
+                header.style.backgroundColor = '#094067';
+                header.style.color = '#fffffe';
+                header.style.padding = '15px';
+                header.style.borderRadius = '12px 12px 0 0';
+                header.style.marginBottom = '0';
+            });
+            
+            // Style student name in header
+            document.querySelectorAll('.student-name-header').forEach(name => {
+                name.style.color = '#fffffe';
+                name.style.fontSize = '24px';
+                name.style.fontWeight = 'bold';
+                name.style.margin = '0 auto';
+                name.style.textAlign = 'center';
+            });
+            
+            // Style back button
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.style.backgroundColor = 'transparent';
+                btn.style.border = '1px solid #fffffe';
+                btn.style.color = '#fffffe';
+                btn.style.borderRadius = '5px';
+                btn.style.padding = '5px 10px';
+            });
+        }
+        
+        // Call the fix function initially to apply styles
+        fixChatStyles();
+        
+        // Set up a mutation observer to watch for DOM changes and reapply styles
+        const observer = new MutationObserver(function(mutations) {
+            fixChatStyles();
+        });
+        
+        // Start observing the entire document for changes to catch all UI updates
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // Also periodically call the fix function for reliability
+        setInterval(fixChatStyles, 1000);
+    }
+    """)
+
 # Run the application when script is executed directly
 if __name__ == "__main__":
     demo.launch(
