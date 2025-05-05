@@ -152,6 +152,12 @@ body {
     transition: background-color 0.2s !important;
 }
 
+.card-header p {
+    color: white !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+}
+
 .chat-btn:hover {
     background-color: #2a93e0 !important;
 }
