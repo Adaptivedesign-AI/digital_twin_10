@@ -78,23 +78,9 @@ body {
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-.card-header p {
-    color: white !important;
-    font-weight: 900 !important;
-    margin: 0 !important;
-}
 
-.card-header {
-    background-color: #094067;
-    color: white !important;
-     padding: 6px 10px !important;
-    text-align: center;
-    font-weight: 900 !important; /* Maximum bold weight */
-    font-size: 18px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
+
+
 
 /* Student info styling - compact and readable */
 .student-name {
@@ -171,11 +157,25 @@ body {
     transition: background-color 0.2s !important;
 }
 
-.card-header p {
+.card-header {
+    background-color: #094067 !important;
     color: white !important;
-    font-weight: 900 !important;
-    margin: 0 !important;
+    text-align: center !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    padding: 6px 0 !important;  /* 更小的内边距 */
+    height: 38px !important;   /* 固定高度可以控制外观一致 */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    overflow: hidden !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px;
 }
+
+
 
 .chat-btn:hover {
     background-color: #2a93e0 !important;
@@ -318,16 +318,7 @@ body {
 }
 
 
-.card-header {
-    color: white !important;
-    font-weight: 800 !important;
-    font-size: 16px !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-    background-color: #094067 !important;
-    padding: 10px !important;
-    font-family: 'Inter', sans-serif !important;
-}
+
 
 /* Custom styling for chat rows */
 .chatbot-row {
@@ -443,17 +434,7 @@ body {
 
 
 
-.card-header,
-.card-header * {
-    color: white !important;
-    font-weight: 900 !important;
-    font-size: 16px !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-    background-color: #094067 !important;
-    padding: 10px !important;
-    font-family: 'Inter', sans-serif !important;
-}
+
 
 /* 强制隐藏所有图片上的放大和下载按钮 */
 .gr-image-actions,
