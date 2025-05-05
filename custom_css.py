@@ -169,10 +169,12 @@ body {
     color: #094067;
 }
 
+/* 学生信息样式 - 修改为浅蓝色背景 */
 .student-description {
-    padding: 0 10px;
+    padding: 10px;
     text-align: center;
     color: #094067;
+    background-color: #d8eefe;  /* 浅蓝色背景 */
     font-size: 13px;
     min-height: 45px;
     overflow: hidden;
@@ -181,6 +183,7 @@ body {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    border: none !important;
 }
 
 /* 隐藏模型标签 */
