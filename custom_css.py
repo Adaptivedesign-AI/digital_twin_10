@@ -17,6 +17,11 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
+/* 隐藏图片上的放大和下载按钮 */
+.gr-image-actions {
+    display: none !important;
+}
+
 /* Character.ai style grid for selection page - 5 columns by default */
 .character-grid {
     display: grid;
