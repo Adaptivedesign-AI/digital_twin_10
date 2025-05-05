@@ -347,13 +347,6 @@ with gr.Blocks(css=custom_css) as demo:
         // Define the style fix function to ensure consistent rendering
         function fixAllStyles() {
             // Fix card headers - make names white on blue background
-            // 在fixAllStyles函数中添加以下代码来修复描述区域样式
-            document.querySelectorAll('.student-description, .character-card p:not(.card-header)').forEach(desc => {
-                desc.style.backgroundColor = '#d8eefe'; // 浅蓝色背景
-                desc.style.color = '#094067';  // 深蓝色文字
-                desc.style.border = 'none';
-                desc.style.padding = '10px';
-            });
             document.querySelectorAll('.character-card').forEach(card => {
                 // Find header element (first child div or specific class)
                 const headerDiv = card.querySelector('div:first-child');
