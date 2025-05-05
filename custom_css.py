@@ -1,5 +1,3 @@
-# 定义自定义CSS样式
-custom_css = """
 /* Global styles with light blue background */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -130,16 +128,22 @@ body {
     box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
-/* 卡片头部样式 - 修改为白色加粗字体 */
-.card-header {
-    background-color: #094067;
-    color: #fffffe; /* 纯白色文字 */
-    padding: 10px;
-    text-align: center;
-    font-weight: bold; /* 加粗 */
-    font-size: 16px; /* 稍微增大字号 */
-    letter-spacing: 0.5px; /* 增加字母间距提高可读性 */
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* 添加轻微文字阴影增强对比度 */
+/* 更广泛的卡片头部选择器 - 确保名字显示为白色加粗 */
+.card-header,
+.character-card > div:first-child,
+.character-card > div:first-of-type,
+.character-card > .markdown-text > h3,
+.character-card > .markdown-text > p:first-child,
+.character-card .markdown-text,
+.character-grid .character-card > div:nth-child(1) {
+    background-color: #094067 !important;
+    color: #fffffe !important; /* 纯白色文字 */
+    padding: 10px !important;
+    text-align: center !important;
+    font-weight: bold !important; /* 加粗 */
+    font-size: 16px !important; /* 稍微增大字号 */
+    letter-spacing: 0.5px !important; /* 增加字母间距提高可读性 */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important; /* 添加轻微文字阴影增强对比度 */
 }
 
 /* 学生信息样式 */
@@ -270,14 +274,15 @@ body {
     flex-direction: row-reverse !important;
 }
 
-/* 严格控制头像大小 - 30px */
+/* 头像大小增加50% - 从30px增至45px */
 .gradio-chatbot .avatar,
 .gradio-chatbot .avatar img,
 .gradio-chatbot img.avatar-image,
 .gradio-chatbot .message-wrap img,
-.gradio-chatbot .message-wrap .svelte-1y9ctm5 img {
-    width: 30px !important;
-    height: 30px !important;
+.gradio-chatbot .message-wrap .svelte-1y9ctm5 img,
+.gradio-chatbot .message-wrap > div:first-child img {
+    width: 45px !important;
+    height: 45px !important;
     border-radius: 50% !important;
     border: 2px solid #094067 !important;
     object-fit: cover !important;
@@ -285,16 +290,16 @@ body {
     box-shadow: none !important;
 }
 
-/* 头像容器限制 */
+/* 头像容器尺寸同步增加 */
 .gradio-chatbot .avatar-container,
 .gradio-chatbot .message-wrap > div:first-child,
 .gradio-chatbot .message-wrap .svelte-1y9ctm5 {
-    width: 30px !important;
-    height: 30px !important;
-    min-width: 30px !important;
-    min-height: 30px !important;
-    max-width: 30px !important;
-    max-height: 30px !important;
+    width: 45px !important;
+    height: 45px !important;
+    min-width: 45px !important;
+    min-height: 45px !important;
+    max-width: 45px !important;
+    max-height: 45px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     background-color: transparent !important;
@@ -313,8 +318,9 @@ body {
     line-height: 1.5 !important;
 }
 
-/* 用户消息气泡样式 - 白色背景深蓝文字 */
-.gradio-chatbot .message.user {
+/* 强制设置用户消息气泡样式 - 白色背景深蓝文字 */
+.gradio-chatbot .message.user,
+.gradio-chatbot .message-wrap.user .message {
     background-color: #fffffe !important;
     color: #094067 !important;
     border: 1px solid #90b4ce !important;
@@ -323,8 +329,9 @@ body {
     margin-left: auto !important;
 }
 
-/* 机器人消息气泡样式 - 蓝色背景白色文字 */
-.gradio-chatbot .message.bot {
+/* 强制设置机器人消息气泡样式 - 蓝色背景白色文字 */
+.gradio-chatbot .message.bot,
+.gradio-chatbot .message-wrap.bot .message {
     background-color: #3da9fc !important;
     color: #fffffe !important;
     border: none !important;
@@ -423,4 +430,27 @@ body {
     border: none !important;
     box-shadow: none !important;
 }
-"""
+
+/* 确保所有聊天气泡内容有正确的颜色 */
+.gradio-chatbot .message.bot *,
+.gradio-chatbot .message-wrap.bot .message * {
+    color: #fffffe !important;
+}
+
+.gradio-chatbot .message.user *,
+.gradio-chatbot .message-wrap.user .message * {
+    color: #094067 !important;
+}
+
+/* 确保任何可能的内嵌元素也正确着色 */
+.gradio-chatbot .bot .message p,
+.gradio-chatbot .bot .message div,
+.gradio-chatbot .bot .message span {
+    color: #fffffe !important;
+}
+
+.gradio-chatbot .user .message p,
+.gradio-chatbot .user .message div,
+.gradio-chatbot .user .message span {
+    color: #094067 !important;
+}
