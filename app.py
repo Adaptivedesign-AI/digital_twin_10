@@ -406,31 +406,32 @@ body {
     margin-bottom: 20px;
 }
 
-/* Small avatars for chat bubbles - 8px size */
+/* Chat avatar styling */
 .gradio-chatbot .avatar {
     display: block !important;
-    width: 8px !important;
-    height: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 50% !important;
-    margin-right: 4px !important;
+    margin-right: 8px !important;
     margin-top: 2px !important;
     flex-shrink: 0 !important;
-    border: none !important;
+    border: 1px solid #e0e0e0 !important;
     background-color: transparent !important;
+    overflow: hidden !important;
 }
 
 /* Ensure avatars are visible and styled correctly */
 .gradio-chatbot .message-wrap.user .avatar,
 .gradio-chatbot .message-wrap.bot .avatar {
     display: inline-block !important;
-    width: 8px !important;
-    height: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    margin-right: 4px !important;
+    margin-right: 8px !important;
     flex-shrink: 0 !important;
     box-shadow: none !important;
-    border: none !important;
+    border: 1px solid #e0e0e0 !important;
     padding: 0 !important;
     background-color: transparent !important;
 }
@@ -445,6 +446,7 @@ body {
     display: inline-block !important;
     margin-top: 5px !important;
     word-wrap: break-word !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
 }
 
 /* User message styling with updated brand color */
@@ -485,8 +487,8 @@ body {
     display: inline-block !important;
     margin: 0 !important;
     border-radius: 50% !important;
-    width: 48px !important;
-    height: 48px !important;
+    width: 32px !important;  /* Smaller avatar size in chat */
+    height: 32px !important; /* Smaller avatar size in chat */
     border: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
@@ -504,19 +506,34 @@ body {
     font-style: italic;
 }
 
-/* Remove avatar boxes but keep larger avatar size */
-.avatar-container {
+/* Selection page avatar containers - keep larger size with border */
+.character-card .avatar-container {
     background-color: transparent !important;
     border: 2px solid #094067 !important;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
     padding: 0 !important;
     border-radius: 50% !important;
+    width: 120px !important;
+    height: 120px !important;
+    margin: 15px auto !important;
+}
+
+/* Chat avatar containers - smaller with subtle styling */
+.gradio-chatbot .avatar-container {
+    background-color: transparent !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    margin: 2px !important;
 }
 
 .message-row .avatar-image, 
 .message-wrap .avatar-image {
-    width: 48px !important;
-    height: 48px !important;
+    width: 32px !important;
+    height: 32px !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -532,16 +549,22 @@ body {
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
 }
 
 /* Target avatar in message bubbles */
 .message-bubble .avatar-container,
 .message .avatar-container {
     background: transparent !important;
-    border: none !important;
+    border: 1px solid #e0e0e0 !important;
     padding: 0 !important;
-    margin: 0 !important;
+    margin: 2px !important;
     box-shadow: none !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
 }
 
 /* Disable rectangular borders around avatar images */
@@ -765,35 +788,69 @@ with gr.Blocks(css=custom_css) as demo:
             const avatarImages = document.querySelectorAll('img.avatar-image');
             const avatarContainers = document.querySelectorAll('.avatar-container, [class*="message"] .svelte-1y9ctm5');
             
-            // Fix avatar images - remove borders and set consistent size
+            // Fix avatar images with different styling for selection page vs chat
             avatarImages.forEach(img => {
-                img.style.border = 'none';
-                img.style.boxShadow = 'none';
+                // Default styling for all avatars
                 img.style.padding = '0';
-                img.style.margin = '0';
-                img.style.width = '48px';
-                img.style.height = '48px';
                 img.style.display = 'block';
                 img.style.borderRadius = '50%';
                 
-                // Set parent elements as well for consistency
-                if (img.parentElement) {
-                    img.parentElement.style.border = 'none';
-                    img.parentElement.style.boxShadow = 'none';
-                    img.parentElement.style.padding = '0';
-                    img.parentElement.style.margin = '0';
-                    img.parentElement.style.backgroundColor = 'transparent';
+                // Check if this is a selection page avatar or a chat avatar
+                if (img.closest('.character-card')) {
+                    // Selection page avatars - larger size
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.style.border = 'none';
+                    img.style.margin = '0';
+                } else {
+                    // Chat avatars - smaller size with subtle border
+                    img.style.width = '32px';
+                    img.style.height = '32px';
+                    img.style.border = 'none';
+                    img.style.margin = '0';
+                    
+                    // Set parent elements for chat avatars
+                    if (img.parentElement) {
+                        img.parentElement.style.width = '32px';
+                        img.parentElement.style.height = '32px';
+                        img.parentElement.style.border = '1px solid #e0e0e0';
+                        img.parentElement.style.borderRadius = '50%';
+                        img.parentElement.style.overflow = 'hidden';
+                        img.parentElement.style.padding = '0';
+                        img.parentElement.style.margin = '2px';
+                        img.parentElement.style.backgroundColor = 'transparent';
+                        img.parentElement.style.boxShadow = 'none';
+                    }
                 }
             });
             
-            // Fix avatar containers - remove borders and backgrounds
+            // Fix avatar containers - different styling for selection page vs chat
             avatarContainers.forEach(container => {
-                if (!container.closest('.character-card')) {
-                    container.style.border = 'none';
-                    container.style.boxShadow = 'none';
+                if (container.closest('.character-card')) {
+                    // Selection page avatar containers - keep larger with border
                     container.style.backgroundColor = 'transparent';
+                    container.style.border = '2px solid #094067';
+                    container.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
                     container.style.padding = '0';
-                    container.style.margin = '0';
+                    container.style.borderRadius = '50%';
+                    container.style.width = '120px';
+                    container.style.height = '120px';
+                    container.style.margin = '15px auto';
+                    container.style.overflow = 'hidden';
+                } else {
+                    // Chat avatar containers - smaller with subtle styling
+                    container.style.backgroundColor = 'transparent';
+                    container.style.border = '1px solid #e0e0e0';
+                    container.style.boxShadow = 'none';
+                    container.style.padding = '0';
+                    container.style.margin = '2px';
+                    container.style.width = '32px';
+                    container.style.height = '32px';
+                    container.style.minWidth = '32px';
+                    container.style.minHeight = '32px';
+                    container.style.borderRadius = '50%';
+                    container.style.overflow = 'hidden';
                 }
             });
             
@@ -803,11 +860,29 @@ with gr.Blocks(css=custom_css) as demo:
                 const possibleContainers = el.querySelectorAll('div:first-child');
                 possibleContainers.forEach(container => {
                     if (container.querySelector('img')) {
-                        container.style.border = 'none';
-                        container.style.boxShadow = 'none';
+                        // Style containers that hold avatars in messages
                         container.style.backgroundColor = 'transparent';
+                        container.style.border = '1px solid #e0e0e0';
+                        container.style.boxShadow = 'none';
                         container.style.padding = '0';
-                        container.style.margin = '0';
+                        container.style.margin = '2px';
+                        container.style.width = '32px';
+                        container.style.height = '32px';
+                        container.style.minWidth = '32px';
+                        container.style.minHeight = '32px';
+                        container.style.borderRadius = '50%';
+                        container.style.overflow = 'hidden';
+                        
+                        // Style the image inside
+                        const img = container.querySelector('img');
+                        if (img) {
+                            img.style.width = '100%';
+                            img.style.height = '100%';
+                            img.style.objectFit = 'cover';
+                            img.style.border = 'none';
+                            img.style.margin = '0';
+                            img.style.padding = '0';
+                        }
                     }
                 });
             });
@@ -863,14 +938,48 @@ with gr.Blocks(css=custom_css) as demo:
                 wrap.style.display = "flex";
                 wrap.style.alignItems = "flex-start";
                 wrap.style.gap = "8px"; // Controls spacing between avatar and message
+                wrap.style.marginBottom = "12px"; // Add spacing between messages
+                
+                // Make sure avatar container is properly sized
+                const avatarContainer = wrap.querySelector('div:first-child');
+                if (avatarContainer) {
+                    avatarContainer.style.width = '32px';
+                    avatarContainer.style.height = '32px';
+                    avatarContainer.style.minWidth = '32px';
+                    avatarContainer.style.minHeight = '32px';
+                    avatarContainer.style.flexShrink = '0';
+                }
             });
             
             // Set specific margins for bot and user messages
             document.querySelectorAll('.gradio-chatbot .message-wrap.bot').forEach(msg => {
-                msg.style.marginLeft = "12px"; // Reduced from 58px for more compact layout
+                msg.style.marginLeft = "8px"; // Reduced for more compact layout
+                
+                // Ensure bot avatar is visible
+                const avatar = msg.querySelector('div:first-child');
+                if (avatar) {
+                    avatar.style.display = 'block';
+                    avatar.style.visibility = 'visible';
+                }
             });
+            
             document.querySelectorAll('.gradio-chatbot .message-wrap.user').forEach(msg => {
-                msg.style.marginRight = "12px"; // Reduced from 58px for more compact layout
+                msg.style.marginRight = "8px"; // Reduced for more compact layout
+                msg.style.justifyContent = "flex-end"; // Align user messages to right
+                
+                // Ensure user avatar is visible
+                const avatar = msg.querySelector('div:first-child');
+                if (avatar) {
+                    avatar.style.display = 'block';
+                    avatar.style.visibility = 'visible';
+                    avatar.style.order = '1'; // Move avatar to right side for user messages
+                }
+                
+                // Move message to left of avatar for user messages
+                const messageContainer = msg.querySelector('.message');
+                if (messageContainer) {
+                    messageContainer.style.order = '0';
+                }
             });
             
             // Apply updated color scheme to all relevant elements
