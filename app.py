@@ -6,15 +6,15 @@ from openai import OpenAI
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# Load the shared prompt that will be used as a base for all student interactions
+# Load the shared prompt that will be used as a base for all adolescent interactions
 with open("shared_prompt.txt", "r") as f:
     shared_prompt = f.read().strip()
 
-# Load individual student prompts and combine them with the shared prompt
+# Load individual adolescent prompts and combine them with the shared prompt
 def load_prompts():
     """
-    Load all individual student prompts and combine them with the shared prompt.
-    Returns a dictionary with student IDs as keys and complete prompts as values.
+    Load all individual adolescent prompts and combine them with the shared prompt.
+    Returns a dictionary with adolescent IDs as keys and complete prompts as values.
     """
     prompts = {}
     for i in range(1, 11):
@@ -28,7 +28,7 @@ def load_prompts():
 # Initialize the prompts dictionary
 all_prompts = load_prompts()
 
-# Define student ID to name mapping for display purposes
+# Define adolescent ID to name mapping for display purposes
 name_dict = {
     "student001": "Jaden",
     "student002": "Elijah",
@@ -42,7 +42,7 @@ name_dict = {
     "student010": "Isaiah"
 }
 
-# Define student descriptions to provide context about each persona
+# Define adolescent descriptions to provide context about each persona
 student_descriptions = {
     "student001": "14 years old. Conflicted but responsible.",
     "student002": "16 years old. Rebellious and reckless.",
@@ -56,11 +56,11 @@ student_descriptions = {
     "student010": "15 years old. Energetic and driven."
 }
 
-# Create a function to initialize empty chat history for all students
+# Create a function to initialize empty chat history for all adolescents
 def get_empty_history_dict():
     """
-    Initialize an empty chat history dictionary for all students.
-    This ensures we can track conversations with each student separately.
+    Initialize an empty chat history dictionary for all adolescents.
+    This ensures we can track conversations with each adolescent separately.
     """
     return {student_id: [] for student_id in name_dict.keys()}
 
@@ -71,9 +71,9 @@ def chat(message, history, student_id, history_dict):
     
     Args:
         message: The user's input message
-        history: Current chat history for the selected student
-        student_id: ID of the currently selected student
-        history_dict: Dictionary containing all students' chat histories
+        history: Current chat history for the selected adolescent
+        student_id: ID of the currently selected adolescent
+        history_dict: Dictionary containing all adolescents' chat histories
         
     Returns:
         Empty message input, updated history, and updated history_dict
@@ -82,7 +82,7 @@ def chat(message, history, student_id, history_dict):
     if not message or not message.strip():
         return "", history, history_dict
         
-    # Get the appropriate system prompt for the selected student
+    # Get the appropriate system prompt for the selected adolescent
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
 
     # Format messages for the OpenAI API
@@ -111,14 +111,14 @@ def chat(message, history, student_id, history_dict):
         history_dict[student_id] = history
         return "", history, history_dict
 
-# Function to clear chat history for the current student
+# Function to clear chat history for the current adolescent
 def clear_current_chat(student_id, history_dict):
     """
-    Clear the chat history for the currently selected student.
+    Clear the chat history for the currently selected adolescent.
     
     Args:
-        student_id: ID of the currently selected student
-        history_dict: Dictionary containing all students' chat histories
+        student_id: ID of the currently selected adolescent
+        history_dict: Dictionary containing all adolescents' chat histories
         
     Returns:
         Empty history list and updated history_dict
@@ -126,25 +126,25 @@ def clear_current_chat(student_id, history_dict):
     history_dict[student_id] = []
     return [], history_dict
 
-# Function to get student model information (currently returns empty string)
+# Function to get adolescent model information (currently returns empty string)
 def get_student_model(student_id):
     """
-    Get model information for the selected student.
+    Get model information for the selected adolescent.
     Currently configured to return an empty string to hide model info.
     """
     return ""  # Return empty string instead of model info
 
-# Function to handle direct student selection and switch to chat interface
+# Function to handle direct adolescent selection and switch to chat interface
 def select_student_direct(student_id, history_dict):
     """
-    Handle direct student selection and switch to chat interface.
+    Handle direct adolescent selection and switch to chat interface.
     
     Args:
-        student_id: ID of the selected student
-        history_dict: Dictionary containing all students' chat histories
+        student_id: ID of the selected adolescent
+        history_dict: Dictionary containing all adolescents' chat histories
         
     Returns:
-        UI updates to show chat interface with selected student info
+        UI updates to show chat interface with selected adolescent info
     """
     student_name = name_dict.get(student_id, "Unknown")
     student_history = history_dict.get(student_id, [])
@@ -153,16 +153,16 @@ def select_student_direct(student_id, history_dict):
     return (
         gr.update(visible=False),  # Hide selection page
         gr.update(visible=True),   # Show chat page
-        student_id,                # Update selected student ID
-        f"# {student_name}",       # Update student name display
+        student_id,                # Update selected adolescent ID
+        f"# {student_name}",       # Update adolescent name display
         student_model,             # Update model display (now empty)
         student_history            # Update chat history
     )
 
-# Function to return to the student selection page
+# Function to return to the adolescent selection page
 def return_to_selection():
     """
-    Return to the student selection page from the chat interface.
+    Return to the adolescent selection page from the chat interface.
     
     Returns:
         UI updates to show selection page and hide chat page
@@ -172,7 +172,7 @@ def return_to_selection():
         gr.update(visible=False)   # Hide chat page
     )
 
-# Enhanced CSS for better UI with Character.ai style
+# Enhanced CSS for better UI with improved design
 custom_css = """
 /* Global styles for the entire application */
 body {
@@ -180,9 +180,9 @@ body {
     background-color: #f9f9f9;
 }
 
-/* Header styling with brand color */
+/* Header styling with deep blue brand color */
 .main-title {
-    background-color: #f7931e;
+    background-color: #1a365d;
     color: white;
     padding: 15px;
     margin: 0;
@@ -190,13 +190,32 @@ body {
     font-size: 24px;
     font-weight: bold;
     border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-title img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Description text styling */
+.description-text {
+    text-align: center;
+    margin: 10px auto 20px;
+    max-width: 800px;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 /* Character.ai style grid for selection page - 5 columns by default */
 .character-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    gap: 15px;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
@@ -227,49 +246,51 @@ body {
     }
 }
 
-/* Card styling - compact for 5-column layout */
+/* Card styling - updated with deep blue theme and rounded corners */
 .character-card {
-    background: white;
-    border-radius: 12px;
+    background: rgba(26, 54, 93, 0.85);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(255,255,255,0.1);
     height: 100%;
     display: flex;
     flex-direction: column;
     cursor: pointer;
     max-width: 220px;
     margin: 0 auto;
+    color: white;
 }
 
 .character-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.25);
 }
 
 .card-header {
-    background-color: #f7931e;
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    padding: 6px;
+    padding: 10px;
     text-align: center;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 15px;
 }
 
-/* Student info styling - compact and readable */
+/* Adolescent info styling - improved for readability */
 .student-name {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
-    margin: 6px 0 2px;
+    margin: 10px 0 5px;
     text-align: center;
+    color: white;
 }
 
 .student-description {
     padding: 0 10px;
     text-align: center;
-    color: #555;
-    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
     min-height: 45px;
     overflow: hidden;
     flex-grow: 1;
@@ -284,30 +305,31 @@ body {
     display: none;
 }
 
-/* Avatar styling in selection cards - simple square styling */
+/* Avatar styling in selection cards - circular styling */
 .avatar-container {
-    width: 80px!important;
-    height: 80px!important;
-    overflow: hidden!important;
-    margin: 10px auto!important;
-    border: 1px solid #e0e0e0!important;
-    border-radius: 8px!important;
+    width: 100px !important;
+    height: 100px !important;
+    overflow: hidden !important;
+    margin: 15px auto !important;
+    border: 2px solid rgba(255,255,255,0.3) !important;
+    border-radius: 50% !important;
+    background-color: #f0f0f0 !important;
 }
 
 .avatar-container img {
-    width: 100%!important;
-    height: 100%!important;
-    object-fit: cover!important;
-    display: block!important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
 }
 
-/* Chat button styling with brand color */
+/* Chat button styling with deep blue */
 .chat-btn {
-    background-color: #f7931e !important;
+    background-color: #4299e1 !important;
     color: white !important;
     border: none !important;
     border-radius: 20px !important;
-    padding: 5px 0 !important;
+    padding: 6px 0 !important;
     margin: 6px auto 10px !important;
     width: 85% !important;
     display: block !important;
@@ -317,7 +339,7 @@ body {
 }
 
 .chat-btn:hover {
-    background-color: #e67e00 !important;
+    background-color: #3182ce !important;
 }
 
 /* Chat interface styling for better user experience */
@@ -326,13 +348,15 @@ body {
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid #eee;
-    background-color: #f8f9fa;
+    background-color: #1a365d;
+    color: white;
+    border-radius: 8px 8px 0 0;
 }
 
 .back-btn {
-    background-color: #f5f5f5 !important;
-    border: 1px solid #ddd !important;
-    color: #555 !important;
+    background-color: rgba(255,255,255,0.2) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
     border-radius: 5px !important;
     margin-right: 15px !important;
     margin-left: 0 !important;
@@ -354,7 +378,7 @@ body {
 }
 
 .send-btn {
-    background-color: #f7931e !important;
+    background-color: #4299e1 !important;
     color: white !important;
     border: none !important;
     border-radius: 20px !important;
@@ -363,8 +387,8 @@ body {
 }
 
 .clear-btn {
-    background-color: #f0f0f0 !important;
-    color: #555 !important;
+    background-color: rgba(255,255,255,0.2) !important;
+    color: #1a365d !important;
     border: 1px solid #ddd !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
@@ -379,11 +403,12 @@ body {
     margin-left: 5px;
 }
 
-/* Student name styling in header */
+/* Adolescent name styling in header */
 .student-name-header {
     font-size: 22px;
     font-weight: bold;
     margin: 0;
+    color: white;
 }
 
 /* Model display styling - hidden by default */
@@ -447,7 +472,7 @@ body {
 
 /* User message styling with brand color */
 .gradio-chatbot .message.user {
-    background-color: #f7931e !important;
+    background-color: #4299e1 !important;
     color: white !important;
     border-bottom-right-radius: 4px !important;
     margin-left: auto !important;
@@ -543,7 +568,7 @@ img.avatar-image {
 .selection-heading {
     text-align: center;
     margin: 20px 0 10px;
-    color: #333;
+    color: #1a365d;
     font-size: 20px;
 }
 
@@ -587,7 +612,7 @@ img.avatar-image {
 # --------------------------------------------
 with gr.Blocks(css=custom_css) as demo:
 
-    # Initialize state to track history and selected student
+    # Initialize state to track history and selected adolescent
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
     
@@ -597,13 +622,13 @@ with gr.Blocks(css=custom_css) as demo:
     
     # Define chat page components first
     with chat_page:
-        # Chat header with student info - centered design without avatar
+        # Chat header with adolescent info - centered design without avatar
         with gr.Row(elem_classes="chat-header"):
             back_button = gr.Button("← Back", elem_classes="back-btn")
             
-            # Student information - centered, no avatar for cleaner look
+            # Adolescent information - centered, no avatar for cleaner look
             with gr.Column(elem_classes="center-header"):
-                name_display = gr.Markdown("Student Name")
+                name_display = gr.Markdown("Digital Adolescent Name")
                 model_display = gr.Markdown("", elem_classes="model-tag")  # Empty model display
             
         # Chat area with avatars for user/bot distinction
@@ -635,19 +660,27 @@ with gr.Blocks(css=custom_css) as demo:
     # Define selection page with responsive 5-column grid like Character.ai
     with selection_page:
         with gr.Column(elem_classes="container"):
-            gr.Markdown("# 🎓 Digital-Adolescent Cohort", elem_classes="main-title")
-            gr.Markdown("### Choose a student to chat with", elem_classes="selection-heading")
+            # Updated title with brain icon and no hyphen
+            with gr.Row(elem_classes="main-title"):
+                gr.Image(value="avatar/brain.png", show_label=False, height=40, width=40)
+                gr.Markdown("# Generative Digital Adolescent Cohort")
             
-            # Create a responsive grid for all students - 5 columns that adapt to screen size
+            # Updated subtitle with new text and description
+            gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
+            gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", elem_classes="description-text")
+            
+            # Create a responsive grid for all adolescents - 5 columns that adapt to screen size
             with gr.Column(elem_classes="character-grid"):
-                # Loop through all 10 students to create a 5-column grid
+                # Loop through all 10 adolescents to create a 5-column grid
                 for i in range(0, 10):
                     student_id = f"student{i+1:03d}"
+                    student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        gr.Markdown("Digital Twin", elem_classes="card-header")
+                        # Changed from "Digital Twin" to actual name
+                        gr.Markdown(f"{student_name}", elem_classes="card-header")
                         
-                        # Avatar container - simple column with student image
+                        # Avatar container - circular with student image
                         with gr.Column(elem_classes="avatar-container"):
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
@@ -655,7 +688,7 @@ with gr.Blocks(css=custom_css) as demo:
                                 elem_classes="avatar-img"
                             )
                             
-                        gr.Markdown(f"### {name_dict[student_id]}", elem_classes="student-name")
+                        # No need for name here as it's already in the header
                         gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                         # Empty model tag (hidden)
                         gr.Markdown("", elem_classes="model-tag")
@@ -678,13 +711,13 @@ with gr.Blocks(css=custom_css) as demo:
                             ]
                         )
 
-    # Function to update avatar images in chatbot based on selected student
+    # Function to update avatar images in chatbot based on selected adolescent
     def update_chatbot_avatars(student_id):
         """
-        Update the avatar images in the chatbot based on the selected student.
+        Update the avatar images in the chatbot based on the selected adolescent.
         
         Args:
-            student_id: ID of the selected student
+            student_id: ID of the selected adolescent
             
         Returns:
             Updated chatbot with appropriate avatars
@@ -693,7 +726,7 @@ with gr.Blocks(css=custom_css) as demo:
         bot_avatar = f"avatar/{student_id}.png"
         return gr.update(avatar_images=(user_avatar, bot_avatar))
         
-    # Event to update avatars when student is selected
+    # Event to update avatars when adolescent is selected
     selected_id_state.change(
         update_chatbot_avatars,
         inputs=[selected_id_state],
@@ -723,7 +756,7 @@ with gr.Blocks(css=custom_css) as demo:
         outputs=[msg, chatbot, history_dict_state],
     )
     
-    # Handle clear button click to reset conversation
+# Handle clear button click to reset conversation
     clear_btn.click(
         clear_current_chat,
         inputs=[selected_id_state, history_dict_state],
@@ -803,7 +836,7 @@ with gr.Blocks(css=custom_css) as demo:
                 
                 // Apply different styles for user vs bot messages
                 if (msg.classList.contains('user')) {
-                    msg.style.backgroundColor = '#f7931e';
+                    msg.style.backgroundColor = '#4299e1';
                     msg.style.color = 'white';
                     msg.style.borderBottomRightRadius = '4px';
                 } else {
