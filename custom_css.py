@@ -265,11 +265,11 @@ body {
 
 /* Chat avatar styling */
 .gradio-chatbot .avatar img {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    border: 2px solid #094067 !important;
-    object-fit: cover !important;
+    width: 48px !important!important;
+    height: 48px !important!important;
+    border-radius: 50% !important!important;
+    border: 2px solid #094067 !important!important;
+    object-fit: cover !important!important;
 }
 
 /* Ensure avatars are visible and styled correctly */
