@@ -332,7 +332,7 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly across browsers and Gradio versions
+    // JavaScript to ensure avatars display correctly across browsers and Gradio versions
     demo.load(None, None, None, js="""
     function() {
         // Define the style fix function to ensure consistent avatar rendering
@@ -361,25 +361,8 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // Apply maximum emphasis to student names in card headers
-            document.querySelectorAll('.card-header').forEach(header => {
-                // Maximum styling for card headers
-                header.style.backgroundColor = '#094067';
-                header.style.color = '#FFFFFF';
-                header.style.fontWeight = '900'; // Maximum bold weight
-                header.style.fontSize = '18px';
-                header.style.textTransform = 'uppercase';
-                header.style.letterSpacing = '0.5px';
-                header.style.textShadow = '0 1px 2px rgba(0,0,0,0.2)';
-                header.style.padding = '10px';
-                
-                // Add extra emphasis with HTML
-                if (!header.innerHTML.includes('<strong>')) {
-                    // Only modify if not already emphasized
-                    let text = header.textContent.trim();
-                    header.innerHTML = `<strong style="font-weight:900;">${text}</strong>`;
-                }
-            });
+            // 修复：保留卡片标题原始样式，不应该在JS中覆盖
+            // 不要改变.card-header样式，让CSS文件控制它
             
             // Fix avatar containers in messages
             document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot [class*="message"] > div:first-child').forEach(container => {
@@ -432,9 +415,9 @@ with gr.Blocks(css=custom_css) as demo:
                 msg.style.wordWrap = 'break-word';
             });
             
-            // Style chat container background
+            // Style chat container background - 修改为白色
             document.querySelectorAll('.character-ai-style.chatbox-container').forEach(container => {
-                container.style.backgroundColor = '#d8eefe';
+                container.style.backgroundColor = '#ffffff';
                 container.style.padding = '20px';
                 container.style.borderRadius = '12px';
                 container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
@@ -525,7 +508,6 @@ with gr.Blocks(css=custom_css) as demo:
         setInterval(fixChatStyles, 1000);
     }
     """)
-
 # Run the application when script is executed directly
 if __name__ == "__main__":
     demo.launch(
