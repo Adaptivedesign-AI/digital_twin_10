@@ -2,7 +2,23 @@ custom_css = """
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
+}
+
+/* Force white background on Gradio's default gray background */
+body, .gradio-container, #root, .gradio-app {
+    background-color: #ffffff !important;
+}
+
+/* Target all containers and blocks that might have gray backgrounds */
+.gradio-box, [class*="gradio-container"], .block, .panel, 
+.content-block, .container, .gradio-row, .wrap {
+    background-color: #ffffff !important;
+}
+
+/* Target the specific light gray background in the selection page */
+[data-testid="block"], div[class*="block"], div[class*="container"] {
+    background-color: #ffffff !important;
 }
 
 /* Header styling with updated brand color */
@@ -77,10 +93,6 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
-
-
-
-
 
 /* Student info styling - compact and readable */
 .student-name {
@@ -176,8 +188,6 @@ body {
 .card-header * {
     color: white !important;
 }
-
-
 
 .chat-btn:hover {
     background-color: #2a93e0 !important;
@@ -319,17 +329,11 @@ body {
     display: block !important;
 }
 
-
-
-
 /* Custom styling for chat rows */
 .chatbot-row {
     display: flex;
     margin-bottom: 20px;
 }
-
-
-
 
 /* Chat bubbles: AI is blue, user is white */
 .gradio-chatbot .message.bot {
@@ -363,7 +367,7 @@ body {
     word-wrap: break-word !important;
 }
 
-/* Chat area overall background (light blue) */
+/* Chat area overall background (changed to white) */
 .character-ai-style.chatbox-container {
     background-color: #ffffff !important;
     padding: 20px !important;
@@ -391,8 +395,6 @@ body {
     padding: 0 20px;
     font-style: italic;
 }
-
-
 
 /* Ensure proper message wrapping and alignment */
 .gradio-chatbot .message-wrap {
@@ -433,18 +435,11 @@ body {
     text-align: center;
 }
 
-
-
-
-
-
 /* 强制隐藏所有图片上的放大和下载按钮 */
 .gr-image-actions,
 .gr-image-actions * {
     display: none !important;
 }
-
-
 
 .character-ai-style.chatbox-container + .gr-box {
     background-color: transparent !important;
@@ -467,12 +462,3 @@ button[aria-label="Download"], button[aria-label="Fullscreen"] {
 }
 
 /* 强力隐藏所有放大/下载按钮 */
-div[class*="image-actions"],
-div[class*="image-actions"] * {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-"""
