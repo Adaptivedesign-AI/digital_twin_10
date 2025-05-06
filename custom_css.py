@@ -7,7 +7,7 @@ body {
 
 /* Header styling with updated brand color */
 .main-title {
-    background-color: #094067;
+    background-color: rgba(9, 64, 103, 0.6);
     color: white;
     padding: 15px;
     margin: 0;
