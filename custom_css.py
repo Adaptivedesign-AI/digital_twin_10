@@ -160,13 +160,13 @@ body {
 }
 
 .card-header {
-    background-color: #829eb2 !important;
+    background-color: #2f5e7f !important;
     color: white !important;
     font-weight: 900 !important;
     font-size: 14px !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    height: 40px !important;
+    height: 60px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
