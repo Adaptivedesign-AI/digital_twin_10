@@ -5,9 +5,9 @@ body {
     background-color: #f9f9f9;
 }
 
-/* Header styling with updated brand color */
+/* Header styling with updated brand color and reduced opacity */
 .main-title {
-    background-color: #094067;
+    background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
     color: white;
     padding: 15px;
     margin: 0;
@@ -73,17 +73,17 @@ body {
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-/* Card header with maximum emphasis for student names */
+/* Card header with title case for student names and reduced opacity */
 .card-header {
-    background-color: #094067;
+    background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
     color: white !important;
     padding: 10px;
     text-align: center;
     font-weight: 900 !important; /* Maximum bold weight */
     font-size: 20px !important;
-    text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    text-transform: capitalize !important; /* Changed from uppercase to capitalize */
 }
 
 /* Student info styling - compact and readable */
@@ -119,7 +119,7 @@ body {
     height: 120px!important;
     overflow: hidden!important;
     margin: 15px auto!important;
-    border: 2px solid #094067!important;
+    border: 2px solid rgba(9, 64, 103, 0.85)!important; /* Reduced opacity blue */
     border-radius: 50%!important; /* Circular avatars */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
 }
@@ -157,7 +157,7 @@ body {
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid #e0e0e0;
-    background-color: #094067;
+    background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
     color: white;
     border-radius: 12px 12px 0 0;
 }
@@ -215,7 +215,7 @@ body {
 }
 
 .clear-btn {
-    background-color: #094067 !important;
+    background-color: rgba(9, 64, 103, 0.85) !important; /* Reduced opacity blue */
     color: #fffffe !important;
     font-weight: bold !important;
     border-radius: 20px !important;
@@ -285,7 +285,7 @@ body {
     margin-right: 8px !important;
     flex-shrink: 0 !important;
     box-shadow: none !important;
-    border: 2px solid #094067 !important;
+    border: 2px solid rgba(9, 64, 103, 0.85) !important; /* Reduced opacity blue */
     padding: 0 !important;
     background-color: transparent !important;
 }
@@ -357,7 +357,7 @@ body {
     height: 48px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    border: 2px solid #094067 !important;
+    border: 2px solid rgba(9, 64, 103, 0.85) !important; /* Reduced opacity blue */
     margin: 0 !important;
     padding: 0 !important;
     background-color: transparent !important;
@@ -419,5 +419,34 @@ body {
     border: none !important;
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* Remove white box behind header image */
+.header-image-container {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.header-image-container img {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove white box behind header image - target the specific element */
+.header-image > div {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Target the outer wrapper div of the image */
+.gradio-image.header-image {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 """
