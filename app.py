@@ -1,8 +1,33 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+import requests
+import redis
 import gradio as gr
 import json
 import os
 from openai import OpenAI
-from custom_css import custom_css  # Import the custom CSS from separate file
+# from custom_css import custom_css  # Import the custom CSS from separate file
+from updated_custom_css import custom_css  # Import the custom CSS from separate file
+
+
+# === Redis Setup ===
+r = redis.Redis(
+    host="localhost", 
+    port=6379, 
+    db=0, 
+    decode_responses=True
+)
+# r = redis.Redis(
+#     host='redis-10727.c253.us-central1-1.gce.redns.redis-cloud.com',
+#     port=10727,
+#     decode_responses=True,
+#     username="default",
+#     password=os.environ.get("REDIS_PASSWORD"),
+# )
+
+QUERY_LIMIT = 3
+KEY_PREFIX = "ip_limit:"
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -65,8 +90,13 @@ def get_empty_history_dict():
     """
     return {student_id: [] for student_id in name_dict.keys()}
 
+def format_button(count):
+    if count > QUERY_LIMIT:
+        return {"value": f"Send (No Queries left)", "interactive": False }
+    return {"value": f"Send ({QUERY_LIMIT - count} Queries left)", "interactive": count < QUERY_LIMIT}
+
 # Core chat function that handles message processing and AI responses
-def chat(message, history, student_id, history_dict):
+def chat(message, history, student_id, history_dict, ip):
     """
     Process user messages and generate AI responses.
     
@@ -82,6 +112,24 @@ def chat(message, history, student_id, history_dict):
     # Check for empty messages
     if not message or not message.strip():
         return "", history, history_dict
+    
+    key = f"ip_limit:{ip}"
+    count = r.get(key)
+    count = int(count) if count else 0
+
+    count += 1
+
+    if count > QUERY_LIMIT:
+        reply = f"Query limit ({QUERY_LIMIT}) exceeded"
+        history.append(["", reply])
+        history_dict[student_id] = history
+        return "", history, history_dict, gr.update(**format_button(count)), gr.update(interactive=False)
+
+    pipe = r.pipeline()
+    pipe.incr(key)
+    if count == 0:
+        pipe.expire(key, 86400)
+    pipe.execute()
         
     # Get the appropriate system prompt for the selected student
     system_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
@@ -95,22 +143,24 @@ def chat(message, history, student_id, history_dict):
 
     try:
         # Generate response using OpenAI API
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=messages,
-            temperature=0.7
-        )
-        reply = response.choices[0].message.content.strip()
+        # response = client.chat.completions.create(
+        #     model="gpt-4o-mini",
+        #     messages=messages,
+        #     temperature=0.7
+        # )
+        # reply = response.choices[0].message.content.strip()
+
+        reply = "Query received!"
         
         # Update conversation history
         history.append([message, reply])
         history_dict[student_id] = history
-        return "", history, history_dict
+        return "", history, history_dict, gr.update(**format_button(count)), gr.update(interactive=count < QUERY_LIMIT)
     except Exception as e:
         # Handle API errors gracefully
         history.append([message, f"⚠️ Error: {str(e)}"])
         history_dict[student_id] = history
-        return "", history, history_dict
+        return "", history, history_dict, gr.update(**format_button(count)), gr.update(interactive=count < QUERY_LIMIT)
 
 # Function to clear chat history for the current student
 def clear_current_chat(student_id, history_dict):
@@ -159,6 +209,26 @@ def select_student_direct(student_id, history_dict):
         student_model,             # Update model display (now empty)
         student_history            # Update chat history
     )
+def get_ip_and_continue(agreed):
+        try:
+            ip = requests.get("https://api.ipify.org?format=json").json()["ip"]
+        except Exception as e:
+            ip = "unknown"
+
+        # updates = update_fn(agreed, ip)
+        # return (*updates,)
+        if agreed:
+            return (
+                gr.update(visible=False), # agreement page
+                gr.update(visible=True), # selection page
+                ip, # users ip
+            )
+        else : 
+            return(
+                gr.update(visible=True), 
+                gr.update(visible=False), 
+                ip
+            )
 
 # Function to return to the student selection page
 def return_to_selection():
@@ -177,13 +247,15 @@ def return_to_selection():
 # = UI BUILDING =
 # --------------------------------------------
 with gr.Blocks(css=custom_css) as demo:
+    current_ip = gr.State("")
 
     # Initialize state to track history and selected student
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
     
     # Create both pages as components for switching between them
-    selection_page = gr.Group(visible=True)
+    agreement_page = gr.Group(visible=True)
+    selection_page = gr.Group(visible=False)
     chat_page = gr.Group(visible=False)
     
     # Define chat page components first
@@ -220,8 +292,27 @@ with gr.Blocks(css=custom_css) as demo:
             
             # Right column for buttons (stacked vertically)
             with gr.Column(scale=1, elem_classes="button-container"):
-                send_btn = gr.Button("Send", elem_classes="send-btn")
+                send_btn = gr.Button(f"Send ({QUERY_LIMIT} Queries left)", elem_classes="send-btn")
                 clear_btn = gr.Button("Clear", elem_classes="clear-btn")
+    
+    # User agreement page
+    with agreement_page:
+        with gr.Column(visible=True) as agreement_page:
+            gr.Markdown("## 📝 User Agreement\n### By entering this page, you agree not to use these digital twin avatars to send and interact with harmful or inappropriate messages\nPlease accept to continue.")
+            agree_checkbox = gr.Checkbox(label="I accept the terms", visible=True)
+            agree_button = gr.Button("Continue", visible=True)
+
+            agree_button.click(
+                    get_ip_and_continue,
+                    inputs=[
+                        agree_checkbox,
+                    ],
+                    outputs=[
+                        agreement_page,
+                        selection_page, 
+                        current_ip
+                    ]
+                )
     
     # Define selection page with responsive 5-column grid like Character.ai
     with selection_page:
@@ -314,14 +405,14 @@ with gr.Blocks(css=custom_css) as demo:
     msg.submit(
         chat,
         inputs=[msg, chatbot, selected_id_state, history_dict_state],
-        outputs=[msg, chatbot, history_dict_state],
+        outputs=[msg, chatbot, history_dict_state, send_btn, msg],
     )
     
     # Handle send button click in the chat interface
     send_btn.click(
         chat,
         inputs=[msg, chatbot, selected_id_state, history_dict_state],
-        outputs=[msg, chatbot, history_dict_state],
+        outputs=[msg, chatbot, history_dict_state, send_btn, msg],
     )
     
     # Handle clear button click to reset conversation
