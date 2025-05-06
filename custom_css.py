@@ -381,7 +381,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 10px;
     max-width: 800px;
     color: #555;
     font-size: 14px;
@@ -412,7 +412,7 @@ body {
 /* Selection heading styling for clear hierarchy */
 .selection-heading {
     text-align: center;
-    margin: 5px 0 10px;
+    margin: 10px 0 10px;
     color: #094067;
     font-size: 22px;
     font-weight: bold;
