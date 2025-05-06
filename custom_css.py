@@ -111,17 +111,18 @@ body {
 
 /* Avatar styling - updated with circular design */
 .character-card .avatar-container {
-    width: 100px !important;
-    height: 100px !important;
+    width: 80px !important;
+    height: 80px !important;
+    background-color: transparent !important;  /* 去掉椭圆白底 */
     border-radius: 50% !important;
     overflow: hidden !important;
-    background-color: transparent !important;
-    margin: 12px auto 8px !important;  /* 垂直居中 */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
+    margin: 12px auto 8px !important;
+    box-shadow: none !important;  /* 去掉阴影 */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
+    padding: 0 !important;  /* 防止撑大 */
 }
 
 .character-card .avatar-container img {
@@ -129,15 +130,17 @@ body {
     height: 100% !important;
     object-fit: cover !important;
     border-radius: 50% !important;
-    display: block !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
-/* 移除嵌套层和按钮图标 */
 .character-card .avatar-container .gr-image,
 .character-card .avatar-container .gr-image * {
     all: unset !important;
     display: block !important;
     border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* Chat button styling with updated brand color */
@@ -157,7 +160,7 @@ body {
 }
 
 .card-header {
-    background-color: #094067 !important;
+    background-color: #829eb2 !important;
     color: white !important;
     font-weight: 900 !important;
     font-size: 14px !important;
@@ -185,7 +188,7 @@ body {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ffffff;
     background-color: #094067;
     color: white;
     border-radius: 12px 12px 0 0;
