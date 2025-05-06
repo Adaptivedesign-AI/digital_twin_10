@@ -448,6 +448,11 @@ body {
     box-shadow: none !important;
     border: none !important;
 }
+.gradio-container .row {
+    background-color: transparent !important;
+    align-items: center !important;
+    padding: 16px 12px !important;
+}
 
 /* 更强匹配 */
 div[class*="image-actions"] {
