@@ -12,21 +12,21 @@ from updated_custom_css import custom_css  # Import the custom CSS from separate
 
 
 # === Redis Setup ===
-r = redis.Redis(
-    host="localhost", 
-    port=6379, 
-    db=0, 
-    decode_responses=True
-)
 # r = redis.Redis(
-#     host='redis-10727.c253.us-central1-1.gce.redns.redis-cloud.com',
-#     port=10727,
-#     decode_responses=True,
-#     username="default",
-#     password=os.environ.get("REDIS_PASSWORD"),
+#     host="localhost", 
+#     port=6379, 
+#     db=0, 
+#     decode_responses=True
 # )
+r = redis.Redis(
+    host='redis-10727.c253.us-central1-1.gce.redns.redis-cloud.com',
+    port=10727,
+    decode_responses=True,
+    username="default",
+    password=os.environ.get("REDIS_PASSWORD"),
+)
 
-QUERY_LIMIT = 3
+QUERY_LIMIT = 200
 KEY_PREFIX = "ip_limit:"
 
 # Initialize OpenAI client with API key from environment variables
@@ -143,14 +143,12 @@ def chat(message, history, student_id, history_dict, ip):
 
     try:
         # Generate response using OpenAI API
-        # response = client.chat.completions.create(
-        #     model="gpt-4o-mini",
-        #     messages=messages,
-        #     temperature=0.7
-        # )
-        # reply = response.choices[0].message.content.strip()
-
-        reply = "Query received!"
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            temperature=0.7
+        )
+        reply = response.choices[0].message.content.strip()
         
         # Update conversation history
         history.append([message, reply])
