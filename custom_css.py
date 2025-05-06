@@ -1,6 +1,4 @@
-# Update these sections in your custom_css.py file
-
-# Fix for student names in card headers (maximum emphasis)
+custom_css =
 """
 /* Card header with maximum emphasis for student names */
 .card-header {
