@@ -104,7 +104,7 @@ body {
 
 /* Card header with title case for student names and reduced opacity */
 .card-header {
-    background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
+    background-color: #315d6e
     color: white !important;
     padding: 10px;
     text-align: center;
@@ -412,7 +412,7 @@ body {
 /* Selection heading styling for clear hierarchy */
 .selection-heading {
     text-align: center;
-    margin: 20px 0 10px;
+    margin: 5px 0 10px;
     color: #094067;
     font-size: 22px;
     font-weight: bold;
