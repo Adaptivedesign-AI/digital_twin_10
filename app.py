@@ -241,13 +241,15 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
     # Define selection page with responsive 5-column grid like Character.ai
     with selection_page:
         with gr.Column(elem_classes="container"):
-            # Title image
-            gr.Image(
-                value="avatar/brain_with_title.png",
-                show_label=False,
-                elem_classes="header-image",
-                height=120
-            )
+            # Title image with transparent background
+            with gr.Column(elem_classes="header-image-container"):
+                gr.Image(
+                    value="avatar/brain_with_title.png",
+                    show_label=False,
+                    elem_classes="header-image",
+                    height=120,
+                    container=False,  # This helps remove container styling
+                )
             
             gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
             gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", elem_classes="project-description")
@@ -260,8 +262,8 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        # Replace "Digital Twin" with student's name using maximum emphasis styling
-                        gr.Markdown(f"<strong style='color:white;font-weight:900;text-transform:uppercase;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
+                        # Title case for student names (not all caps)
+                        gr.Markdown(f"<strong style='color:white;font-weight:900;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
                         
                         # Avatar container - circular design
                         with gr.Column(elem_classes="avatar-container"):
@@ -347,7 +349,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         queue=False
     )
 
-    # Add troubleshooting JavaScript to fix navigation issues
+    # Add troubleshooting JavaScript to fix navigation issues and style fixes
     demo.load(None, None, None, js="""
     function() {
         // Helper function to log UI state for debugging
@@ -356,8 +358,38 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
             console.log("Chat page visibility:", document.querySelector('.chat-header')?.closest('[class*="group"]')?.style.display);
         }
         
-        // Log initial state after a short delay
-        setTimeout(logUIState, 2000);
+        // Remove white background from header image
+        function fixHeaderImage() {
+            // Find all elements related to the header image and remove backgrounds
+            document.querySelectorAll('.header-image, .header-image-container, .header-image > div, .header-image img').forEach(el => {
+                if (el) {
+                    el.style.backgroundColor = 'transparent';
+                    el.style.border = 'none';
+                    el.style.boxShadow = 'none';
+                    el.style.padding = '0';
+                    el.style.margin = '0';
+                    
+                    // Also remove parent containers' styling
+                    if (el.parentElement) {
+                        el.parentElement.style.backgroundColor = 'transparent';
+                        el.parentElement.style.border = 'none';
+                        el.parentElement.style.boxShadow = 'none';
+                    }
+                }
+            });
+            
+            // Target the specific wrapper div that Gradio creates
+            const imageWrappers = document.querySelectorAll('.gradio-image, .gradio-image > div, [data-testid="image"], [data-testid="image"] > div');
+            imageWrappers.forEach(wrapper => {
+                if (wrapper && wrapper.closest('.header-image-container, .header-image')) {
+                    wrapper.style.backgroundColor = 'transparent';
+                    wrapper.style.border = 'none';
+                    wrapper.style.boxShadow = 'none';
+                    wrapper.style.padding = '0';
+                    wrapper.style.margin = '0';
+                }
+            });
+        }
         
         // Make the entire character card clickable (not just the button)
         function makeCardsClickable() {
@@ -483,7 +515,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                 if (img.parentElement) {
                     img.parentElement.style.width = '48px';
                     img.parentElement.style.height = '48px';
-                    img.parentElement.style.border = '2px solid #094067';
+                    img.parentElement.style.border = '2px solid rgba(9, 64, 103, 0.85)';
                     img.parentElement.style.borderRadius = '50%';
                     img.parentElement.style.overflow = 'hidden';
                     img.parentElement.style.padding = '0';
@@ -495,13 +527,18 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         }
         
         // Apply all fixes initially
-        makeCardsClickable();
-        fixChatButtons();
-        fixBackButton();
-        styleAvatars();
+        setTimeout(() => {
+            fixHeaderImage();
+            makeCardsClickable();
+            fixChatButtons();
+            fixBackButton();
+            styleAvatars();
+            logUIState();
+        }, 500);
         
         // Set up a mutation observer to watch for DOM changes and reapply fixes
         const observer = new MutationObserver(function(mutations) {
+            fixHeaderImage();
             makeCardsClickable();
             fixChatButtons();
             fixBackButton();
@@ -516,6 +553,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         
         // Also periodically call the fixes for better reliability
         setInterval(() => {
+            fixHeaderImage();
             makeCardsClickable();
             fixChatButtons();
             fixBackButton();
