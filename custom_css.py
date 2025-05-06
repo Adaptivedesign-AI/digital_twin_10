@@ -441,12 +441,7 @@ body {
     display: none !important;
 }
 
-/* Input row: transparent background, vertically centered */
-.gradio-container .row {
-    background-color: #ffffff !important;  /* 或你想要的灰色 */
-    align-items: center !important;
-    padding: 16px 12px !important;
-}
+
 
 .character-ai-style.chatbox-container + .gr-box {
     background-color: transparent !important;
