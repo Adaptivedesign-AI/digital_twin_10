@@ -115,6 +115,7 @@ body {
     height: 100px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
+    background-color: transparent !important;
     margin: 12px auto 8px !important;  /* 垂直居中 */
     box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
     display: flex !important;
