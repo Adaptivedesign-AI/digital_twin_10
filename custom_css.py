@@ -151,7 +151,7 @@ body {
     border: 2px solid rgba(9, 64, 103, 0.85)!important; /* Reduced opacity blue */
     border-radius: 50%!important; /* Circular avatars */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
-    background-color: transparent!important;
+    background-color: #fce5be !important;
 }
 
 .character-card .avatar-container img,
