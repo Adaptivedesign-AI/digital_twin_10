@@ -178,7 +178,7 @@ body, .gradio-container, #root, .gradio-app {
     font-size: 14px !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    height: 50px !important;
+    height: 45px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
