@@ -187,7 +187,6 @@ def return_to_selection():
         gr.update(visible=True),   # Show selection page
         gr.update(visible=False)   # Hide chat page
     )
-
 # --------------------------------------------
 # = UI BUILDING =
 # --------------------------------------------
@@ -241,14 +240,15 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
     # Define selection page with responsive 5-column grid like Character.ai
     with selection_page:
         with gr.Column(elem_classes="container"):
-            # Title image with truly transparent background using HTML
-            gr.HTML(
-                """<div style="text-align: center; background: transparent;">
-                    <img src="file/avatar/brain_with_title.png" height="120" 
-                         style="background: transparent; max-height: 120px;">
-                </div>""",
-                elem_classes="header-image-container"
-            )
+            # Title image with transparent background
+            with gr.Column(elem_classes="header-image-container"):
+                gr.Image(
+                    value="avatar/brain_with_title.png",
+                    show_label=False,
+                    elem_classes="header-image",
+                    height=120,
+                    container=False,  # This helps remove container styling
+                )
             
             gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
             gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", elem_classes="project-description")
@@ -360,13 +360,32 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         // Remove white background from header image
         function fixHeaderImage() {
             // Find all elements related to the header image and remove backgrounds
-            document.querySelectorAll('.header-image-container, .header-image-container > *, img').forEach(el => {
+            document.querySelectorAll('.header-image, .header-image-container, .header-image > div, .header-image img').forEach(el => {
                 if (el) {
                     el.style.backgroundColor = 'transparent';
                     el.style.border = 'none';
                     el.style.boxShadow = 'none';
                     el.style.padding = '0';
                     el.style.margin = '0';
+                    
+                    // Also remove parent containers' styling
+                    if (el.parentElement) {
+                        el.parentElement.style.backgroundColor = 'transparent';
+                        el.parentElement.style.border = 'none';
+                        el.parentElement.style.boxShadow = 'none';
+                    }
+                }
+            });
+            
+            // Target the specific wrapper div that Gradio creates
+            const imageWrappers = document.querySelectorAll('.gradio-image, .gradio-image > div, [data-testid="image"], [data-testid="image"] > div');
+            imageWrappers.forEach(wrapper => {
+                if (wrapper && wrapper.closest('.header-image-container, .header-image')) {
+                    wrapper.style.backgroundColor = 'transparent';
+                    wrapper.style.border = 'none';
+                    wrapper.style.boxShadow = 'none';
+                    wrapper.style.padding = '0';
+                    wrapper.style.margin = '0';
                 }
             });
         }
