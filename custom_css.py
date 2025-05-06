@@ -5,6 +5,35 @@ body {
     background-color: #f9f9f9;
 }
 
+/* Make header transparent - remove white backgrounds */
+.header-image-container, .header-image-container > div, .header-image, .header-image > div {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* More aggressive targeting of Gradio-generated containers */
+.gradio-container .gradio-image, 
+.gradio-container .gradio-image > div, 
+.gradio-container [data-testid="image"], 
+.gradio-container [data-testid="image"] > div,
+.gradio-container [class*="image"],
+.gradio-container [class*="image"] > div,
+.gradio-container img[alt] {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ensure all image wrappers are transparent */
+.gradio-container img {
+    background-color: transparent !important;
+}
+
 /* Header styling with updated brand color and reduced opacity */
 .main-title {
     background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
@@ -113,7 +142,7 @@ body {
     display: none;
 }
 
-/* Avatar styling - updated with circular design */
+/* Avatar styling - updated with circular design and transparent background */
 .character-card .avatar-container {
     width: 120px!important;
     height: 120px!important;
@@ -122,13 +151,23 @@ body {
     border: 2px solid rgba(9, 64, 103, 0.85)!important; /* Reduced opacity blue */
     border-radius: 50%!important; /* Circular avatars */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
+    background-color: transparent!important;
 }
 
-.character-card .avatar-container img {
+.character-card .avatar-container img,
+.character-card .avatar-container > div,
+.character-card .avatar-img,
+.character-card [data-testid="image"],
+.character-card [data-testid="image"] > div {
     width: 100%!important;
     height: 100%!important;
     object-fit: cover!important;
     display: block!important;
+    background-color: transparent!important;
+    border: none!important;
+    box-shadow: none!important;
+    margin: 0!important;
+    padding: 0!important;
 }
 
 /* Chat button styling with updated brand color */
@@ -421,32 +460,30 @@ body {
     padding: 0 !important;
 }
 
-/* Remove white box behind header image */
-.header-image-container {
+/* Remove image backgrounds - target all image and container elements */
+.gradio-container .gradio-image, 
+.gradio-container img, 
+.gradio-container [data-testid="image"],
+.gradio-container [class*="image"],
+.gradio-container [class*="avatar"],
+.character-card .gradio-image,
+.character-card img,
+.character-card [data-testid="image"] {
     background-color: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
+    background: transparent !important;
 }
 
-.header-image-container img {
+/* Override any image background styles with !important */
+img, [data-testid="image"], [class*="image"] {
     background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+    background: transparent !important;
 }
 
-/* Remove white box behind header image - target the specific element */
-.header-image > div {
+/* Additional fixes for Gradio's image component containers */
+.gradio-image > div, .gradio-image > div > div, .gradio-image > div > img {
     background-color: transparent !important;
-    border: none !important;
+    background: transparent !important;
     box-shadow: none !important;
-}
-
-/* Target the outer wrapper div of the image */
-.gradio-image.header-image {
-    background-color: transparent !important;
     border: none !important;
-    box-shadow: none !important;
 }
 """
