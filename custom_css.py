@@ -113,7 +113,6 @@ body {
 .character-card .avatar-container {
     width: 100px !important;
     height: 100px !important;
-    background-color: #fbe5bd !important;  /* 底色 */
     border-radius: 50% !important;
     overflow: hidden !important;
     margin: 12px auto 8px !important;  /* 垂直居中 */
