@@ -183,6 +183,7 @@ body, .gradio-container, #root, .gradio-app {
     align-items: center !important;
     justify-content: center !important;
     font-family: 'Inter', sans-serif !important;
+    overflow: hidden !important;  /* 禁止滚动 */
 }
 
 .card-header * {
