@@ -183,7 +183,6 @@ body, .gradio-container, #root, .gradio-app {
     align-items: center !important;
     justify-content: center !important;
     font-family: 'Inter', sans-serif !important;
-    overflow: hidden !important;  /* 禁止滚动 */
 }
 
 .card-header * {
@@ -463,3 +462,11 @@ button[aria-label="Download"], button[aria-label="Fullscreen"] {
 }
 
 /* 强力隐藏所有放大/下载按钮 */
+div[class*="image-actions"],
+div[class*="image-actions"] * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+"""
