@@ -64,7 +64,7 @@ body {
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #ffffff;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -166,7 +166,7 @@ body {
     font-size: 14px !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    height: 60px !important;
+    height: 50px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
