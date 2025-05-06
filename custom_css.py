@@ -109,7 +109,7 @@ body {
     padding: 10px;
     text-align: center;
     font-weight: 900 !important; /* Maximum bold weight */
-    font-size: 20px !important;
+    font-size: 25px !important;
     letter-spacing: 1px;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     text-transform: capitalize !important; /* Changed from uppercase to capitalize */
@@ -381,7 +381,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 5px;
     max-width: 800px;
     color: #555;
     font-size: 14px;
@@ -412,7 +412,7 @@ body {
 /* Selection heading styling for clear hierarchy */
 .selection-heading {
     text-align: center;
-    margin: 5px 0 10px;
+    margin: 1px 0 10px;
     color: #094067;
     font-size: 22px;
     font-weight: bold;
