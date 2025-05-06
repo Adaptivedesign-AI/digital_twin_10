@@ -5,11 +5,18 @@ from openai import OpenAI
 from custom_css import custom_css  # Import the custom CSS from separate file
 
 # Initialize OpenAI client with API key from environment variables
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
 
 # Load the shared prompt that will be used as a base for all student interactions
-with open("shared_prompt.txt", "r") as f:
-    shared_prompt = f.read().strip()
+def load_shared_prompt():
+    try:
+        with open("shared_prompt.txt", "r") as f:
+            return f.read().strip()
+    except:
+        # Fallback if file doesn't exist
+        return "You are a helpful digital assistant roleplaying as a teen student."
+
+shared_prompt = load_shared_prompt()
 
 # Load individual student prompts and combine them with the shared prompt
 def load_prompts():
@@ -20,10 +27,14 @@ def load_prompts():
     prompts = {}
     for i in range(1, 11):
         path = f"prompts/{i}.json"
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                data = json.load(f)
-                prompts[f"student{i:03d}"] = shared_prompt + "\n\n" + data["prompt"]
+        try:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    data = json.load(f)
+                    prompts[f"student{i:03d}"] = shared_prompt + "\n\n" + data["prompt"]
+        except:
+            # Fallback if file doesn't exist or can't be read
+            prompts[f"student{i:03d}"] = shared_prompt + f"\n\nYou are student {i}."
     return prompts
 
 # Initialize the prompts dictionary
@@ -108,7 +119,8 @@ def chat(message, history, student_id, history_dict):
         return "", history, history_dict
     except Exception as e:
         # Handle API errors gracefully
-        history.append([message, f"⚠️ Error: {str(e)}"])
+        error_message = f"⚠️ Error: {str(e)}"
+        history.append([message, error_message])
         history_dict[student_id] = history
         return "", history, history_dict
 
@@ -151,6 +163,9 @@ def select_student_direct(student_id, history_dict):
     student_history = history_dict.get(student_id, [])
     student_model = get_student_model(student_id)
     
+    # Debug print for server logs
+    print(f"Selecting student: {student_id}, Name: {student_name}")
+    
     return (
         gr.update(visible=False),  # Hide selection page
         gr.update(visible=True),   # Show chat page
@@ -176,7 +191,7 @@ def return_to_selection():
 # --------------------------------------------
 # = UI BUILDING =
 # --------------------------------------------
-with gr.Blocks(css=custom_css) as demo:
+with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
 
     # Initialize state to track history and selected student
     history_dict_state = gr.State(get_empty_history_dict())
@@ -194,7 +209,7 @@ with gr.Blocks(css=custom_css) as demo:
             
             # Student information - centered, no avatar for cleaner look
             with gr.Column(elem_classes="center-header"):
-                name_display = gr.Markdown("Student Name")
+                name_display = gr.Markdown("Student Name", elem_id="student-name-header")
                 model_display = gr.Markdown("", elem_classes="model-tag")  # Empty model display
             
         # Chat area with avatars for user/bot distinction
@@ -226,7 +241,7 @@ with gr.Blocks(css=custom_css) as demo:
     # Define selection page with responsive 5-column grid like Character.ai
     with selection_page:
         with gr.Column(elem_classes="container"):
-            # Replace text title with image
+            # Title image
             gr.Image(
                 value="avatar/brain_with_title.png",
                 show_label=False,
@@ -261,9 +276,9 @@ with gr.Blocks(css=custom_css) as demo:
                         # Empty model tag (hidden)
                         gr.Markdown("", elem_classes="model-tag")
                         
-                        # Chat button with click handler
-                        btn = gr.Button("Start Chat", elem_classes="chat-btn")
-                        btn.click(
+                        # Chat button with click handler - Create a unique ID for each button
+                        chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
+                        chat_btn.click(
                             select_student_direct,
                             inputs=[
                                 gr.Textbox(value=student_id, visible=False),
@@ -332,32 +347,129 @@ with gr.Blocks(css=custom_css) as demo:
         queue=False
     )
 
-    # JavaScript to ensure avatars display correctly across browsers and Gradio versions
+    # Add troubleshooting JavaScript to fix navigation issues
     demo.load(None, None, None, js="""
     function() {
-        // Define the style fix function to ensure consistent avatar rendering
-        function fixChatStyles() {
-            // Apply maximum emphasis to student names in card headers
-            document.querySelectorAll('.card-header').forEach(header => {
-                // Maximum styling for card headers
-                header.style.backgroundColor = '#094067';
-                header.style.color = '#FFFFFF';
-                header.style.fontWeight = '900'; // Maximum bold weight
-                header.style.fontSize = '20px';
-                header.style.textTransform = 'uppercase';
-                header.style.letterSpacing = '1px';
-                header.style.textShadow = '0 1px 2px rgba(0,0,0,0.3)';
-                header.style.padding = '10px';
-                
-                // Add extra emphasis with HTML
-                if (!header.innerHTML.includes('<strong>')) {
-                    // Only modify if not already emphasized
-                    let text = header.textContent.trim();
-                    header.innerHTML = `<strong style="font-weight:900;color:white;text-transform:uppercase;">${text}</strong>`;
+        // Helper function to log UI state for debugging
+        function logUIState() {
+            console.log("Selection page visibility:", document.querySelector('.character-grid')?.closest('[class*="group"]')?.style.display);
+            console.log("Chat page visibility:", document.querySelector('.chat-header')?.closest('[class*="group"]')?.style.display);
+        }
+        
+        // Log initial state after a short delay
+        setTimeout(logUIState, 2000);
+        
+        // Make the entire character card clickable (not just the button)
+        function makeCardsClickable() {
+            document.querySelectorAll('.character-card').forEach(card => {
+                card.style.cursor = 'pointer';
+                // Only add click handler if not already added
+                if (!card.dataset.handlerAttached) {
+                    card.dataset.handlerAttached = 'true';
+                    card.addEventListener('click', function(e) {
+                        // Don't trigger if clicking on the button itself (to avoid double events)
+                        if (!e.target.classList.contains('chat-btn') && !e.target.closest('.chat-btn')) {
+                            // Find the button inside this card and click it
+                            const chatBtn = this.querySelector('.chat-btn');
+                            if (chatBtn) {
+                                console.log("Card clicked, triggering button click");
+                                chatBtn.click();
+                                
+                                // Manual UI visibility update
+                                setTimeout(() => {
+                                    try {
+                                        const selectionGroup = document.querySelector('.character-grid').closest('[class*="group"]');
+                                        const chatGroup = document.querySelector('.chat-header').closest('[class*="group"]');
+                                        
+                                        if (selectionGroup && chatGroup) {
+                                            selectionGroup.style.display = 'none';
+                                            chatGroup.style.display = 'block';
+                                            console.log("Manual visibility update applied");
+                                        }
+                                    } catch (err) {
+                                        console.error("Error in visibility update:", err);
+                                    }
+                                }, 300);
+                            }
+                        }
+                    });
                 }
             });
-
-            // Style chat avatars to fill entire container
+        }
+        
+        // Add explicit click handlers to chat buttons
+        function fixChatButtons() {
+            document.querySelectorAll('.chat-btn').forEach(btn => {
+                // Only add click handler if not already added
+                if (!btn.dataset.fixedHandler) {
+                    btn.dataset.fixedHandler = 'true';
+                    
+                    // Store the original click handlers
+                    const originalClickHandlers = [...btn.listeners?.('click') || []];
+                    
+                    // Remove and re-add event listeners to ensure our handler runs last
+                    btn.removeEventListener('click', btn.onclick);
+                    btn.addEventListener('click', function(e) {
+                        console.log("Chat button clicked");
+                        
+                        // Call original handlers
+                        if (originalClickHandlers && originalClickHandlers.length) {
+                            originalClickHandlers.forEach(handler => {
+                                if (typeof handler === 'function') {
+                                    handler.call(this, e);
+                                }
+                            });
+                        }
+                        
+                        // Ensure visibility state changes properly
+                        setTimeout(() => {
+                            try {
+                                const selectionGroup = document.querySelector('.character-grid').closest('[class*="group"]');
+                                const chatGroup = document.querySelector('.chat-header').closest('[class*="group"]');
+                                
+                                if (selectionGroup && chatGroup) {
+                                    selectionGroup.style.display = 'none';
+                                    chatGroup.style.display = 'block';
+                                    console.log("Manual button visibility update applied");
+                                }
+                            } catch (err) {
+                                console.error("Error in button visibility update:", err);
+                            }
+                        }, 300);
+                    });
+                }
+            });
+        }
+        
+        // Add debug click handler to back button
+        function fixBackButton() {
+            const backBtn = document.querySelector('.back-btn');
+            if (backBtn && !backBtn.dataset.fixedHandler) {
+                backBtn.dataset.fixedHandler = 'true';
+                backBtn.addEventListener('click', function() {
+                    console.log("Back button clicked");
+                    
+                    // Force visibility update after a short delay
+                    setTimeout(() => {
+                        try {
+                            const selectionGroup = document.querySelector('.character-grid').closest('[class*="group"]');
+                            const chatGroup = document.querySelector('.chat-header').closest('[class*="group"]');
+                            
+                            if (selectionGroup && chatGroup) {
+                                selectionGroup.style.display = 'block';
+                                chatGroup.style.display = 'none';
+                                console.log("Manual back button visibility update applied");
+                            }
+                        } catch (err) {
+                            console.error("Error in back button visibility update:", err);
+                        }
+                    }, 300);
+                });
+            }
+        }
+        
+        // Style chat avatars to fill entire container
+        function styleAvatars() {
             document.querySelectorAll('.gradio-chatbot .avatar img, .gradio-chatbot img.avatar-image').forEach(img => {
                 img.style.width = '100%';
                 img.style.height = '100%';
@@ -380,140 +492,20 @@ with gr.Blocks(css=custom_css) as demo:
                     img.parentElement.style.boxShadow = 'none';
                 }
             });
-            
-            // Fix avatar containers in messages
-            document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot [class*="message"] > div:first-child').forEach(container => {
-                if (!container.closest('.character-card')) {
-                    container.style.width = '48px';
-                    container.style.height = '48px'; 
-                    container.style.borderRadius = '50%';
-                    container.style.overflow = 'hidden';
-                    container.style.border = '2px solid #094067';
-                    container.style.padding = '0';
-                    container.style.margin = '0';
-                    container.style.boxShadow = 'none';
-                    container.style.backgroundColor = 'transparent';
-                    container.style.minWidth = '48px';
-                    container.style.minHeight = '48px';
-                    container.style.flexShrink = '0';
-                }
-            });
-            
-            // Style bot messages (blue)
-            document.querySelectorAll('.gradio-chatbot .message.bot').forEach(msg => {
-                msg.style.backgroundColor = '#3da9fc';
-                msg.style.color = '#fffffe';
-                msg.style.borderBottomLeftRadius = '6px';
-                msg.style.borderTopLeftRadius = '18px';
-                msg.style.borderTopRightRadius = '18px';
-                msg.style.borderBottomRightRadius = '18px';
-                msg.style.marginLeft = '12px';
-                msg.style.marginRight = 'auto';
-                msg.style.maxWidth = '80%';
-                msg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-                msg.style.padding = '12px 16px';
-                msg.style.wordWrap = 'break-word';
-            });
-            
-            // Style user messages (white)
-            document.querySelectorAll('.gradio-chatbot .message.user').forEach(msg => {
-                msg.style.backgroundColor = '#fffffe';
-                msg.style.color = '#094067';
-                msg.style.borderBottomRightRadius = '6px';
-                msg.style.borderTopLeftRadius = '18px';
-                msg.style.borderTopRightRadius = '18px';
-                msg.style.borderBottomLeftRadius = '18px';
-                msg.style.marginRight = '12px';
-                msg.style.marginLeft = 'auto';
-                msg.style.maxWidth = '80%';
-                msg.style.border = '1px solid #90b4ce';
-                msg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
-                msg.style.padding = '12px 16px';
-                msg.style.wordWrap = 'break-word';
-            });
-            
-            // Style chat container background
-            document.querySelectorAll('.character-ai-style.chatbox-container').forEach(container => {
-                container.style.backgroundColor = '#d8eefe';
-                container.style.padding = '20px';
-                container.style.borderRadius = '12px';
-                container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
-            });
-            
-            // Style input textarea
-            document.querySelectorAll('.message-input textarea').forEach(input => {
-                input.style.backgroundColor = '#fffffe';
-                input.style.border = '1px solid #90b4ce';
-                input.style.borderRadius = '20px';
-                input.style.padding = '12px 16px';
-                input.style.fontSize = '14px';
-                input.style.color = '#094067';
-                input.style.resize = 'none';
-            });
-            
-            // Style send button
-            document.querySelectorAll('.send-btn').forEach(btn => {
-                btn.style.backgroundColor = '#3da9fc';
-                btn.style.color = '#fffffe';
-                btn.style.fontWeight = 'bold';
-                btn.style.borderRadius = '20px';
-                btn.style.padding = '8px 16px';
-                btn.style.border = 'none';
-            });
-            
-            // Style clear button
-            document.querySelectorAll('.clear-btn').forEach(btn => {
-                btn.style.backgroundColor = '#094067';
-                btn.style.color = '#fffffe';
-                btn.style.fontWeight = 'bold';
-                btn.style.borderRadius = '20px';
-                btn.style.padding = '8px 16px';
-                btn.style.border = 'none';
-            });
-            
-            // Fix message bubble alignment for consistent layout
-            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
-                wrap.style.display = "flex";
-                wrap.style.alignItems = "flex-start";
-                wrap.style.gap = "8px";
-                wrap.style.marginBottom = "16px";
-            });
-            
-            // Style chat header
-            document.querySelectorAll('.chat-header').forEach(header => {
-                header.style.backgroundColor = '#094067';
-                header.style.color = '#fffffe';
-                header.style.padding = '15px';
-                header.style.borderRadius = '12px 12px 0 0';
-                header.style.marginBottom = '0';
-            });
-            
-            // Style back button to blue (#3da9fc)
-            document.querySelectorAll('.back-btn').forEach(btn => {
-                btn.style.backgroundColor = '#3da9fc';
-                btn.style.border = 'none';
-                btn.style.color = '#fffffe';
-                btn.style.borderRadius = '5px';
-                btn.style.padding = '5px 10px';
-                btn.style.fontWeight = 'bold';
-            });
-            
-            // Style student name in header
-            document.querySelectorAll('.student-name-header').forEach(name => {
-                name.style.color = '#fffffe';
-                name.style.fontSize = '24px';
-                name.style.fontWeight = 'bold';
-                name.style.margin = '0 auto';
-                name.style.textAlign = 'center';
-            });
         }
         
-        // Call the fix function initially to apply styles
-        fixChatStyles();
+        // Apply all fixes initially
+        makeCardsClickable();
+        fixChatButtons();
+        fixBackButton();
+        styleAvatars();
         
-        // Set up a mutation observer to watch for DOM changes and reapply styles
+        // Set up a mutation observer to watch for DOM changes and reapply fixes
         const observer = new MutationObserver(function(mutations) {
-            fixChatStyles();
+            makeCardsClickable();
+            fixChatButtons();
+            fixBackButton();
+            styleAvatars();
         });
         
         // Start observing the entire document for changes to catch all UI updates
@@ -522,14 +514,27 @@ with gr.Blocks(css=custom_css) as demo:
             subtree: true
         });
         
-        // Also periodically call the fix function for reliability
-        setInterval(fixChatStyles, 1000);
+        // Also periodically call the fixes for better reliability
+        setInterval(() => {
+            makeCardsClickable();
+            fixChatButtons();
+            fixBackButton();
+            styleAvatars();
+        }, 2000);
     }
     """)
 
 # Run the application when script is executed directly
 if __name__ == "__main__":
+    # Get port from environment variable or use default
+    port = int(os.environ.get("PORT", 7860))
+    
+    # Launch the application with appropriate server configuration
     demo.launch(
-        server_name="0.0.0.0",
-        server_port=int(os.environ.get("PORT", 7860))
+        server_name="0.0.0.0",  # Make the server publicly available
+        server_port=port,       # Use the specified port
+        share=False,            # Don't create a public share link (handled by hosting platform)
+        debug=True,             # Enable debug mode to help with troubleshooting
+        favicon_path="avatar/brain_with_title.png",  # Set favicon for browser tab
+        show_api=False          # Hide API documentation
     )
