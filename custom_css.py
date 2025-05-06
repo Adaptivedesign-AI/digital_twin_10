@@ -104,7 +104,7 @@ body {
 
 /* Card header with title case for student names and reduced opacity */
 .card-header {
-    background-color: #315d6e
+    background-color: #315d6e;
     color: white !important;
     padding: 10px;
     text-align: center;
