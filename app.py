@@ -245,8 +245,8 @@ with gr.Blocks(css=custom_css) as demo:
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        # Replace "Digital Twin" with student's name in white bold font
-                        gr.Markdown(f"**{student_name}**", elem_classes="card-header")
+                        # Replace "Digital Twin" with student's name using maximum emphasis styling
+                        gr.Markdown(f"<strong style='color:white;font-weight:900;text-transform:uppercase;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
                         
                         # Avatar container - circular design
                         with gr.Column(elem_classes="avatar-container"):
@@ -335,22 +335,39 @@ with gr.Blocks(css=custom_css) as demo:
     # JavaScript to ensure avatars display correctly across browsers and Gradio versions
     demo.load(None, None, None, js="""
     function() {
+        // Define the style fix function to ensure consistent avatar rendering
         function fixChatStyles() {
-            // 设置所有背景为白色
-            document.querySelectorAll('body, .gradio-container, .gradio-box, .block, .panel, div[class*="block"], div[class*="container"]').forEach(function(element) {
-                element.style.backgroundColor = '#ffffff';
+            // Apply maximum emphasis to student names in card headers
+            document.querySelectorAll('.card-header').forEach(header => {
+                // Maximum styling for card headers
+                header.style.backgroundColor = '#094067';
+                header.style.color = '#FFFFFF';
+                header.style.fontWeight = '900'; // Maximum bold weight
+                header.style.fontSize = '20px';
+                header.style.textTransform = 'uppercase';
+                header.style.letterSpacing = '1px';
+                header.style.textShadow = '0 1px 2px rgba(0,0,0,0.3)';
+                header.style.padding = '10px';
+                
+                // Add extra emphasis with HTML
+                if (!header.innerHTML.includes('<strong>')) {
+                    // Only modify if not already emphasized
+                    let text = header.textContent.trim();
+                    header.innerHTML = `<strong style="font-weight:900;color:white;text-transform:uppercase;">${text}</strong>`;
+                }
             });
-            
-            // 处理聊天头像
-            document.querySelectorAll('.gradio-chatbot .avatar img, .gradio-chatbot img.avatar-image').forEach(function(img) {
-                img.style.width = '48px';
-                img.style.height = '48px';
+
+            // Style chat avatars to fill entire container
+            document.querySelectorAll('.gradio-chatbot .avatar img, .gradio-chatbot img.avatar-image').forEach(img => {
+                img.style.width = '100%';
+                img.style.height = '100%';
                 img.style.borderRadius = '50%';
                 img.style.border = 'none';
                 img.style.objectFit = 'cover';
                 img.style.padding = '0';
                 img.style.margin = '0';
                 
+                // Style parent container
                 if (img.parentElement) {
                     img.parentElement.style.width = '48px';
                     img.parentElement.style.height = '48px';
@@ -364,8 +381,8 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // 处理消息容器
-            document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot [class*="message"] > div:first-child').forEach(function(container) {
+            // Fix avatar containers in messages
+            document.querySelectorAll('.gradio-chatbot .avatar-container, .gradio-chatbot [class*="message"] > div:first-child').forEach(container => {
                 if (!container.closest('.character-card')) {
                     container.style.width = '48px';
                     container.style.height = '48px'; 
@@ -382,8 +399,8 @@ with gr.Blocks(css=custom_css) as demo:
                 }
             });
             
-            // 设置机器人消息样式（蓝色）
-            document.querySelectorAll('.gradio-chatbot .message.bot').forEach(function(msg) {
+            // Style bot messages (blue)
+            document.querySelectorAll('.gradio-chatbot .message.bot').forEach(msg => {
                 msg.style.backgroundColor = '#3da9fc';
                 msg.style.color = '#fffffe';
                 msg.style.borderBottomLeftRadius = '6px';
@@ -398,8 +415,8 @@ with gr.Blocks(css=custom_css) as demo:
                 msg.style.wordWrap = 'break-word';
             });
             
-            // 设置用户消息样式（白色）
-            document.querySelectorAll('.gradio-chatbot .message.user').forEach(function(msg) {
+            // Style user messages (white)
+            document.querySelectorAll('.gradio-chatbot .message.user').forEach(msg => {
                 msg.style.backgroundColor = '#fffffe';
                 msg.style.color = '#094067';
                 msg.style.borderBottomRightRadius = '6px';
@@ -415,16 +432,16 @@ with gr.Blocks(css=custom_css) as demo:
                 msg.style.wordWrap = 'break-word';
             });
             
-            // 设置聊天容器背景为白色
-            document.querySelectorAll('.character-ai-style.chatbox-container').forEach(function(container) {
-                container.style.backgroundColor = '#ffffff';
+            // Style chat container background
+            document.querySelectorAll('.character-ai-style.chatbox-container').forEach(container => {
+                container.style.backgroundColor = '#d8eefe';
                 container.style.padding = '20px';
                 container.style.borderRadius = '12px';
                 container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
             });
             
-            // 设置输入框样式
-            document.querySelectorAll('.message-input textarea').forEach(function(input) {
+            // Style input textarea
+            document.querySelectorAll('.message-input textarea').forEach(input => {
                 input.style.backgroundColor = '#fffffe';
                 input.style.border = '1px solid #90b4ce';
                 input.style.borderRadius = '20px';
@@ -434,8 +451,8 @@ with gr.Blocks(css=custom_css) as demo:
                 input.style.resize = 'none';
             });
             
-            // 设置发送按钮样式
-            document.querySelectorAll('.send-btn').forEach(function(btn) {
+            // Style send button
+            document.querySelectorAll('.send-btn').forEach(btn => {
                 btn.style.backgroundColor = '#3da9fc';
                 btn.style.color = '#fffffe';
                 btn.style.fontWeight = 'bold';
@@ -444,8 +461,8 @@ with gr.Blocks(css=custom_css) as demo:
                 btn.style.border = 'none';
             });
             
-            // 设置清除按钮样式
-            document.querySelectorAll('.clear-btn').forEach(function(btn) {
+            // Style clear button
+            document.querySelectorAll('.clear-btn').forEach(btn => {
                 btn.style.backgroundColor = '#094067';
                 btn.style.color = '#fffffe';
                 btn.style.fontWeight = 'bold';
@@ -454,16 +471,16 @@ with gr.Blocks(css=custom_css) as demo:
                 btn.style.border = 'none';
             });
             
-            // 修复消息气泡对齐
-            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(function(wrap) {
+            // Fix message bubble alignment for consistent layout
+            document.querySelectorAll('.gradio-chatbot .message-wrap').forEach(wrap => {
                 wrap.style.display = "flex";
                 wrap.style.alignItems = "flex-start";
                 wrap.style.gap = "8px";
                 wrap.style.marginBottom = "16px";
             });
             
-            // 设置聊天头部样式
-            document.querySelectorAll('.chat-header').forEach(function(header) {
+            // Style chat header
+            document.querySelectorAll('.chat-header').forEach(header => {
                 header.style.backgroundColor = '#094067';
                 header.style.color = '#fffffe';
                 header.style.padding = '15px';
@@ -471,50 +488,42 @@ with gr.Blocks(css=custom_css) as demo:
                 header.style.marginBottom = '0';
             });
             
-            // 设置学生名称样式
-            document.querySelectorAll('.student-name-header').forEach(function(name) {
+            // Style back button to blue (#3da9fc)
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.style.backgroundColor = '#3da9fc';
+                btn.style.border = 'none';
+                btn.style.color = '#fffffe';
+                btn.style.borderRadius = '5px';
+                btn.style.padding = '5px 10px';
+                btn.style.fontWeight = 'bold';
+            });
+            
+            // Style student name in header
+            document.querySelectorAll('.student-name-header').forEach(name => {
                 name.style.color = '#fffffe';
                 name.style.fontSize = '24px';
                 name.style.fontWeight = 'bold';
                 name.style.margin = '0 auto';
                 name.style.textAlign = 'center';
             });
-            
-            // 设置返回按钮样式
-            document.querySelectorAll('.back-btn').forEach(function(btn) {
-                btn.style.backgroundColor = 'transparent';
-                btn.style.border = '1px solid #fffffe';
-                btn.style.color = '#fffffe';
-                btn.style.borderRadius = '5px';
-                btn.style.padding = '5px 10px';
-            });
-            
-            // 设置页脚为白色
-            document.querySelectorAll('footer').forEach(function(footer) {
-                footer.style.backgroundColor = '#ffffff';
-                var children = footer.querySelectorAll('*');
-                children.forEach(function(child) {
-                    child.style.backgroundColor = '#ffffff';
-                });
-            });
         }
         
-        // 初始运行样式修复
+        // Call the fix function initially to apply styles
         fixChatStyles();
         
-        // 设置监听器监视DOM变化并重新应用样式
-        var observer = new MutationObserver(function() {
+        // Set up a mutation observer to watch for DOM changes and reapply styles
+        const observer = new MutationObserver(function(mutations) {
             fixChatStyles();
         });
         
-        // 监视整个文档的变化
+        // Start observing the entire document for changes to catch all UI updates
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
         
-        // 定期运行修复函数以确保样式一致性
-        setInterval(fixChatStyles, 500);
+        // Also periodically call the fix function for reliability
+        setInterval(fixChatStyles, 1000);
     }
     """)
 
