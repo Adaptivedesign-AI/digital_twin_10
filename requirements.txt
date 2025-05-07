@@ -1,5 +1,6 @@
 gradio==5.29.0
 openai==1.77.0
+redis
 fastapi
 uvicorn
 python-dotenv
