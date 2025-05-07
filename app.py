@@ -20,7 +20,7 @@ from updated_custom_css import custom_css  # Import the custom CSS from separate
 # )
 r = redis.Redis(
     host=os.environ.get("REDIS_HOST"),
-    port=os.environ.get("REDIS_PORT"),
+    port=int(os.environ.get("REDIS_PORT")),
     decode_responses=True,
     username="default",
     password=os.environ.get("REDIS_PASSWORD"),
