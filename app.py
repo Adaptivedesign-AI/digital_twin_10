@@ -19,8 +19,8 @@ from updated_custom_css import custom_css  # Import the custom CSS from separate
 #     decode_responses=True
 # )
 r = redis.Redis(
-    host='redis-10727.c253.us-central1-1.gce.redns.redis-cloud.com',
-    port=10727,
+    host=os.environ.get("REDIS_HOST"),
+    port=os.environ.get("REDIS_PORT"),
     decode_responses=True,
     username="default",
     password=os.environ.get("REDIS_PASSWORD"),
@@ -617,7 +617,14 @@ with gr.Blocks(css=custom_css) as demo:
 
 # Run the application when script is executed directly
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    
+    # Launch the application with appropriate server configuration
     demo.launch(
-        server_name="0.0.0.0",
-        server_port=int(os.environ.get("PORT", 7860))
+        server_name="0.0.0.0",  # Make the server publicly available
+        server_port=port,       # Use the specified port
+        share=False,            # Don't create a public share link (handled by hosting platform)
+        debug=False,
+        favicon_path="avatar/brain_with_title.png",  # Set favicon for browser tab
+        show_api=False          # Hide API documentation
     )
