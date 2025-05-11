@@ -59,13 +59,13 @@ student_descriptions = {
     "student001": "14 years old. Bold and street-smart.",
     "student002": "16 years old. Detached and impulsive.",
     "student003": "14 years old. Sensitive and self-critical.",
-    "student004": "18 years old. Disciplined and grounded.",
+    "student004": "13 years old. Tough-minded and emotionally guarded.",
     "student005": "15 years old. Introspective and emotionally aware.",
-    "student006": "18 years old. Quiet but observant.",
+    "student006": "17 years old. Disciplined but emotionally withdrawn.",
     "student007": "16 years old. Goal-oriented and emotionally steady.",
     "student008": "15 years old. Friendly but cautious.",
     "student009": "17 years old. Thoughtful and quietly confident.",
-    "student010": "18 years old. Assertive and adventurous."
+    "student010": "16 years old. Restless and emotionally conflicted."
 }
 
 # Create a function to initialize empty chat history for all students
