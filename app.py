@@ -56,16 +56,16 @@ name_dict = {
 
 # Define student descriptions to provide context about each persona
 student_descriptions = {
-    "student001": "14 years old. Conflicted but responsible.",
-    "student002": "16 years old. Rebellious and reckless.",
-    "student003": "12 years old. Extreme and unstable.",
-    "student004": "18 years old. Mature and disciplined.",
-    "student005": "15 years old. Emotional and introspective.",
-    "student006": "16 years old. Moody and inconsistent.",
-    "student007": "13 years old. Cheerful and active.",
-    "student008": "18 years old. Focused and resilient.",
-    "student009": "14 years old. Tense and guarded.",
-    "student010": "15 years old. Energetic and driven."
+    "student001": "14 years old. Bold and street-smart.",
+    "student002": "16 years old. Detached and impulsive.",
+    "student003": "14 years old. Sensitive and self-critical.",
+    "student004": "18 years old. Disciplined and grounded.",
+    "student005": "15 years old. Introspective and emotionally aware.",
+    "student006": "18 years old. Quiet but observant.",
+    "student007": "16 years old. Goal-oriented and emotionally steady.",
+    "student008": "15 years old. Friendly but cautious.",
+    "student009": "17 years old. Thoughtful and quietly confident.",
+    "student010": "18 years old. Assertive and adventurous."
 }
 
 # Create a function to initialize empty chat history for all students
