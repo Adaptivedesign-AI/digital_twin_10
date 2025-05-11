@@ -43,15 +43,15 @@ all_prompts = load_prompts()
 # Define student ID to name mapping for display purposes
 name_dict = {
     "student001": "Jaden",
-    "student002": "Elijah",
-    "student003": "Caleb",
-    "student004": "Aiden",
-    "student005": "Ava",
-    "student006": "Brooklyn",
-    "student007": "Zoe",
-    "student008": "Kayla",
-    "student009": "Maya",
-    "student010": "Isaiah"
+    "student002": "Ethan",    
+    "student003": "Emily",
+    "student004": "Malik",     
+    "student005": "Aaliyah",  
+    "student006": "Brian",
+    "student007": "Grace",
+    "student008": "Brianna",
+    "student009": "Leilani",
+    "student010": "Tyler"
 }
 
 # Define student descriptions to provide context about each persona
