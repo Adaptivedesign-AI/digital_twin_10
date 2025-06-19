@@ -251,7 +251,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                 )
             
             gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
-            gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens sampled from the Youth Risk Behavior Surveillance System, enabling data-driven simulations of risk trajectories and intervention outcomes.*", elem_classes="project-description")
+            gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens, designed to enable data-driven simulations of risk trajectories and intervention outcomes. The platform is developed and maintained by the UC Berkeley team. For inquiries or questions, please contact jingshenwang@berkeley.edu.*", elem_classes="project-description")
             
             # Create a responsive grid for all students - 5 columns that adapt to screen size
             with gr.Column(elem_classes="character-grid"):
