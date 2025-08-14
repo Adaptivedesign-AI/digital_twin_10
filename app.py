@@ -214,12 +214,12 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         # Chat area with avatars for user/bot distinction
         chatbot = gr.Chatbot(
             label="Conversation",
-            avatar_images=("avatar/user.png", None),  # Will be updated dynamically
-            height=450,
+            avatar_images=("avatar/user.png", None),
+            height="auto",   # 改成自适应
             elem_classes="character-ai-style chatbox-container",
             show_label=True,
             show_copy_button=True,
-            bubble_full_width=False,
+            bubble_full_width=True,   # 让气泡也能撑满宽度
         )
         
         # Input area with improved layout - split into message and buttons
