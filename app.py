@@ -215,7 +215,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         chatbot = gr.Chatbot(
             label="Conversation",
             avatar_images=("avatar/user.png", None),
-            height=490,  
+            height=550,  
             elem_classes="character-ai-style chatbox-container",
             show_label=True,
             show_copy_button=True,
