@@ -96,13 +96,13 @@ body {
     gap: 20px;
 }
 
-/* Profile box styling */
+/* Profile box styling - 移除边框，纯白色 */
 .profile-box {
-    background-color: white;
+    background-color: white !important;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: 1px solid #e1e2fc;
+    border: none !important;
 }
 
 .profile-name {
@@ -124,12 +124,12 @@ body {
     margin: 0 !important;
 }
 
-/* Instructions box styling */
+/* Instructions box styling - 移除边框，纯白色 */
 .instructions-box {
-    background-color: white;
+    background-color: white !important;
     border-radius: 12px;
     padding: 20px;
-    border: 1px solid #e1e2fc;
+    border: none !important;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
 }
 
@@ -140,13 +140,13 @@ body {
     margin: 0 !important;
 }
 
-/* Scene box styling */
+/* Scene box styling - 移除边框，纯白色 */
 .scene-box {
-    background-color: white;
+    background-color: white !important;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: 1px solid #e1e2fc;
+    border: none !important;
 }
 
 .section-title {
@@ -644,5 +644,15 @@ html, body, #root,
   /* 部分版本还用这些变量名 */
   --color-background: #ffffff !important;
   --color-background-secondary: #ffffff !important;
+}
+
+/* 彻底移除所有Gradio组件的默认样式 */
+.gradio-container * {
+    border-color: transparent !important;
+}
+
+/* 确保只有我们想要的元素有边框 */
+.character-card, .profile-image, .avatar-container {
+    border-color: #e1e2fc !important;
 }
 """
