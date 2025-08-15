@@ -3,6 +3,14 @@ import json
 import os
 from openai import OpenAI
 from custom_css import custom_css  # Import the custom CSS from separate file
+from gradio.themes.base import Base
+
+white_theme = Base().set(
+    background_fill_primary="white",
+    background_fill_secondary="white",
+    block_background_fill="white",
+    panel_background_fill="white",
+)
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
@@ -338,7 +346,7 @@ def update_scene_description(selected_scene, custom_description):
 # --------------------------------------------
 # = UI BUILDING =
 # --------------------------------------------
-with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
+with gr.Blocks(theme=white_theme, css=custom_css, title="Digital Twins") as demo:
 
     # Initialize state to track history and selected student
     history_dict_state = gr.State(get_empty_history_dict())
