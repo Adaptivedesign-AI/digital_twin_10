@@ -357,8 +357,10 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         
         # Main content: Two-column layout
         with gr.Row(elem_classes="main-chat-container"):
-            # Left column: Chat interface
-            with gr.Column(scale=6, elem_classes="chat-column"):
+            # Left column: Chat interface (MUST BE FIRST)
+            with gr.Column(scale=65, elem_classes="chat-column"):
+                gr.Markdown("## Chat with Digital Twin", elem_classes="chat-title")
+                
                 # Chat area with avatars for user/bot distinction
                 chatbot = gr.Chatbot(
                     label="Conversation",
@@ -383,8 +385,8 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                         send_btn = gr.Button("Send", elem_classes="send-btn")
                         clear_btn = gr.Button("Clear", elem_classes="clear-btn")
             
-            # Right column: Student info and scene controls
-            with gr.Column(scale=4, elem_classes="info-column"):
+            # Right column: Student info and scene controls (MUST BE SECOND)
+            with gr.Column(scale=35, elem_classes="info-column"):
                 # Top box: Student profile
                 with gr.Group(elem_classes="profile-box"):
                     student_name_display = gr.Markdown("# Student Name", elem_classes="profile-name")
