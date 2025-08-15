@@ -458,7 +458,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        gr.Markdown(f"<strong style='color:white;font-weight:900;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
+                        # Remove the header markdown that was creating the blue bar
                         
                         with gr.Column(elem_classes="avatar-container"):
                             gr.Image(
@@ -467,7 +467,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                                 elem_classes="avatar-img"
                             )
                             
-                        gr.Markdown(f"### {student_name}", elem_classes="student-name", visible=False)
+                        gr.Markdown(f"### {student_name}", elem_classes="student-name")
                         gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                         
                         chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
@@ -609,7 +609,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                     img.parentElement.style.height = '48px';
                     img.parentElement.style.borderRadius = '50%';
                     img.parentElement.style.overflow = 'hidden';
-                    img.parentElement.style.border = '2px solid rgba(9, 64, 103, 0.85)';
+                    img.parentElement.style.border = '2px solid rgba(46, 40, 92, 0.85)';
                 }
             });
         }
