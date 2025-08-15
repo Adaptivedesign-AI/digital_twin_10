@@ -458,16 +458,16 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        gr.Markdown(f"<strong style='color:white;font-weight:900;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
-                        
+                        # Avatar container - circular and centered
                         with gr.Column(elem_classes="avatar-container"):
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
                                 elem_classes="avatar-img"
                             )
-                            
-                        gr.Markdown(f"### {student_name}", elem_classes="student-name", visible=False)
+                        
+                        # Student name - prominent and bold
+                        gr.Markdown(f"## {student_name}", elem_classes="student-name")
                         gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                         
                         chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
