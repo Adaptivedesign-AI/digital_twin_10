@@ -36,7 +36,7 @@ body {
 
 /* Header styling with updated brand color and reduced opacity */
 .main-title {
-    background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
+    background-color: rgba(9, 64, 103, 0.85);
     color: white;
     padding: 15px;
     margin: 0;
@@ -44,6 +44,140 @@ body {
     font-size: 24px;
     font-weight: bold;
     border-radius: 8px 8px 0 0;
+}
+
+/* Chat page header styling */
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: rgba(9, 64, 103, 0.85);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    color: white !important;
+    margin: 0 !important;
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Main chat container - two column layout */
+.main-chat-container {
+    gap: 20px !important;
+    padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Left column: Chat interface */
+.chat-column {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    height: fit-content;
+}
+
+/* Right column: Information panels */
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Profile box styling */
+.profile-box {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+}
+
+.profile-name {
+    color: #094067 !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center;
+    font-weight: bold !important;
+}
+
+.profile-image {
+    border-radius: 12px;
+    border: 2px solid rgba(9, 64, 103, 0.85);
+}
+
+.profile-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    margin: 0 !important;
+}
+
+/* Instructions box styling */
+.instructions-box {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.instructions-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0 !important;
+}
+
+/* Scene box styling */
+.scene-box {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+}
+
+.section-title {
+    color: #094067 !important;
+    margin: 0 0 15px 0 !important;
+    font-weight: bold !important;
+    font-size: 18px !important;
+}
+
+.scene-instruction {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 15px 0 !important;
+}
+
+.scene-dropdown select {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.custom-scene-input textarea {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+    min-height: 80px;
+}
+
+.scene-description textarea {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    min-height: 60px;
 }
 
 /* Character.ai style grid for selection page - 5 columns by default */
@@ -61,6 +195,14 @@ body {
     .character-grid {
         grid-template-columns: repeat(4, 1fr);
     }
+    
+    .main-chat-container {
+        flex-direction: column;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
 }
 
 @media (max-width: 992px) {
@@ -72,6 +214,14 @@ body {
 @media (max-width: 768px) {
     .character-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .main-chat-container {
+        padding: 0 10px;
+    }
+    
+    .profile-box, .instructions-box, .scene-box {
+        padding: 15px;
     }
 }
 
@@ -108,11 +258,11 @@ body {
     color: white !important;
     padding: 10px;
     text-align: center;
-    font-weight: 900 !important; /* Maximum bold weight */
+    font-weight: 900 !important;
     font-size: 25px !important;
     letter-spacing: 1px;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    text-transform: capitalize !important; /* Changed from uppercase to capitalize */
+    text-transform: capitalize !important;
 }
 
 /* Student info styling - compact and readable */
@@ -148,8 +298,8 @@ body {
     height: 120px!important;
     overflow: hidden!important;
     margin: 15px auto!important;
-    border: 2px solid rgba(9, 64, 103, 0.85)!important; /* Reduced opacity blue */
-    border-radius: 50%!important; /* Circular avatars */
+    border: 2px solid rgba(9, 64, 103, 0.85)!important;
+    border-radius: 50%!important;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
     background-color: #fce5be !important;
 }
@@ -190,25 +340,13 @@ body {
     background-color: #2a93e0 !important;
 }
 
-/* Chat interface styling for better user experience */
-.chat-header {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: rgba(9, 64, 103, 0.85); /* Reduced opacity blue header */
-    color: white;
-    border-radius: 12px 12px 0 0;
-}
-
+/* Back button styling */
 .back-btn {
     background-color: #3da9fc !important;
     border: none !important;
     color: #fffffe !important;
-    border-radius: 5px !important;
-    padding: 5px 10px !important;
-    margin-right: 15px !important;
-    margin-left: 0 !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
     cursor: pointer !important;
     transition: background-color 0.2s !important;
     font-weight: bold !important;
@@ -254,7 +392,7 @@ body {
 }
 
 .clear-btn {
-    background-color: rgba(9, 64, 103, 0.85) !important; /* Reduced opacity blue */
+    background-color: rgba(9, 64, 103, 0.85) !important;
     color: #fffffe !important;
     font-weight: bold !important;
     border-radius: 20px !important;
@@ -269,39 +407,11 @@ body {
     background-color: #073050 !important;
 }
 
-/* Character info styling in chat - simplified header without avatar */
-.character-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 5px;
-}
-
-/* Student name styling in header */
-.student-name-header {
-    color: #fffffe !important;
-    font-size: 24px !important;
-    font-weight: bold !important;
-    margin: 0 auto !important;
-    text-align: center !important;
-}
-
-/* Model display styling - hidden by default */
-.model-display {
-    display: none;
-}
-
 /* Character.ai style chat container */
 .character-ai-style {
     border-radius: 12px;
     background-color: #d8eefe !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-/* Custom styling for chat rows */
-.chatbot-row {
-    display: flex;
-    margin-bottom: 20px;
 }
 
 /* Chat avatar styling */
@@ -324,7 +434,7 @@ body {
     margin-right: 8px !important;
     flex-shrink: 0 !important;
     box-shadow: none !important;
-    border: 2px solid rgba(9, 64, 103, 0.85) !important; /* Reduced opacity blue */
+    border: 2px solid rgba(9, 64, 103, 0.85) !important;
     padding: 0 !important;
     background-color: transparent !important;
 }
@@ -369,15 +479,6 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
 }
 
-/* Emotion tag styling for emotional context */
-.emotion-tag {
-    font-style: italic !important;
-    font-size: 12px !important;
-    color: #666 !important;
-    margin-top: 4px !important;
-    display: block !important;
-}
-
 /* Project description styling */
 .project-description {
     text-align: center;
@@ -396,7 +497,7 @@ body {
     height: 48px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    border: 2px solid rgba(9, 64, 103, 0.85) !important; /* Reduced opacity blue */
+    border: 2px solid rgba(9, 64, 103, 0.85) !important;
     margin: 0 !important;
     padding: 0 !important;
     background-color: transparent !important;
@@ -433,18 +534,6 @@ body {
 /* Hide unnecessary margins in Gradio blocks */
 .block {
     margin-bottom: 0 !important;
-}
-
-/* Center the name and model in the chat header */
-.center-header {
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* Input row: transparent background, vertically centered */
-.gradio-container .row {
-    background-color: transparent !important;
-    align-items: center !important;
 }
 
 /* Avatar image styling to ensure it fills the container */
@@ -485,5 +574,44 @@ img, [data-testid="image"], [class*="image"] {
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
+}
+
+/* Profile image specific styling */
+.profile-image img {
+    border-radius: 12px !important;
+    border: 2px solid rgba(9, 64, 103, 0.85) !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Additional profile box styling */
+.profile-box .gradio-image {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Ensure dropdown and textbox styling consistency */
+.gradio-dropdown, .gradio-textbox {
+    margin-bottom: 10px !important;
+}
+
+/* Custom scrollbar for chat area */
+.gradio-chatbot::-webkit-scrollbar {
+    width: 6px;
+}
+
+.gradio-chatbot::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.gradio-chatbot::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.gradio-chatbot::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
 """
