@@ -1,4 +1,4 @@
-custom_css = /* 🎯 CRITICAL FIX: Remove white bars and fix gray background */
+custom_css = /* CRITICAL FIX: Remove white bars and fix gray background */
 /* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
 .gradio-container > * {
   background: transparent !important;
@@ -684,7 +684,7 @@ img, [data-testid="image"], [class*="image"] {
     background: #2e285c;
 }
 
-/* 🎯 强力覆盖所有Gradio默认样式 */
+/* Strong override for all Gradio default styles */
 /* 针对所有可能的组件容器 */
 .gradio-container .group,
 .gradio-container .gr-group,
@@ -722,7 +722,7 @@ img, [data-testid="image"], [class*="image"] {
     margin-bottom: 20px !important;
 }
 
-/* 强制覆盖聊天气泡的所有可能样式 */
+/* Force override chat bubble colors with broader selectors */
 .gradio-chatbot .message,
 .gradio-chatbot [class*="message"],
 .gradio-chatbot [data-testid*="message"] {
@@ -730,7 +730,7 @@ img, [data-testid="image"], [class*="image"] {
     color: #2e285c !important;
 }
 
-/* AI消息气泡 - 使用更广泛的选择器 */
+/* AI message bubbles - using broader selectors */
 .gradio-chatbot .message:has(.avatar[src*="student"]),
 .gradio-chatbot [class*="bot"] .message,
 .gradio-chatbot [data-role="assistant"] .message,
@@ -740,7 +740,7 @@ img, [data-testid="image"], [class*="image"] {
     border: 1px solid rgba(189, 186, 212, 0.3) !important;
 }
 
-/* 用户消息气泡 */
+/* User message bubbles */
 .gradio-chatbot .message.user,
 .gradio-chatbot [class*="user"] .message,
 .gradio-chatbot [data-role="user"] .message {
