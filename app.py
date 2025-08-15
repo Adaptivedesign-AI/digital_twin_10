@@ -1,658 +1,654 @@
-custom_css = """
-/* Global styles for the entire application */
-body {
-    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background: white !important;
-    min-height: 100vh;
+import gradio as gr
+import json
+import os
+from openai import OpenAI
+from custom_css import custom_css  # Import the custom CSS from separate file
+
+# Initialize OpenAI client with API key from environment variables
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
+
+# Load the shared prompt that will be used as a base for all student interactions
+def load_shared_prompt():
+    try:
+        with open("shared_prompt.txt", "r") as f:
+            return f.read().strip()
+    except:
+        # Fallback if file doesn't exist
+        return "You are a helpful digital assistant roleplaying as a teen student."
+
+shared_prompt = load_shared_prompt()
+
+# Load individual student prompts and combine them with the shared prompt
+def load_prompts():
+    """
+    Load all individual student prompts and combine them with the shared prompt.
+    Returns a dictionary with student IDs as keys and complete prompts as values.
+    """
+    prompts = {}
+    for i in range(1, 11):
+        path = f"prompts/{i}.json"
+        try:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    data = json.load(f)
+                    prompts[f"student{i:03d}"] = shared_prompt + "\n\n" + data["prompt"]
+        except:
+            # Fallback if file doesn't exist or can't be read
+            prompts[f"student{i:03d}"] = shared_prompt + f"\n\nYou are student {i}."
+    return prompts
+
+# Initialize the prompts dictionary
+all_prompts = load_prompts()
+
+# Define student ID to name mapping for display purposes
+name_dict = {
+    "student001": "Jaden",
+    "student002": "Ethan",    
+    "student003": "Emily",
+    "student004": "Malik",     
+    "student005": "Aaliyah",  
+    "student006": "Brian",
+    "student007": "Grace",
+    "student008": "Brianna",
+    "student009": "Leilani",
+    "student010": "Tyler"
 }
 
-/* Make header transparent - remove white backgrounds */
-.header-image-container, .header-image-container > div, .header-image, .header-image > div {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+# Define student descriptions to provide context about each persona
+student_descriptions = {
+    "student001": "14 years old. Bold and street-smart.",
+    "student002": "16 years old. Detached and impulsive.",
+    "student003": "14 years old. Sensitive and self-critical.",
+    "student004": "13 years old. Tough-minded and emotionally guarded.",
+    "student005": "15 years old. Introspective and emotionally aware.",
+    "student006": "17 years old. Disciplined but emotionally withdrawn.",
+    "student007": "16 years old. Goal-oriented and emotionally steady.",
+    "student008": "15 years old. Friendly but cautious.",
+    "student009": "17 years old. Thoughtful and quietly confident.",
+    "student010": "16 years old. Restless and emotionally conflicted."
 }
 
-/* More aggressive targeting of Gradio-generated containers */
-.gradio-container .gradio-image, 
-.gradio-container .gradio-image > div, 
-.gradio-container [data-testid="image"], 
-.gradio-container [data-testid="image"] > div,
-.gradio-container [class*="image"],
-.gradio-container [class*="image"] > div,
-.gradio-container img[alt] {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Ensure all image wrappers are transparent */
-.gradio-container img {
-    background-color: transparent !important;
-}
-
-/* Header styling with updated purple theme */
-.main-title {
-    background-color: #2e285c;
-    color: white;
-    padding: 15px;
-    margin: 0;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 8px 8px 0 0;
-}
-
-/* Chat page header styling - 改成白色背景 */
-.chat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e1e2fc;
-    background-color: white !important;
-    color: #2e285c !important;
-    border-radius: 12px 12px 0 0;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
-}
-
-.page-title {
-    color: #2e285c !important;
-    margin: 0 !important;
-    text-align: center;
-    flex-grow: 1;
-    font-weight: bold !important;
-}
-
-/* Main chat container - two column layout */
-.main-chat-container {
-    gap: 20px !important;
-    padding: 0 20px;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-/* Left column: Chat interface - 加长高度与右边对齐 */
-.chat-column {
-    background-color: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: 1px solid #e1e2fc;
-    min-height: 100vh !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* Right column: Information panels */
-.info-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Profile box styling - 移除边框，纯白色 */
-.profile-box {
-    background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: none !important;
-}
-
-.profile-name {
-    color: #2e285c !important;
-    margin: 0 0 15px 0 !important;
-    text-align: center;
-    font-weight: bold !important;
-}
-
-.profile-image {
-    border-radius: 12px;
-    border: 2px solid #e1e2fc;
-}
-
-.profile-text {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #2e285c;
-    margin: 0 !important;
-}
-
-/* Instructions box styling - 移除边框，纯白色 */
-.instructions-box {
-    background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
-    border: none !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-}
-
-.instructions-text {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #2e285c;
-    margin: 0 !important;
-}
-
-/* Scene box styling - 移除边框，纯白色 */
-.scene-box {
-    background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: none !important;
-}
-
-.section-title {
-    color: #2e285c !important;
-    margin: 0 0 15px 0 !important;
-    font-weight: bold !important;
-    font-size: 18px !important;
-}
-
-.scene-instruction {
-    font-size: 14px;
-    color: #2e285c;
-    margin: 0 0 15px 0 !important;
-}
-
-.scene-dropdown select {
-    border-radius: 8px;
-    border: 1px solid #e1e2fc;
-    padding: 10px;
-    font-size: 14px;
-}
-
-.custom-scene-input textarea {
-    border-radius: 8px;
-    border: 1px solid #e1e2fc;
-    padding: 10px;
-    font-size: 14px;
-    min-height: 80px;
-}
-
-.scene-description textarea {
-    border-radius: 8px;
-    border: 1px solid #e1e2fc;
-    padding: 10px;
-    font-size: 14px;
-    background-color: #f0edfe;
-    min-height: 60px;
-}
-
-/* Character.ai style grid for selection page - 5 columns by default */
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Responsive breakpoints for character grid at different screen sizes */
-@media (max-width: 1200px) {
-    .character-grid {
-        grid-template-columns: repeat(4, 1fr);
+# Define detailed student profiles for the new interface
+student_profiles = {
+    "student001": {
+        "age": 14,
+        "sex": "Male",
+        "race_ethnicity": "African American",
+        "hobbies": "Basketball, hip-hop music, video games",
+        "emotional_health": "Struggles with anger management and trust issues",
+        "mental_health": "Mild anxiety in social situations, difficulty expressing emotions"
+    },
+    "student002": {
+        "age": 16,
+        "sex": "Male",
+        "race_ethnicity": "Caucasian",
+        "hobbies": "Skateboarding, alternative music, graphic design",
+        "emotional_health": "Emotionally detached, impulsive decision-making",
+        "mental_health": "Reports feeling disconnected from peers, occasional mood swings"
+    },
+    "student003": {
+        "age": 14,
+        "sex": "Female",
+        "race_ethnicity": "Caucasian",
+        "hobbies": "Reading, creative writing, painting",
+        "emotional_health": "Highly sensitive, self-critical, perfectionist tendencies",
+        "mental_health": "Mild depression symptoms, low self-esteem, overthinking"
+    },
+    "student004": {
+        "age": 13,
+        "sex": "Male",
+        "race_ethnicity": "Latino/Hispanic",
+        "hobbies": "Soccer, family gatherings, cooking",
+        "emotional_health": "Emotionally guarded, tough exterior to protect vulnerability",
+        "mental_health": "Family-related stress, pressure to succeed academically"
+    },
+    "student005": {
+        "age": 15,
+        "sex": "Female",
+        "race_ethnicity": "African American",
+        "hobbies": "Poetry, social justice activism, yoga",
+        "emotional_health": "Highly introspective, emotionally aware and articulate",
+        "mental_health": "Anxiety about social issues, occasional overwhelm from empathy"
+    },
+    "student006": {
+        "age": 17,
+        "sex": "Male",
+        "race_ethnicity": "Asian American",
+        "hobbies": "Academic competitions, chess, classical music",
+        "emotional_health": "Disciplined but emotionally withdrawn, difficulty connecting",
+        "mental_health": "High-functioning anxiety, perfectionist stress, social isolation"
+    },
+    "student007": {
+        "age": 16,
+        "sex": "Female",
+        "race_ethnicity": "Caucasian",
+        "hobbies": "Student government, debate team, volunteering",
+        "emotional_health": "Goal-oriented, emotionally steady, natural leader",
+        "mental_health": "Generally stable, occasional stress from high expectations"
+    },
+    "student008": {
+        "age": 15,
+        "sex": "Female",
+        "race_ethnicity": "Mixed race (African American/Caucasian)",
+        "hobbies": "Dance, photography, social media",
+        "emotional_health": "Friendly but cautious, struggles with identity",
+        "mental_health": "Body image concerns, social comparison anxiety"
+    },
+    "student009": {
+        "age": 17,
+        "sex": "Female",
+        "race_ethnicity": "Pacific Islander",
+        "hobbies": "Marine biology, surfing, environmental activism",
+        "emotional_health": "Thoughtful, quietly confident, calm demeanor",
+        "mental_health": "Generally well-adjusted, environmental anxiety"
+    },
+    "student010": {
+        "age": 16,
+        "sex": "Male",
+        "race_ethnicity": "Native American",
+        "hobbies": "Traditional crafts, hiking, storytelling",
+        "emotional_health": "Restless, emotionally conflicted, seeking identity",
+        "mental_health": "Cultural identity struggles, feelings of not belonging"
     }
+}
+
+# Predefined scene options for the scene description box
+scene_options = [
+    "Meet with a new friend for the first time",
+    "Posted a video on TikTok and received hateful comments",
+    "First day at a new school",
+    "Failed an important test or assignment",
+    "Had an argument with parents about independence",
+    "Experiencing cyberbullying on social media",
+    "Dealing with peer pressure to try drugs/alcohol",
+    "Feeling left out from a friend group",
+    "Struggling with body image and appearance",
+    "Facing college application stress",
+    "Custom scenario (describe below)"
+]
+
+# Create a function to initialize empty chat history for all students
+def get_empty_history_dict():
+    """
+    Initialize an empty chat history dictionary for all students.
+    This ensures we can track conversations with each student separately.
+    """
+    return {student_id: [] for student_id in name_dict.keys()}
+
+# Core chat function that handles message processing and AI responses
+def chat(message, history, student_id, history_dict, scene_description):
+    """
+    Process user messages and generate AI responses.
     
-    .main-chat-container {
-        flex-direction: column;
-    }
+    Args:
+        message: The user's input message
+        history: Current chat history for the selected student
+        student_id: ID of the currently selected student
+        history_dict: Dictionary containing all students' chat histories
+        scene_description: Current scene context for the conversation
+        
+    Returns:
+        Empty message input, updated history, and updated history_dict
+    """
+    # Check for empty messages
+    if not message or not message.strip():
+        return "", history, history_dict
+        
+    # Get the appropriate system prompt for the selected student
+    base_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
     
-    .chat-column, .info-column {
-        width: 100%;
-    }
-}
+    # Add scene context if provided
+    if scene_description and scene_description.strip():
+        system_prompt = base_prompt + f"\n\nCurrent scenario context: {scene_description.strip()}"
+    else:
+        system_prompt = base_prompt
 
-@media (max-width: 992px) {
-    .character-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
+    # Format messages for the OpenAI API
+    messages = [{"role": "system", "content": system_prompt}]
+    for user_msg, bot_reply in history:
+        messages.append({"role": "user", "content": user_msg})
+        messages.append({"role": "assistant", "content": bot_reply})
+    messages.append({"role": "user", "content": message})
 
-@media (max-width: 768px) {
-    .character-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    try:
+        # Generate response using OpenAI API
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            temperature=0.7
+        )
+        reply = response.choices[0].message.content.strip()
+        
+        # Update conversation history
+        history.append([message, reply])
+        history_dict[student_id] = history
+        return "", history, history_dict
+    except Exception as e:
+        # Handle API errors gracefully
+        error_message = f"⚠️ Error: {str(e)}"
+        history.append([message, error_message])
+        history_dict[student_id] = history
+        return "", history, history_dict
+
+# Function to clear chat history for the current student
+def clear_current_chat(student_id, history_dict):
+    """
+    Clear the chat history for the currently selected student.
     
-    .main-chat-container {
-        padding: 0 10px;
-    }
+    Args:
+        student_id: ID of the currently selected student
+        history_dict: Dictionary containing all students' chat histories
+        
+    Returns:
+        Empty history list and updated history_dict
+    """
+    history_dict[student_id] = []
+    return [], history_dict
+
+# Function to update student profile display
+def update_student_profile(student_id):
+    """
+    Update the student profile display based on selected student.
     
-    .profile-box, .instructions-box, .scene-box {
-        padding: 15px;
+    Args:
+        student_id: ID of the selected student
+        
+    Returns:
+        Updated profile information
+    """
+    if student_id not in student_profiles:
+        return "", "", ""
+    
+    student_name = name_dict.get(student_id, "Unknown")
+    profile = student_profiles[student_id]
+    
+    # Create profile overview text
+    profile_text = f"""
+**Age:** {profile['age']}  
+**Sex:** {profile['sex']}  
+**Race/Ethnicity:** {profile['race_ethnicity']}  
+**Hobbies:** {profile['hobbies']}  
+**Emotional Health:** {profile['emotional_health']}  
+**Mental Health:** {profile['mental_health']}
+    """.strip()
+    
+    # Update student name and profile
+    return f"# {student_name}", profile_text, f"avatar/{student_id}.png"
+
+# Function to handle direct student selection and switch to chat interface
+def select_student_direct(student_id, history_dict):
+    """
+    Handle direct student selection and switch to chat interface.
+    
+    Args:
+        student_id: ID of the selected student
+        history_dict: Dictionary containing all students' chat histories
+        
+    Returns:
+        UI updates to show chat interface with selected student info
+    """
+    student_history = history_dict.get(student_id, [])
+    student_name, profile_text, profile_image = update_student_profile(student_id)
+    
+    # Debug print for server logs
+    print(f"Selecting student: {student_id}, Name: {student_name}")
+    
+    return (
+        gr.update(visible=False),  # Hide selection page
+        gr.update(visible=True),   # Show chat page
+        student_id,                # Update selected student ID
+        student_name,              # Update student name display
+        profile_text,              # Update profile text
+        profile_image,             # Update profile image
+        student_history            # Update chat history
+    )
+
+# Function to return to the student selection page
+def return_to_selection():
+    """
+    Return to the student selection page from the chat interface.
+    
+    Returns:
+        UI updates to show selection page and hide chat page
+    """
+    return (
+        gr.update(visible=True),   # Show selection page
+        gr.update(visible=False)   # Hide chat page
+    )
+
+# Function to update scene description based on dropdown selection
+def update_scene_description(selected_scene, custom_description):
+    """
+    Update scene description based on dropdown selection.
+    
+    Args:
+        selected_scene: Selected scene from dropdown
+        custom_description: Custom description if "Custom scenario" is selected
+        
+    Returns:
+        Updated scene description
+    """
+    if selected_scene == "Custom scenario (describe below)":
+        return custom_description
+    elif selected_scene == "Posted a video on TikTok and received hateful comments":
+        return "Posted a short video on TikTok. Anonymous users flooded the comments with anti-Asian slurs and told her to 'go back where you came from.' The twin deleted the post and now feels afraid to post anything."
+    else:
+        return selected_scene
+
+# --------------------------------------------
+# = UI BUILDING =
+# --------------------------------------------
+with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
+
+    # Initialize state to track history and selected student
+    history_dict_state = gr.State(get_empty_history_dict())
+    selected_id_state = gr.State("")
+    
+    # Create both pages as components for switching between them
+    selection_page = gr.Group(visible=True)
+    chat_page = gr.Group(visible=False)
+    
+    # Define chat page components with two-column layout
+    with chat_page:
+        # Header with back button
+        with gr.Row(elem_classes="chat-header"):
+            back_button = gr.Button("← Back to Selection", elem_classes="back-btn")
+            gr.Markdown("# Digital Twin Chat Interface", elem_classes="page-title")
+        
+        # Main content: Two-column layout
+        with gr.Row(elem_classes="main-chat-container"):
+            # Left column: Chat interface (MUST BE FIRST)
+            with gr.Column(scale=65, elem_classes="chat-column"):
+                gr.Markdown("## Chat with Digital Twin", elem_classes="chat-title")
+                
+                # Chat area with avatars for user/bot distinction
+                chatbot = gr.Chatbot(
+                    label="Conversation",
+                    avatar_images=("avatar/user.png", None),
+                    height=700,  
+                    elem_classes="character-ai-style chatbox-container",
+                    show_label=True,
+                    show_copy_button=True,
+                    bubble_full_width=True,
+                )
+                
+                # Input area with improved layout
+                with gr.Row():
+                    with gr.Column(scale=5):
+                        msg = gr.Textbox(
+                            placeholder="Type your message...",
+                            label="",
+                            elem_classes="message-input",
+                        )
+                    
+                    with gr.Column(scale=1, elem_classes="button-container"):
+                        send_btn = gr.Button("Send", elem_classes="send-btn")
+                        clear_btn = gr.Button("Clear", elem_classes="clear-btn")
+            
+            # Right column: Student info and scene controls (MUST BE SECOND)
+            with gr.Column(scale=35, elem_classes="info-column"):
+                # Top box: Student profile
+                with gr.Group(elem_classes="profile-box"):
+                    student_name_display = gr.Markdown("# Student Name", elem_classes="profile-name")
+                    with gr.Row():
+                        with gr.Column(scale=2):
+                            student_profile_image = gr.Image(
+                                value="avatar/student001.png",
+                                show_label=False,
+                                elem_classes="profile-image",
+                                height=120
+                            )
+                        with gr.Column(scale=3):
+                            student_profile_text = gr.Markdown("Profile information will appear here.", elem_classes="profile-text")
+                
+                # Middle box: Instructions and disclaimer
+                with gr.Group(elem_classes="instructions-box"):
+                    gr.Markdown("### Instructions & Disclaimer", elem_classes="section-title")
+                    instructions_text = gr.Markdown(
+                        "You will be able to interact with **[Student Name]**, an AI-based digital adolescent. "
+                        "We kindly ask you to please keep the conversation respectful and appropriate. "
+                        "Remember that this is a simulation designed for research and educational purposes.",
+                        elem_classes="instructions-text"
+                    )
+                
+                # Bottom box: Scene description
+                with gr.Group(elem_classes="scene-box"):
+                    gr.Markdown("### Scene Context", elem_classes="section-title")
+                    gr.Markdown("Set a scenario to provide context for your conversation:", elem_classes="scene-instruction")
+                    
+                    scene_dropdown = gr.Dropdown(
+                        choices=scene_options,
+                        value="Meet with a new friend for the first time",
+                        label="Select a scenario",
+                        elem_classes="scene-dropdown"
+                    )
+                    
+                    custom_scene_input = gr.Textbox(
+                        placeholder="Describe your custom scenario here...",
+                        label="Custom Scenario (if selected above)",
+                        elem_classes="custom-scene-input",
+                        visible=False
+                    )
+                    
+                    scene_description = gr.Textbox(
+                        value="Meet with a new friend for the first time",
+                        label="Current Scene Context",
+                        elem_classes="scene-description",
+                        interactive=False
+                    )
+    
+    # Define selection page with responsive grid
+    with selection_page:
+        with gr.Column(elem_classes="container"):
+            # Title image with transparent background
+            with gr.Column(elem_classes="header-image-container"):
+                gr.Image(
+                    value="avatar/brain_with_title.png",
+                    show_label=False,
+                    elem_classes="header-image",
+                    height=120,
+                    container=False,
+                )
+            
+            gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
+            gr.Markdown("*These digital adolescents are AI-powered digital twins of real-world teens, designed to enable data-driven simulations of risk trajectories and intervention outcomes. The platform is developed and maintained by the UC Berkeley team. For inquiries or questions, please contact jingshenwang@berkeley.edu.*", elem_classes="project-description")
+            
+            # Create a responsive grid for all students
+            with gr.Column(elem_classes="character-grid"):
+                for i in range(0, 10):
+                    student_id = f"student{i+1:03d}"
+                    student_name = name_dict[student_id]
+                    
+                    with gr.Column(elem_classes="character-card"):
+                        # Avatar container - circular and centered
+                        with gr.Column(elem_classes="avatar-container"):
+                            gr.Image(
+                                value=f"avatar/{student_id}.png",
+                                show_label=False,
+                                elem_classes="avatar-img"
+                            )
+                        
+                        # Student name - prominent and bold
+                        gr.Markdown(f"## {student_name}", elem_classes="student-name")
+                        gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                        
+                        chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
+                        chat_btn.click(
+                            select_student_direct,
+                            inputs=[
+                                gr.Textbox(value=student_id, visible=False),
+                                history_dict_state
+                            ],
+                            outputs=[
+                                selection_page, 
+                                chat_page, 
+                                selected_id_state, 
+                                student_name_display,
+                                student_profile_text,
+                                student_profile_image,
+                                chatbot
+                            ]
+                        )
+
+    # Function to update avatar images in chatbot based on selected student
+    def update_chatbot_avatars(student_id):
+        """Update the avatar images in the chatbot based on the selected student."""
+        user_avatar = "avatar/user.png"
+        bot_avatar = f"avatar/{student_id}.png"
+        return gr.update(avatar_images=(user_avatar, bot_avatar))
+        
+    # Function to update instructions text with student name
+    def update_instructions_text(student_id):
+        """Update the instructions text with the selected student's name."""
+        student_name = name_dict.get(student_id, "the student")
+        return f"You will be able to interact with **{student_name}**, an AI-based digital adolescent. We kindly ask you to please keep the conversation respectful and appropriate. Remember that this is a simulation designed for research and educational purposes."
+    
+    # Event handlers
+    selected_id_state.change(
+        update_chatbot_avatars,
+        inputs=[selected_id_state],
+        outputs=[chatbot]
+    )
+    
+    selected_id_state.change(
+        update_instructions_text,
+        inputs=[selected_id_state],
+        outputs=[instructions_text]
+    )
+    
+    # Scene dropdown change handler
+    def handle_scene_change(selected_scene):
+        """Handle scene dropdown changes to show/hide custom input."""
+        show_custom = selected_scene == "Custom scenario (describe below)"
+        return gr.update(visible=show_custom)
+    
+    scene_dropdown.change(
+        handle_scene_change,
+        inputs=[scene_dropdown],
+        outputs=[custom_scene_input]
+    )
+    
+    # Update scene description when dropdown or custom input changes
+    scene_dropdown.change(
+        update_scene_description,
+        inputs=[scene_dropdown, custom_scene_input],
+        outputs=[scene_description]
+    )
+    
+    custom_scene_input.change(
+        update_scene_description,
+        inputs=[scene_dropdown, custom_scene_input],
+        outputs=[scene_description]
+    )
+    
+    # Chat event handlers
+    back_button.click(
+        return_to_selection,
+        inputs=[],
+        outputs=[selection_page, chat_page]
+    )
+    
+    msg.submit(
+        chat,
+        inputs=[msg, chatbot, selected_id_state, history_dict_state, scene_description],
+        outputs=[msg, chatbot, history_dict_state],
+    )
+    
+    send_btn.click(
+        chat,
+        inputs=[msg, chatbot, selected_id_state, history_dict_state, scene_description],
+        outputs=[msg, chatbot, history_dict_state],
+    )
+    
+    clear_btn.click(
+        clear_current_chat,
+        inputs=[selected_id_state, history_dict_state],
+        outputs=[chatbot, history_dict_state],
+        queue=False
+    )
+
+    # JavaScript for UI enhancements
+    demo.load(None, None, None, js="""
+    function() {
+        // Enhanced header image transparency fix
+        function fixHeaderImage() {
+            document.querySelectorAll('.header-image, .header-image-container, .header-image > div, .header-image img, .gradio-image, .gradio-image > div, [data-testid="image"], [data-testid="image"] > div').forEach(el => {
+                if (el && el.closest('.header-image-container, .header-image')) {
+                    el.style.backgroundColor = 'transparent';
+                    el.style.border = 'none';
+                    el.style.boxShadow = 'none';
+                    el.style.padding = '0';
+                    el.style.margin = '0';
+                }
+            });
+        }
+        
+        // Make character cards clickable
+        function makeCardsClickable() {
+            document.querySelectorAll('.character-card').forEach(card => {
+                if (!card.dataset.handlerAttached) {
+                    card.dataset.handlerAttached = 'true';
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', function(e) {
+                        if (!e.target.classList.contains('chat-btn') && !e.target.closest('.chat-btn')) {
+                            const chatBtn = this.querySelector('.chat-btn');
+                            if (chatBtn) chatBtn.click();
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Style chat avatars
+        function styleAvatars() {
+            document.querySelectorAll('.gradio-chatbot .avatar img').forEach(img => {
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.borderRadius = '50%';
+                img.style.objectFit = 'cover';
+                if (img.parentElement) {
+                    img.parentElement.style.width = '48px';
+                    img.parentElement.style.height = '48px';
+                    img.parentElement.style.borderRadius = '50%';
+                    img.parentElement.style.overflow = 'hidden';
+                    img.parentElement.style.border = '2px solid rgba(9, 64, 103, 0.85)';
+                }
+            });
+        }
+        
+        // Apply fixes
+        setTimeout(() => {
+            fixHeaderImage();
+            makeCardsClickable();
+            styleAvatars();
+        }, 500);
+        
+        // Set up mutation observer
+        const observer = new MutationObserver(() => {
+            fixHeaderImage();
+            makeCardsClickable();
+            styleAvatars();
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Periodic fixes
+        setInterval(() => {
+            fixHeaderImage();
+            makeCardsClickable();
+            styleAvatars();
+        }, 2000);
     }
-}
+    """)
 
-@media (max-width: 480px) {
-    .character-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Card styling - updated with purple theme */
-.character-card {
-    background: #e1e2fc;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #bdbad4;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    max-width: 220px;
-    margin: 0 auto;
-}
-
-.character-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(46, 40, 92, 0.25);
-}
-
-/* Remove card header - show student name directly */
-.card-header {
-    display: none;
-}
-
-/* Student info styling - compact and readable */
-.student-name {
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    margin: 15px 0 8px !important;
-    text-align: center;
-    color: #2e285c !important;
-    letter-spacing: 0.5px;
-}
-
-.student-description {
-    padding: 0 12px;
-    text-align: center;
-    color: #2e285c;
-    font-size: 13px;
-    min-height: 45px;
-    overflow: hidden;
-    flex-grow: 1;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-}
-
-/* Hide model tag for cleaner interface */
-.model-tag {
-    display: none;
-}
-
-/* Avatar styling - circular and centered, 80% width */
-.character-card .avatar-container {
-    width: 80% !important;
-    height: 120px !important;
-    overflow: hidden !important;
-    margin: 20px auto 10px auto !important;
-    border: 3px solid #bdbad4 !important;
-    border-radius: 50% !important;
-    box-shadow: 0 4px 8px rgba(46, 40, 92, 0.1) !important;
-    background-color: transparent !important;
-}
-
-.character-card .avatar-container img,
-.character-card .avatar-container > div,
-.character-card .avatar-img,
-.character-card [data-testid="image"],
-.character-card [data-testid="image"] > div {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    display: block !important;
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Chat button styling - white background with purple text */
-.chat-btn {
-    background-color: white !important;
-    color: #2e285c !important;
-    border: 2px solid #bdbad4 !important;
-    border-radius: 20px !important;
-    padding: 8px 0 !important;
-    margin: 10px auto 16px !important;
-    width: 85% !important;
-    display: block !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    font-size: 14px !important;
-    transition: all 0.2s !important;
-}
-
-.chat-btn:hover {
-    background-color: #f0edfe !important;
-    border-color: #2e285c !important;
-}
-
-/* Back button styling - 改成紫色 */
-.back-btn {
-    background-color: white !important;
-    border: 2px solid #bdbad4 !important;
-    color: #2e285c !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
-    font-weight: bold !important;
-}
-
-.back-btn:hover {
-    background-color: #f0edfe !important;
-    border-color: #2e285c !important;
-}
-
-/* Input and buttons styling */
-.message-input textarea {
-    background-color: white !important;
-    border: 1px solid #e1e2fc !important;
-    border-radius: 20px !important;
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    color: #2e285c !important;
-    resize: none !important;
-}
-
-/* Button container for vertical layout */
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-}
-
-.send-btn {
-    background-color: #bdbad4 !important;
-    color: white !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    width: 100% !important;
-    border: none !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s !important;
-}
-
-.send-btn:hover {
-    background-color: #2e285c !important;
-}
-
-.clear-btn {
-    background-color: white !important;
-    color: #2e285c !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    width: 100% !important;
-    border: 2px solid #bdbad4 !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
-}
-
-.clear-btn:hover {
-    background-color: #f0edfe !important;
-    border-color: #2e285c !important;
-}
-
-/* Character.ai style chat container */
-.character-ai-style {
-    border-radius: 12px;
-    background-color: white !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.05);
-}
-
-/* Chat avatar styling */
-.gradio-chatbot .avatar img {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 50% !important;
-    border: none !important;
-    object-fit: cover !important;
-}
-
-/* Ensure avatars are visible and styled correctly */
-.gradio-chatbot .message-wrap.user .avatar,
-.gradio-chatbot .message-wrap.bot .avatar {
-    display: inline-block !important;
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    margin-right: 8px !important;
-    flex-shrink: 0 !important;
-    box-shadow: none !important;
-    border: 2px solid #e1e2fc !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
-
-/* Chat bubbles: AI is purple with 50% transparency, user is white */
-.gradio-chatbot .message.bot {
-    background-color: rgba(189, 186, 212, 0.5) !important;
-    color: #2e285c !important;
-    border-bottom-left-radius: 6px !important;
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
-    border-bottom-right-radius: 18px !important;
-    margin-left: 12px !important;
-    margin-right: auto !important;
-    max-width: 80%;
-    box-shadow: 0 1px 3px rgba(46, 40, 92, 0.1) !important;
-    padding: 12px 16px !important;
-    word-wrap: break-word !important;
-    border: 1px solid rgba(189, 186, 212, 0.3) !important;
-}
-
-.gradio-chatbot .message.user {
-    background-color: white !important;
-    color: #2e285c !important;
-    border-bottom-right-radius: 6px !important;
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
-    border-bottom-left-radius: 18px !important;
-    margin-right: 12px !important;
-    margin-left: auto !important;
-    max-width: 80%;
-    border: 1px solid #e1e2fc !important;
-    box-shadow: 0 1px 3px rgba(46, 40, 92, 0.05) !important;
-    padding: 12px 16px !important;
-    word-wrap: break-word !important;
-}
-
-/* Chat area overall background (white) */
-.character-ai-style.chatbox-container {
-    background-color: white !important;
-    padding: 20px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.05) !important;
-}
-
-/* Project description styling */
-.project-description {
-    text-align: center;
-    margin: 0 auto 5px;
-    max-width: 800px;
-    color: #2e285c;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 0 20px;
-    font-style: italic;
-}
-
-/* Chat avatar containers */
-.gradio-chatbot .avatar-container {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    border: 2px solid #e1e2fc !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
-
-/* Ensure proper message wrapping and alignment */
-.gradio-chatbot .message-wrap {
-    margin-bottom: 16px !important;
-    display: flex !important;
-    align-items: flex-start !important;
-}
-
-/* Selection heading styling for clear hierarchy */
-.selection-heading {
-    text-align: center;
-    margin: 1px 0 10px;
-    color: #2e285c;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* Container for main content with reasonable max width */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-/* Fix Gradio spacing issues */
-.gradio-container {
-    max-width: 100% !important;
-}
-
-/* Hide unnecessary margins in Gradio blocks */
-.block {
-    margin-bottom: 0 !important;
-}
-
-/* Avatar image styling to ensure it fills the container */
-.gradio-chatbot .avatar-container img,
-.gradio-chatbot .avatar img,
-.gradio-chatbot img.avatar-image {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 50% !important;
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Remove image backgrounds - target all image and container elements */
-.gradio-container .gradio-image, 
-.gradio-container img, 
-.gradio-container [data-testid="image"],
-.gradio-container [class*="image"],
-.gradio-container [class*="avatar"],
-.character-card .gradio-image,
-.character-card img,
-.character-card [data-testid="image"] {
-    background-color: transparent !important;
-    background: transparent !important;
-}
-
-/* Override any image background styles with !important */
-img, [data-testid="image"], [class*="image"] {
-    background-color: transparent !important;
-    background: transparent !important;
-}
-
-/* Additional fixes for Gradio's image component containers */
-.gradio-image > div, .gradio-image > div > div, .gradio-image > div > img {
-    background-color: transparent !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-/* Profile image specific styling */
-.profile-image img {
-    border-radius: 12px !important;
-    border: 2px solid #e1e2fc !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-}
-
-/* Additional profile box styling */
-.profile-box .gradio-image {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* Ensure dropdown and textbox styling consistency */
-.gradio-dropdown, .gradio-textbox {
-    margin-bottom: 10px !important;
-}
-
-/* Custom scrollbar for chat area */
-.gradio-chatbot::-webkit-scrollbar {
-    width: 6px;
-}
-
-.gradio-chatbot::-webkit-scrollbar-track {
-    background: #f0edfe;
-    border-radius: 10px;
-}
-
-.gradio-chatbot::-webkit-scrollbar-thumb {
-    background: #bdbad4;
-    border-radius: 10px;
-}
-
-.gradio-chatbot::-webkit-scrollbar-thumb:hover {
-    background: #2e285c;
-}
-
-/* 🎯 CRITICAL FIX: Remove white bars and fix gray background */
-/* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
-.gradio-container > * {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* 2) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
-html, body, #root,
-.gradio-app, .app, .main,
-.gradio-container {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-}
-
-/* 3) 同时覆盖可能使用的主题变量（不同 gradio 版本变量名略有差异） */
-:root {
-  --background-fill-primary: #ffffff !important;
-  --background-fill-secondary: #ffffff !important;
-  --block-background-fill: #ffffff !important;
-  --panel-background-fill: #ffffff !important;
-
-  /* 部分版本还用这些变量名 */
-  --color-background: #ffffff !important;
-  --color-background-secondary: #ffffff !important;
-}
-
-/* 彻底移除所有Gradio组件的默认样式 */
-.gradio-container * {
-    border-color: transparent !important;
-}
-
-/* 确保只有我们想要的元素有边框 */
-.character-card, .profile-image, .avatar-container {
-    border-color: #e1e2fc !important;
-}
-"""
+# Run the application
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=port,
+        share=False,
+        debug=True,
+        favicon_path="avatar/brain_with_title.png",
+        show_api=False
+    )
