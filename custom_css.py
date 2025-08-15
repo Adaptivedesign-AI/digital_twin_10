@@ -2,8 +2,67 @@ custom_css = """
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background: white;
+    background: white !important;
     min-height: 100vh;
+}
+
+/* Force white background everywhere */
+.gradio-container, .gradio-container > *, 
+.gr-block, .gr-form, .gr-box {
+    background: white !important;
+    background-color: white !important;
+}
+
+/* Main container background */
+.gradio-container {
+    background: white !important;
+    min-height: 100vh !important;
+}
+
+/* Chat page header styling */
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e2fc;
+    background-color: white !important;
+    color: #2e285c;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
+}
+
+.page-title {
+    color: #2e285c !important;
+    margin: 0 !important;
+    text-align: center;
+    flex-grow: 1;
+    font-weight: bold !important;
+}
+
+/* CRITICAL: Force two-column layout */
+.main-chat-container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 20px !important;
+    padding: 0 20px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    background: white !important;
+}
+
+/* Left column: Chat interface - MUST be on the left */
+.chat-column {
+    background-color: white !important;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    border: 1px solid #e1e2fc;
+    flex: 1 1 65% !important;
+    order: 1 !important;
+    min-height: 80vh !important;
 }
 
 /* Make header transparent - remove white backgrounds */
@@ -35,64 +94,22 @@ body {
     background-color: transparent !important;
 }
 
-/* Main container background */
-.gradio-container {
-    background: white !important;
-    min-height: 100vh !important;
-}
-
-/* Chat page header styling */
-.chat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e1e2fc;
-    background-color: white;
-    color: #2e285c;
-    border-radius: 12px 12px 0 0;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
-}
-
-.page-title {
+/* Chat title styling */
+.chat-title {
     color: #2e285c !important;
-    margin: 0 !important;
+    margin: 0 0 20px 0 !important;
     text-align: center;
-    flex-grow: 1;
     font-weight: bold !important;
 }
 
-/* Main chat container - two column layout with proper width */
-.main-chat-container {
-    gap: 20px !important;
-    padding: 0 20px;
-    max-width: 100% !important;
-    width: 100% !important;
-    margin: 0 auto;
-    display: flex !important;
-    flex-direction: row !important;
-}
-
-/* Left column: Chat interface */
-.chat-column {
-    background-color: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    height: fit-content;
-    border: 1px solid #e1e2fc;
-    flex: 0 0 65% !important;
-    min-height: 80vh !important;
-}
-
-/* Right column: Information panels */
+/* Right column: Information panels - MUST be on the right */
 .info-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 350px;
-    flex: 0 0 35% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    flex: 1 1 35% !important;
+    order: 2 !important;
+    background: white !important;
 }
 
 /* Profile box styling */
@@ -199,7 +216,7 @@ body {
     margin: 0 auto;
 }
 
-/* Responsive breakpoints for character grid at different screen sizes */
+/* Responsive breakpoints - ONLY apply to selection page */
 @media (max-width: 1200px) {
     .character-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -217,19 +234,14 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
     
+    /* Only on very small screens, stack chat columns */
     .main-chat-container {
-        padding: 0 10px;
         flex-direction: column !important;
     }
     
     .chat-column, .info-column {
         flex: none !important;
-        width: 100% !important;
-        min-width: auto;
-    }
-    
-    .profile-box, .instructions-box, .scene-box {
-        padding: 15px;
+        order: unset !important;
     }
 }
 
