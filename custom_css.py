@@ -1,50 +1,4 @@
-custom_css = /* CRITICAL FIX: Remove white bars and fix gray background */
-/* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
-.gradio-container > * {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* 2) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
-html, body, #root,
-.gradio-app, .app, .main,
-.gradio-container {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-}
-
-/* 3) 同时覆盖可能使用的主题变量（不同 gradio 版本变量名略有差异） */
-:root {
-  --background-fill-primary: #ffffff !important;
-  --background-fill-secondary: #ffffff !important;
-  --block-background-fill: #ffffff !important;
-  --panel-background-fill: #ffffff !important;
-  --block-border-color: transparent !important;
-  --border-color-primary: transparent !important;
-
-  /* 部分版本还用这些变量名 */
-  --color-background: #ffffff !important;
-  --color-background-secondary: #ffffff !important;
-}
-
-/* 彻底移除所有Gradio组件的默认样式 */
-.gradio-container * {
-    border-color: transparent !important;
-}
-
-/* 确保只有我们想要的元素有边框 */
-.character-card, .profile-image, .avatar-container {
-    border-color: #e1e2fc !important;
-}
-
-/* 特殊处理：强制所有可能的容器透明 */
-.gradio-container div[class*="block"],
-.gradio-container div[class*="group"],
-.gradio-container div[class*="container"] {
-    background-color: transparent !important;
-    border: none !important;
-}
-"""
+custom_css = """
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -684,61 +638,40 @@ img, [data-testid="image"], [class*="image"] {
     background: #2e285c;
 }
 
-/* Strong override for all Gradio default styles */
-/* 针对所有可能的组件容器 */
-.gradio-container .group,
-.gradio-container .gr-group,
-.gradio-container .gradio-group,
-.gradio-container [data-testid="group"],
-.gradio-container .block,
-.gradio-container .gr-block,
-.gradio-container .gradio-block,
-.gradio-container [data-testid="block"],
-.gradio-container .box,
-.gradio-container .gr-box,
-.gradio-container .gradio-box,
-.gradio-container [data-testid="box"] {
-    background-color: transparent !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
+/* 🎯 CRITICAL FIX: Remove white bars and fix gray background */
+/* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
+.gradio-container > * {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
-/* 专门针对右侧信息栏的组件添加白色背景和样式 */
-.info-column > .group,
-.info-column > .gr-group,
-.info-column > .gradio-group,
-.info-column > [data-testid="group"],
-.profile-box,
-.instructions-box,
-.scene-box {
-    background-color: white !important;
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
-    padding: 20px !important;
-    margin-bottom: 20px !important;
+/* 2) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
+html, body, #root,
+.gradio-app, .app, .main,
+.gradio-container {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
 }
 
-/* Force override chat bubble colors with broader selectors */
-.gradio-chatbot .message {
-    background-color: white !important;
-    color: #2e285c !important;
+/* 3) 同时覆盖可能使用的主题变量（不同 gradio 版本变量名略有差异） */
+:root {
+  --background-fill-primary: #ffffff !important;
+  --background-fill-secondary: #ffffff !important;
+  --block-background-fill: #ffffff !important;
+  --panel-background-fill: #ffffff !important;
+
+  /* 部分版本还用这些变量名 */
+  --color-background: #ffffff !important;
+  --color-background-secondary: #ffffff !important;
 }
 
-/* AI message bubbles - using broader selectors */
-.gradio-chatbot .message:has(.avatar[src*="student"]) {
-    background-color: rgba(189, 186, 212, 0.5) !important;
-    color: #2e285c !important;
-    border: 1px solid rgba(189, 186, 212, 0.3) !important;
+/* 彻底移除所有Gradio组件的默认样式 */
+.gradio-container * {
+    border-color: transparent !important;
 }
 
-/* User message bubbles */
-.gradio-chatbot .message.user {
-    background-color: white !important;
-    color: #2e285c !important;
-    border: 1px solid #e1e2fc !important;
+/* 确保只有我们想要的元素有边框 */
+.character-card, .profile-image, .avatar-container {
+    border-color: #e1e2fc !important;
 }
 """
