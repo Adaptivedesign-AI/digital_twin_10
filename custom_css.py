@@ -52,7 +52,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #00000;
     background-color: rgba(46, 40, 92, 0.85);
     color: white;
     border-radius: 12px 12px 0 0;
@@ -96,7 +96,7 @@ body {
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #e0e0e0;
+    border: 1px solid #00000;-
 }
 
 .profile-name {
@@ -123,7 +123,7 @@ body {
     background-color: #f8f9fa;
     border-radius: 12px;
     padding: 20px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #00000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 
@@ -140,7 +140,7 @@ body {
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #e0e0e0;
+    border: 1px solid #00000;
 }
 
 .section-title {
