@@ -120,7 +120,7 @@ body {
 
 /* Instructions box styling */
 .instructions-box {
-    background-color: #f8f9fa;
+    background-color: #FFFFF;
     border-radius: 12px;
     padding: 20px;
     border: 1px solid #FFFFFF;
@@ -294,7 +294,7 @@ body {
     border: 2px solid rgba(46, 40, 92, 0.85) !important;
     border-radius: 50% !important;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-    background-color: #fce5be !important;
+    background-color: #FFFFF !important;
 }
 
 .character-card .avatar-container img,
@@ -596,16 +596,16 @@ img, [data-testid="image"], [class*="image"] {
 }
 
 .gradio-chatbot::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #FFFFF;
     border-radius: 10px;
 }
 
 .gradio-chatbot::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: #FFFFF;
     border-radius: 10px;
 }
 
 .gradio-chatbot::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: #FFFFF;
 }
 """
