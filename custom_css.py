@@ -442,8 +442,11 @@ body {
     background-color: transparent !important;
 }
 
-/* Chat bubbles: AI is purple with 50% transparency, user is white */
-.gradio-chatbot .message.bot {
+/* Chat bubbles: AI is purple with 50% transparency, user is white - 强制覆盖主题 */
+.gradio-chatbot .message.bot,
+.gradio-chatbot .message-wrap.bot .message,
+.gradio-chatbot .bot .message,
+.gradio-chatbot [data-testid="bot"] .message {
     background-color: rgba(189, 186, 212, 0.5) !important;
     color: #2e285c !important;
     border-bottom-left-radius: 6px !important;
@@ -452,14 +455,17 @@ body {
     border-bottom-right-radius: 18px !important;
     margin-left: 12px !important;
     margin-right: auto !important;
-    max-width: 80%;
+    max-width: 80% !important;
     box-shadow: 0 1px 3px rgba(46, 40, 92, 0.1) !important;
     padding: 12px 16px !important;
     word-wrap: break-word !important;
     border: 1px solid rgba(189, 186, 212, 0.3) !important;
 }
 
-.gradio-chatbot .message.user {
+.gradio-chatbot .message.user,
+.gradio-chatbot .message-wrap.user .message,
+.gradio-chatbot .user .message,
+.gradio-chatbot [data-testid="user"] .message {
     background-color: white !important;
     color: #2e285c !important;
     border-bottom-right-radius: 6px !important;
@@ -468,11 +474,24 @@ body {
     border-bottom-left-radius: 18px !important;
     margin-right: 12px !important;
     margin-left: auto !important;
-    max-width: 80%;
+    max-width: 80% !important;
     border: 1px solid #e1e2fc !important;
     box-shadow: 0 1px 3px rgba(46, 40, 92, 0.05) !important;
     padding: 12px 16px !important;
     word-wrap: break-word !important;
+}
+
+/* 更强力的选择器覆盖主题颜色 */
+.gradio-chatbot .message-row.bot .message,
+.gradio-chatbot .message-row[data-testid="bot"] .message {
+    background-color: rgba(189, 186, 212, 0.5) !important;
+    color: #2e285c !important;
+}
+
+.gradio-chatbot .message-row.user .message,
+.gradio-chatbot .message-row[data-testid="user"] .message {
+    background-color: white !important;
+    color: #2e285c !important;
 }
 
 /* Chat area overall background (white) */
