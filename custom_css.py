@@ -1,4 +1,24 @@
 custom_css = """
+/* 🎯 CRITICAL: Override Gradio's default theme CSS variables */
+:root {
+  --background-fill-primary: #ffffff !important;
+  --background-fill-secondary: #ffffff !important;
+  --block-background-fill: #ffffff !important;
+  --panel-background-fill: #ffffff !important;
+  --color-background-primary: #ffffff !important;
+  --color-background-secondary: #ffffff !important;
+  --neutral-50: #ffffff !important;
+  --neutral-100: #ffffff !important;
+}
+
+/* Force white background on ALL possible Gradio containers */
+html, body, #root, .app, .main, .gradio-app, .gradio-container,
+.gr-app, .gr-block, .gr-form, .gr-box, .gr-column, .gr-row, 
+.gr-group, .gr-tab-nav, .gr-tabs, .block, .panel {
+    background: white !important;
+    background-color: white !important;
+}
+
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
