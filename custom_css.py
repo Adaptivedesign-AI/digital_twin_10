@@ -723,27 +723,20 @@ img, [data-testid="image"], [class*="image"] {
 }
 
 /* Force override chat bubble colors with broader selectors */
-.gradio-chatbot .message,
-.gradio-chatbot [class*="message"],
-.gradio-chatbot [data-testid*="message"] {
+.gradio-chatbot .message {
     background-color: white !important;
     color: #2e285c !important;
 }
 
 /* AI message bubbles - using broader selectors */
-.gradio-chatbot .message:has(.avatar[src*="student"]),
-.gradio-chatbot [class*="bot"] .message,
-.gradio-chatbot [data-role="assistant"] .message,
-.gradio-chatbot .message:not(.user):not([data-role="user"]) {
+.gradio-chatbot .message:has(.avatar[src*="student"]) {
     background-color: rgba(189, 186, 212, 0.5) !important;
     color: #2e285c !important;
     border: 1px solid rgba(189, 186, 212, 0.3) !important;
 }
 
 /* User message bubbles */
-.gradio-chatbot .message.user,
-.gradio-chatbot [class*="user"] .message,
-.gradio-chatbot [data-role="user"] .message {
+.gradio-chatbot .message.user {
     background-color: white !important;
     color: #2e285c !important;
     border: 1px solid #e1e2fc !important;
