@@ -47,24 +47,26 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Chat page header styling */
+/* Chat page header styling - 改成白色背景 */
 .chat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
     border-bottom: 1px solid #e1e2fc;
-    background-color: #2e285c;
-    color: white;
+    background-color: white !important;
+    color: #2e285c !important;
     border-radius: 12px 12px 0 0;
     margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
 }
 
 .page-title {
-    color: white !important;
+    color: #2e285c !important;
     margin: 0 !important;
     text-align: center;
     flex-grow: 1;
+    font-weight: bold !important;
 }
 
 /* Main chat container - two column layout */
@@ -75,14 +77,16 @@ body {
     margin: 0 auto;
 }
 
-/* Left column: Chat interface */
+/* Left column: Chat interface - 加长高度与右边对齐 */
 .chat-column {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    height: fit-content;
     border: 1px solid #e1e2fc;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 /* Right column: Information panels */
@@ -337,20 +341,21 @@ body {
     border-color: #2e285c !important;
 }
 
-/* Back button styling */
+/* Back button styling - 改成紫色 */
 .back-btn {
-    background-color: #bdbad4 !important;
-    border: none !important;
-    color: white !important;
+    background-color: white !important;
+    border: 2px solid #bdbad4 !important;
+    color: #2e285c !important;
     border-radius: 8px !important;
     padding: 8px 16px !important;
     cursor: pointer !important;
-    transition: background-color 0.2s !important;
+    transition: all 0.2s !important;
     font-weight: bold !important;
 }
 
 .back-btn:hover {
-    background-color: #2e285c !important;
+    background-color: #f0edfe !important;
+    border-color: #2e285c !important;
 }
 
 /* Input and buttons styling */
