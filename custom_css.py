@@ -2,7 +2,7 @@ custom_css = """
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: #f9f9f9;
+    background: linear-gradient(135deg, #ffffff 0%, #f0edfe 100%);
 }
 
 /* Make header transparent - remove white backgrounds */
@@ -36,7 +36,7 @@ body {
 
 /* Header styling with updated brand color and reduced opacity */
 .main-title {
-    background-color: rgba(9, 64, 103, 0.85);
+    background-color: rgba(46, 40, 92, 0.85);
     color: white;
     padding: 15px;
     margin: 0;
@@ -53,7 +53,7 @@ body {
     justify-content: space-between;
     padding: 15px 20px;
     border-bottom: 1px solid #e0e0e0;
-    background-color: rgba(9, 64, 103, 0.85);
+    background-color: rgba(46, 40, 92, 0.85);
     color: white;
     border-radius: 12px 12px 0 0;
     margin-bottom: 20px;
@@ -100,7 +100,7 @@ body {
 }
 
 .profile-name {
-    color: #094067 !important;
+    color: #2e285c !important;
     margin: 0 0 15px 0 !important;
     text-align: center;
     font-weight: bold !important;
@@ -108,13 +108,13 @@ body {
 
 .profile-image {
     border-radius: 12px;
-    border: 2px solid rgba(9, 64, 103, 0.85);
+    border: 2px solid rgba(46, 40, 92, 0.85);
 }
 
 .profile-text {
     font-size: 14px;
     line-height: 1.6;
-    color: #555;
+    color: #2e285c;
     margin: 0 !important;
 }
 
@@ -130,7 +130,7 @@ body {
 .instructions-text {
     font-size: 14px;
     line-height: 1.6;
-    color: #333;
+    color: #2e285c;
     margin: 0 !important;
 }
 
@@ -144,7 +144,7 @@ body {
 }
 
 .section-title {
-    color: #094067 !important;
+    color: #2e285c !important;
     margin: 0 0 15px 0 !important;
     font-weight: bold !important;
     font-size: 18px !important;
@@ -152,7 +152,7 @@ body {
 
 .scene-instruction {
     font-size: 14px;
-    color: #666;
+    color: #2e285c;
     margin: 0 0 15px 0 !important;
 }
 
@@ -231,14 +231,14 @@ body {
     }
 }
 
-/* Card styling - updated with rounded edges */
+/* Card styling - updated with rounded edges and new purple theme */
 .character-card {
-    background: white;
+    background: #e1e2fc;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #d1d0e7;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -252,31 +252,24 @@ body {
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-/* Card header with title case for student names and reduced opacity */
+/* Remove card header styling */
 .card-header {
-    background-color: #315d6e;
-    color: white !important;
-    padding: 10px;
-    text-align: center;
-    font-weight: 900 !important;
-    font-size: 25px !important;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    text-transform: capitalize !important;
+    display: none;
 }
 
 /* Student info styling - compact and readable */
 .student-name {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
-    margin: 8px 0 4px;
+    margin: 15px 0 8px;
     text-align: center;
+    color: #2e285c;
 }
 
 .student-description {
     padding: 0 12px;
     text-align: center;
-    color: #555;
+    color: #2e285c;
     font-size: 13px;
     min-height: 45px;
     overflow: hidden;
@@ -292,15 +285,15 @@ body {
     display: none;
 }
 
-/* Avatar styling - updated with circular design and transparent background */
+/* Avatar styling - updated with circular design and centered at 80% width */
 .character-card .avatar-container {
-    width: 120px!important;
-    height: 120px!important;
-    overflow: hidden!important;
-    margin: 15px auto!important;
-    border: 2px solid rgba(9, 64, 103, 0.85)!important;
-    border-radius: 50%!important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1)!important;
+    width: 80% !important;
+    height: 120px !important;
+    overflow: hidden !important;
+    margin: 15px auto !important;
+    border: 2px solid rgba(46, 40, 92, 0.85) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
     background-color: #fce5be !important;
 }
 
@@ -309,22 +302,22 @@ body {
 .character-card .avatar-img,
 .character-card [data-testid="image"],
 .character-card [data-testid="image"] > div {
-    width: 100%!important;
-    height: 100%!important;
-    object-fit: cover!important;
-    display: block!important;
-    background-color: transparent!important;
-    border: none!important;
-    box-shadow: none!important;
-    margin: 0!important;
-    padding: 0!important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* Chat button styling with updated brand color */
+/* Chat button styling with updated theme */
 .chat-btn {
-    background-color: #3da9fc !important;
-    color: white !important;
-    border: none !important;
+    background-color: white !important;
+    color: #2e285c !important;
+    border: 2px solid #2e285c !important;
     border-radius: 20px !important;
     padding: 8px 0 !important;
     margin: 10px auto 16px !important;
@@ -333,18 +326,19 @@ body {
     font-weight: bold !important;
     cursor: pointer !important;
     font-size: 14px !important;
-    transition: background-color 0.2s !important;
+    transition: all 0.2s !important;
 }
 
 .chat-btn:hover {
-    background-color: #2a93e0 !important;
+    background-color: #2e285c !important;
+    color: white !important;
 }
 
 /* Back button styling */
 .back-btn {
-    background-color: #3da9fc !important;
+    background-color: #2e285c !important;
     border: none !important;
-    color: #fffffe !important;
+    color: white !important;
     border-radius: 8px !important;
     padding: 8px 16px !important;
     cursor: pointer !important;
@@ -353,17 +347,17 @@ body {
 }
 
 .back-btn:hover {
-    background-color: #2a93e0 !important;
+    background-color: #1f1a40 !important;
 }
 
 /* Input and buttons styling for better aesthetics */
 .message-input textarea {
-    background-color: #fffffe !important;
-    border: 1px solid #90b4ce !important;
+    background-color: white !important;
+    border: 1px solid #bdbad4 !important;
     border-radius: 20px !important;
     padding: 12px 16px !important;
     font-size: 14px !important;
-    color: #094067 !important;
+    color: #2e285c !important;
     resize: none !important;
 }
 
@@ -376,8 +370,8 @@ body {
 }
 
 .send-btn {
-    background-color: #3da9fc !important;
-    color: #fffffe !important;
+    background-color: #2e285c !important;
+    color: white !important;
     font-weight: bold !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
@@ -388,12 +382,12 @@ body {
 }
 
 .send-btn:hover {
-    background-color: #2a93e0 !important;
+    background-color: #1f1a40 !important;
 }
 
 .clear-btn {
-    background-color: rgba(9, 64, 103, 0.85) !important;
-    color: #fffffe !important;
+    background-color: rgba(189, 186, 212, 0.85) !important;
+    color: #2e285c !important;
     font-weight: bold !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
@@ -404,13 +398,13 @@ body {
 }
 
 .clear-btn:hover {
-    background-color: #073050 !important;
+    background-color: rgba(189, 186, 212, 1) !important;
 }
 
 /* Character.ai style chat container */
 .character-ai-style {
     border-radius: 12px;
-    background-color: #d8eefe !important;
+    background-color: white !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -434,15 +428,15 @@ body {
     margin-right: 8px !important;
     flex-shrink: 0 !important;
     box-shadow: none !important;
-    border: 2px solid rgba(9, 64, 103, 0.85) !important;
+    border: 2px solid rgba(46, 40, 92, 0.85) !important;
     padding: 0 !important;
     background-color: transparent !important;
 }
 
-/* Chat bubbles: AI is blue, user is white */
+/* Chat bubbles: AI is purple with transparency, user is white */
 .gradio-chatbot .message.bot {
-    background-color: #3da9fc !important;
-    color: #fffffe !important;
+    background-color: rgba(189, 186, 212, 0.5) !important;
+    color: #2e285c !important;
     border-bottom-left-radius: 6px !important;
     border-top-left-radius: 18px !important;
     border-top-right-radius: 18px !important;
@@ -456,8 +450,8 @@ body {
 }
 
 .gradio-chatbot .message.user {
-    background-color: #fffffe !important;
-    color: #094067 !important;
+    background-color: white !important;
+    color: #2e285c !important;
     border-bottom-right-radius: 6px !important;
     border-top-left-radius: 18px !important;
     border-top-right-radius: 18px !important;
@@ -465,15 +459,15 @@ body {
     margin-right: 12px !important;
     margin-left: auto !important;
     max-width: 80%;
-    border: 1px solid #90b4ce !important;
+    border: 1px solid #bdbad4 !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
     padding: 12px 16px !important;
     word-wrap: break-word !important;
 }
 
-/* Chat area overall background (light blue) */
+/* Chat area overall background (white) */
 .character-ai-style.chatbox-container {
-    background-color: #d8eefe !important;
+    background-color: white !important;
     padding: 20px !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
@@ -484,7 +478,7 @@ body {
     text-align: center;
     margin: 0 auto 5px;
     max-width: 800px;
-    color: #555;
+    color: #2e285c;
     font-size: 14px;
     line-height: 1.5;
     padding: 0 20px;
@@ -497,7 +491,7 @@ body {
     height: 48px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    border: 2px solid rgba(9, 64, 103, 0.85) !important;
+    border: 2px solid rgba(46, 40, 92, 0.85) !important;
     margin: 0 !important;
     padding: 0 !important;
     background-color: transparent !important;
@@ -514,7 +508,7 @@ body {
 .selection-heading {
     text-align: center;
     margin: 1px 0 10px;
-    color: #094067;
+    color: #2e285c;
     font-size: 22px;
     font-weight: bold;
 }
@@ -579,7 +573,7 @@ img, [data-testid="image"], [class*="image"] {
 /* Profile image specific styling */
 .profile-image img {
     border-radius: 12px !important;
-    border: 2px solid rgba(9, 64, 103, 0.85) !important;
+    border: 2px solid rgba(46, 40, 92, 0.85) !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
