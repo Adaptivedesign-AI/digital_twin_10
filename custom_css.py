@@ -2,7 +2,7 @@ custom_css = """
 /* Global styles for the entire application */
 body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #ffffff 0%, #f0edfe 100%);
+    background: white;
     min-height: 100vh;
 }
 
@@ -37,7 +37,7 @@ body {
 
 /* Main container background */
 .gradio-container {
-    background: linear-gradient(135deg, #ffffff 0%, #f0edfe 100%) !important;
+    background: white !important;
     min-height: 100vh !important;
 }
 
@@ -70,6 +70,8 @@ body {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 auto;
+    display: flex !important;
+    flex-direction: row !important;
 }
 
 /* Left column: Chat interface */
@@ -80,6 +82,8 @@ body {
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
     height: fit-content;
     border: 1px solid #e1e2fc;
+    flex: 0 0 65% !important;
+    min-height: 80vh !important;
 }
 
 /* Right column: Information panels */
@@ -88,6 +92,7 @@ body {
     flex-direction: column;
     gap: 20px;
     min-width: 350px;
+    flex: 0 0 35% !important;
 }
 
 /* Profile box styling */
@@ -199,15 +204,6 @@ body {
     .character-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
-    .main-chat-container {
-        flex-direction: column;
-    }
-    
-    .chat-column, .info-column {
-        width: 100%;
-        min-width: auto;
-    }
 }
 
 @media (max-width: 992px) {
@@ -223,6 +219,13 @@ body {
     
     .main-chat-container {
         padding: 0 10px;
+        flex-direction: column !important;
+    }
+    
+    .chat-column, .info-column {
+        flex: none !important;
+        width: 100% !important;
+        min-width: auto;
     }
     
     .profile-box, .instructions-box, .scene-box {
@@ -644,19 +647,17 @@ img, [data-testid="image"], [class*="image"] {
     margin: 20px 0;
 }
 
-/* Ensure full width utilization for chat interface */
-.gradio-container .main-chat-container {
-    width: 100% !important;
-    max-width: none !important;
-}
-
-/* Better responsive design for chat columns */
-@media (min-width: 1201px) {
+/* Better responsive design for chat columns - force two columns */
+@media (min-width: 769px) {
+    .main-chat-container {
+        display: flex !important;
+        flex-direction: row !important;
+    }
     .chat-column {
-        flex: 1 1 65%;
+        flex: 0 0 65% !important;
     }
     .info-column {
-        flex: 1 1 35%;
+        flex: 0 0 35% !important;
     }
 }
 
@@ -670,7 +671,7 @@ img, [data-testid="image"], [class*="image"] {
 
 /* Override any remaining blue colors */
 * {
-    border-color: #e1e2fc !important;
+    color: #2e285c !important;
 }
 
 /* Make sure buttons and interactive elements use the new color scheme */
@@ -686,5 +687,20 @@ button, .gradio-button {
 .gr-markdown h1, .gr-markdown h2, .gr-markdown h3, 
 .gr-markdown h4, .gr-markdown h5, .gr-markdown h6 {
     color: #2e285c !important;
+}
+
+/* Force two-column layout for desktop */
+@media (min-width: 769px) {
+    .gradio-container .main-chat-container {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 20px !important;
+    }
+}
+
+/* Ensure chatbot takes full height */
+.gradio-chatbot {
+    min-height: 700px !important;
+    height: 700px !important;
 }
 """
