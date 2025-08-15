@@ -357,15 +357,13 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         
         # Main content: Two-column layout
         with gr.Row(elem_classes="main-chat-container"):
-            # Left column: Chat interface (MUST BE FIRST)
-            with gr.Column(scale=65, elem_classes="chat-column"):
-                gr.Markdown("## Chat with Digital Twin", elem_classes="chat-title")
-                
+            # Left column: Chat interface
+            with gr.Column(scale=6, elem_classes="chat-column"):
                 # Chat area with avatars for user/bot distinction
                 chatbot = gr.Chatbot(
                     label="Conversation",
                     avatar_images=("avatar/user.png", None),
-                    height=700,  
+                    height=600,  
                     elem_classes="character-ai-style chatbox-container",
                     show_label=True,
                     show_copy_button=True,
@@ -385,8 +383,8 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                         send_btn = gr.Button("Send", elem_classes="send-btn")
                         clear_btn = gr.Button("Clear", elem_classes="clear-btn")
             
-            # Right column: Student info and scene controls (MUST BE SECOND)
-            with gr.Column(scale=35, elem_classes="info-column"):
+            # Right column: Student info and scene controls
+            with gr.Column(scale=4, elem_classes="info-column"):
                 # Top box: Student profile
                 with gr.Group(elem_classes="profile-box"):
                     student_name_display = gr.Markdown("# Student Name", elem_classes="profile-name")
@@ -460,16 +458,16 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                     student_name = name_dict[student_id]
                     
                     with gr.Column(elem_classes="character-card"):
-                        # Avatar container - circular and centered
+                        gr.Markdown(f"<strong style='color:white;font-weight:900;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,0.3);'>{student_name}</strong>", elem_classes="card-header")
+                        
                         with gr.Column(elem_classes="avatar-container"):
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
                                 elem_classes="avatar-img"
                             )
-                        
-                        # Student name - prominent and bold
-                        gr.Markdown(f"## {student_name}", elem_classes="student-name")
+                            
+                        gr.Markdown(f"### {student_name}", elem_classes="student-name", visible=False)
                         gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
                         
                         chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
