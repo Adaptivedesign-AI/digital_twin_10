@@ -158,14 +158,14 @@ body {
 
 .scene-dropdown select {
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #FFFFF;
     padding: 10px;
     font-size: 14px;
 }
 
 .custom-scene-input textarea {
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #FFFFF;
     padding: 10px;
     font-size: 14px;
     min-height: 80px;
@@ -173,7 +173,7 @@ body {
 
 .scene-description textarea {
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #FFFFF;
     padding: 10px;
     font-size: 14px;
     background-color: #f8f9fa;
