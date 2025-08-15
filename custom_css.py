@@ -79,7 +79,7 @@ body {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 1);
     height: fit-content;
 }
 
@@ -95,7 +95,7 @@ body {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 1);
     border: 1px solid #FFFFFF;-
 }
 
@@ -120,11 +120,11 @@ body {
 
 /* Instructions box styling */
 .instructions-box {
-    background-color: #FFFFF;
+    background-color: #FFFFFF;
     border-radius: 12px;
     padding: 20px;
     border: 1px solid #FFFFFF;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 1);
 }
 
 .instructions-text {
@@ -139,7 +139,7 @@ body {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 1);
     border: 1px solid #FFFFFF;
 }
 
@@ -158,14 +158,14 @@ body {
 
 .scene-dropdown select {
     border-radius: 8px;
-    border: 1px solid #FFFFF;
+    border: 1px solid #FFFFFF;
     padding: 10px;
     font-size: 14px;
 }
 
 .custom-scene-input textarea {
     border-radius: 8px;
-    border: 1px solid #FFFFF;
+    border: 1px solid #FFFFFF;
     padding: 10px;
     font-size: 14px;
     min-height: 80px;
@@ -173,7 +173,7 @@ body {
 
 .scene-description textarea {
     border-radius: 8px;
-    border: 1px solid #FFFFF;
+    border: 1px solid #FFFFFF;
     padding: 10px;
     font-size: 14px;
     background-color: #f8f9fa;
@@ -236,7 +236,7 @@ body {
     background: #e1e2fc;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 1);
     transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #d1d0e7;
     height: 100%;
@@ -249,7 +249,7 @@ body {
 
 .character-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 1);
 }
 
 /* Remove card header styling */
@@ -293,8 +293,8 @@ body {
     margin: 15px auto !important;
     border: 2px solid rgba(46, 40, 92, 0.85) !important;
     border-radius: 50% !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-    background-color: #FFFFF !important;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 1) !important;
+    background-color: #FFFFFF !important;
 }
 
 .character-card .avatar-container img,
@@ -405,7 +405,7 @@ body {
 .character-ai-style {
     border-radius: 12px;
     background-color: white !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 1);
 }
 
 /* Chat avatar styling */
@@ -444,7 +444,7 @@ body {
     margin-left: 12px !important;
     margin-right: auto !important;
     max-width: 80%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 1) !important;
     padding: 12px 16px !important;
     word-wrap: break-word !important;
 }
@@ -460,7 +460,7 @@ body {
     margin-left: auto !important;
     max-width: 80%;
     border: 1px solid #bdbad4 !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 1) !important;
     padding: 12px 16px !important;
     word-wrap: break-word !important;
 }
@@ -470,7 +470,7 @@ body {
     background-color: white !important;
     padding: 20px !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 1) !important;
 }
 
 /* Project description styling */
@@ -596,16 +596,16 @@ img, [data-testid="image"], [class*="image"] {
 }
 
 .gradio-chatbot::-webkit-scrollbar-track {
-    background: #FFFFF;
+    background: #FFFFFF;
     border-radius: 10px;
 }
 
 .gradio-chatbot::-webkit-scrollbar-thumb {
-    background: #FFFFF;
+    background: #FFFFFF;
     border-radius: 10px;
 }
 
 .gradio-chatbot::-webkit-scrollbar-thumb:hover {
-    background: #FFFFF;
+    background: #FFFFFF;
 }
 """
