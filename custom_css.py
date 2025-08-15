@@ -53,7 +53,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
-    border-bottom: 1px solid #e1e2fc;
+    border-bottom: 1px solid #bdbad4;
     background-color: white !important;
     color: #2e285c !important;
     border-radius: 12px 12px 0 0;
@@ -83,7 +83,7 @@ body {
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: 1px solid #e1e2fc;
+    border: 1px solid #bdbad4;
     min-height: 100vh !important;
     display: flex !important;
     flex-direction: column !important;
@@ -114,7 +114,7 @@ body {
 
 .profile-image {
     border-radius: 12px;
-    border: 2px solid #e1e2fc;
+    border: 2px solid #bdbad4;
 }
 
 .profile-text {
@@ -164,14 +164,14 @@ body {
 
 .scene-dropdown select {
     border-radius: 8px;
-    border: 1px solid #e1e2fc;
+    border: 1px solid #bdbad4;
     padding: 10px;
     font-size: 14px;
 }
 
 .custom-scene-input textarea {
     border-radius: 8px;
-    border: 1px solid #e1e2fc;
+    border: 1px solid #bdbad4;
     padding: 10px;
     font-size: 14px;
     min-height: 80px;
@@ -179,7 +179,7 @@ body {
 
 .scene-description textarea {
     border-radius: 8px;
-    border: 1px solid #e1e2fc;
+    border: 1px solid #bdbad4;
     padding: 10px;
     font-size: 14px;
     background-color: #f0edfe;
@@ -239,7 +239,7 @@ body {
 
 /* Card styling - updated with purple theme */
 .character-card {
-    background: #e1e2fc;
+    background: #bdbad4;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
@@ -361,7 +361,7 @@ body {
 /* Input and buttons styling */
 .message-input textarea {
     background-color: white !important;
-    border: 1px solid #e1e2fc !important;
+    border: 1px solid #bdbad4 !important;
     border-radius: 20px !important;
     padding: 12px 16px !important;
     font-size: 14px !important;
@@ -437,7 +437,7 @@ body {
     margin-right: 8px !important;
     flex-shrink: 0 !important;
     box-shadow: none !important;
-    border: 2px solid #e1e2fc !important;
+    border: 2px solid #bdbad4 !important;
     padding: 0 !important;
     background-color: transparent !important;
 }
@@ -475,7 +475,7 @@ body {
     margin-right: 12px !important;
     margin-left: auto !important;
     max-width: 80% !important;
-    border: 1px solid #e1e2fc !important;
+    border: 1px solid #bdbad4 !important;
     box-shadow: 0 1px 3px rgba(46, 40, 92, 0.05) !important;
     padding: 12px 16px !important;
     word-wrap: break-word !important;
@@ -520,7 +520,7 @@ body {
     height: 48px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    border: 2px solid #e1e2fc !important;
+    border: 2px solid #bdbad4 !important;
     margin: 0 !important;
     padding: 0 !important;
     background-color: transparent !important;
@@ -602,7 +602,7 @@ img, [data-testid="image"], [class*="image"] {
 /* Profile image specific styling */
 .profile-image img {
     border-radius: 12px !important;
-    border: 2px solid #e1e2fc !important;
+    border: 2px solid #bdbad4 !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
@@ -672,6 +672,6 @@ html, body, #root,
 
 /* 确保只有我们想要的元素有边框 */
 .character-card, .profile-image, .avatar-container {
-    border-color: #e1e2fc !important;
+    border-color: #bdbad4 !important;
 }
 """
