@@ -35,12 +35,16 @@ body {
     background-color: transparent !important;
 }
 
-/* Chat title styling */
-.chat-title {
-    color: #2e285c !important;
-    margin: 0 0 20px 0 !important;
+/* Header styling with updated purple theme */
+.main-title {
+    background-color: #2e285c;
+    color: white;
+    padding: 15px;
+    margin: 0;
     text-align: center;
-    font-weight: bold !important;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0;
 }
 
 /* Chat page header styling */
@@ -50,53 +54,42 @@ body {
     justify-content: space-between;
     padding: 15px 20px;
     border-bottom: 1px solid #e1e2fc;
-    background-color: white !important;
-    color: #2e285c;
+    background-color: #2e285c;
+    color: white;
     border-radius: 12px 12px 0 0;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
 }
 
 .page-title {
-    color: #2e285c !important;
+    color: white !important;
     margin: 0 !important;
     text-align: center;
     flex-grow: 1;
-    font-weight: bold !important;
 }
 
-/* CRITICAL: Force two-column layout */
+/* Main chat container - two column layout */
 .main-chat-container {
-    display: flex !important;
-    flex-direction: row !important;
     gap: 20px !important;
-    padding: 0 20px !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    background: white !important;
+    padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* Left column: Chat interface - MUST be on the left */
+/* Left column: Chat interface */
 .chat-column {
-    background-color: white !important;
+    background-color: white;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    height: fit-content;
     border: 1px solid #e1e2fc;
-    flex: 1 1 65% !important;
-    order: 1 !important;
-    min-height: 80vh !important;
 }
 
-/* Right column: Information panels - MUST be on the right */
+/* Right column: Information panels */
 .info-column {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    flex: 1 1 35% !important;
-    order: 2 !important;
-    background: white !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* Profile box styling */
@@ -113,7 +106,6 @@ body {
     margin: 0 0 15px 0 !important;
     text-align: center;
     font-weight: bold !important;
-    font-size: 24px !important;
 }
 
 .profile-image {
@@ -171,7 +163,6 @@ body {
     border: 1px solid #e1e2fc;
     padding: 10px;
     font-size: 14px;
-    color: #2e285c;
 }
 
 .custom-scene-input textarea {
@@ -180,7 +171,6 @@ body {
     padding: 10px;
     font-size: 14px;
     min-height: 80px;
-    color: #2e285c;
 }
 
 .scene-description textarea {
@@ -190,7 +180,6 @@ body {
     font-size: 14px;
     background-color: #f0edfe;
     min-height: 60px;
-    color: #2e285c;
 }
 
 /* Character.ai style grid for selection page - 5 columns by default */
@@ -203,10 +192,18 @@ body {
     margin: 0 auto;
 }
 
-/* Responsive breakpoints - ONLY apply to selection page */
+/* Responsive breakpoints for character grid at different screen sizes */
 @media (max-width: 1200px) {
     .character-grid {
         grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .main-chat-container {
+        flex-direction: column;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
     }
 }
 
@@ -221,14 +218,12 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    /* Only on very small screens, stack chat columns */
     .main-chat-container {
-        flex-direction: column !important;
+        padding: 0 10px;
     }
     
-    .chat-column, .info-column {
-        flex: none !important;
-        order: unset !important;
+    .profile-box, .instructions-box, .scene-box {
+        padding: 15px;
     }
 }
 
@@ -238,7 +233,7 @@ body {
     }
 }
 
-/* Card styling - updated with new purple color scheme */
+/* Card styling - updated with purple theme */
 .character-card {
     background: #e1e2fc;
     border-radius: 16px;
@@ -259,12 +254,12 @@ body {
     box-shadow: 0 8px 16px rgba(46, 40, 92, 0.25);
 }
 
-/* Remove the blue header from cards */
+/* Remove card header - show student name directly */
 .card-header {
     display: none;
 }
 
-/* Student name styling - larger and bolder */
+/* Student info styling - compact and readable */
 .student-name {
     font-size: 20px !important;
     font-weight: 900 !important;
@@ -272,23 +267,20 @@ body {
     text-align: center;
     color: #2e285c !important;
     letter-spacing: 0.5px;
-    display: block !important;
-    visibility: visible !important;
 }
 
 .student-description {
-    padding: 0 15px;
+    padding: 0 12px;
     text-align: center;
     color: #2e285c;
     font-size: 13px;
-    min-height: 40px;
+    min-height: 45px;
     overflow: hidden;
     flex-grow: 1;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    line-height: 1.4;
 }
 
 /* Hide model tag for cleaner interface */
@@ -322,7 +314,6 @@ body {
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
-    border-radius: 50% !important;
 }
 
 /* Chat button styling - white background with purple text */
@@ -331,8 +322,8 @@ body {
     color: #2e285c !important;
     border: 2px solid #bdbad4 !important;
     border-radius: 20px !important;
-    padding: 10px 0 !important;
-    margin: 15px auto 20px auto !important;
+    padding: 8px 0 !important;
+    margin: 10px auto 16px !important;
     width: 85% !important;
     display: block !important;
     font-weight: bold !important;
@@ -371,11 +362,6 @@ body {
     font-size: 14px !important;
     color: #2e285c !important;
     resize: none !important;
-}
-
-.message-input textarea:focus {
-    border-color: #bdbad4 !important;
-    outline: none !important;
 }
 
 /* Button container for vertical layout */
@@ -419,7 +405,7 @@ body {
     border-color: #2e285c !important;
 }
 
-/* Chat container styling - white background */
+/* Character.ai style chat container */
 .character-ai-style {
     border-radius: 12px;
     background-color: white !important;
@@ -484,7 +470,7 @@ body {
     word-wrap: break-word !important;
 }
 
-/* Chat area overall background - white */
+/* Chat area overall background (white) */
 .character-ai-style.chatbox-container {
     background-color: white !important;
     padding: 20px !important;
@@ -495,7 +481,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 25px;
+    margin: 0 auto 5px;
     max-width: 800px;
     color: #2e285c;
     font-size: 14px;
@@ -523,7 +509,7 @@ body {
     align-items: flex-start !important;
 }
 
-/* Selection heading styling */
+/* Selection heading styling for clear hierarchy */
 .selection-heading {
     text-align: center;
     margin: 1px 0 10px;
@@ -532,7 +518,7 @@ body {
     font-weight: bold;
 }
 
-/* Container for main content */
+/* Container for main content with reasonable max width */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -609,11 +595,6 @@ img, [data-testid="image"], [class*="image"] {
     margin-bottom: 10px !important;
 }
 
-.gradio-dropdown label, .gradio-textbox label {
-    color: #2e285c !important;
-    font-weight: 600 !important;
-}
-
 /* Custom scrollbar for chat area */
 .gradio-chatbot::-webkit-scrollbar {
     width: 6px;
@@ -631,28 +612,6 @@ img, [data-testid="image"], [class*="image"] {
 
 .gradio-chatbot::-webkit-scrollbar-thumb:hover {
     background: #2e285c;
-}
-
-/* Better responsive design for chat columns - force two columns */
-@media (min-width: 769px) {
-    .main-chat-container {
-        display: flex !important;
-        flex-direction: row !important;
-    }
-    .chat-column {
-        flex: 1 1 65% !important;
-        order: 1 !important;
-    }
-    .info-column {
-        flex: 1 1 35% !important;
-        order: 2 !important;
-    }
-}
-
-/* Ensure chatbot takes full height */
-.gradio-chatbot {
-    min-height: 700px !important;
-    height: 700px !important;
 }
 
 /* 🎯 CRITICAL FIX: Remove white bars and fix gray background */
@@ -680,28 +639,5 @@ html, body, #root,
   /* 部分版本还用这些变量名 */
   --color-background: #ffffff !important;
   --color-background-secondary: #ffffff !important;
-}
-
-/* Adjust font colors for all text elements */
-.gradio-container label, 
-.gradio-container p, 
-.gradio-container span, 
-.gradio-container div {
-    color: #2e285c !important;
-}
-
-/* Make sure buttons and interactive elements use the new color scheme */
-button, .gradio-button {
-    transition: all 0.2s ease !important;
-}
-
-/* Ensure markdown text uses the correct colors */
-.markdown-text, .gr-markdown {
-    color: #2e285c !important;
-}
-
-.gr-markdown h1, .gr-markdown h2, .gr-markdown h3, 
-.gr-markdown h4, .gr-markdown h5, .gr-markdown h6 {
-    color: #2e285c !important;
 }
 """
