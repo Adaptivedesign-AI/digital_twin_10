@@ -573,7 +573,7 @@ def update_student_profile(student_id):
 **Age:** {profile['age']}  
 **Sex:** {profile['sex']}  
 **Race/Ethnicity:** {profile['race_ethnicity']}  
-**Grade:** {profile['grade']}
+**Grade:** {profile['grade']}  
 **Emotional Health:** {profile['emotional_health']}  
 **Mental Health:** {profile['mental_health']}
     """.strip()
