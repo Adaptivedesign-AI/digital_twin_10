@@ -84,9 +84,22 @@ body {
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
     border: 1px solid #bdbad4;
-    min-height: 120vh !important;
+    min-height: 125vh !important;
     display: flex !important;
     flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+/* 确保聊天框占用大部分空间，输入框在底部 */
+.chat-column .gradio-chatbot {
+    flex: 1 !important;
+    min-height: 600px !important;
+}
+
+/* 输入框区域固定在底部 */
+.chat-column > div:last-child {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
 }
 
 /* Right column: Information panels */
@@ -485,13 +498,28 @@ select, textarea, input {
 /* 1. Fix left chat column height only on chat page */
 .chat-page .chat-column,
 .main-chat-container .chat-column {
-    min-height: 1000px !important;
+    min-height: 1100px !important;
     height: auto !important;
     background-color: white !important;
     border-radius: 12px !important;
     padding: 20px !important;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
     border: 1px solid #bdbad4 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+/* 确保聊天框在聊天页面占用大部分空间 */
+.main-chat-container .chat-column .gradio-chatbot {
+    flex: 1 !important;
+    min-height: 800px !important;
+}
+
+/* 确保输入框区域在聊天页面底部 */
+.main-chat-container .chat-column > div:last-child {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
 }
 
 /* 2. Fix right info column only on chat page */
