@@ -480,96 +480,108 @@ select, textarea, input {
     background-color: white !important;
 }
 """
-# 在你现有的 custom_css 末尾添加这些规则：
+# 在你的 custom_css 末尾添加这些强制规则：
 
 additional_css = """
 
-/* 🎯 只修复聊天页面的布局和颜色 */
+/* 🎯 强制修复聊天页面布局 */
 
-/* 1. 让左边聊天栏和右边一样高 */
-.chat-column {
+/* 1. 强制左边聊天区域拉长 */
+.main-chat-container .chat-column,
+.gradio-container .chat-column,
+div[class*="chat-column"] {
+    min-height: 800px !important;
+    height: auto !important;
     background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: 1px solid #bdbad4;
-    min-height: calc(100vh - 120px) !important;  /* 减去头部高度 */
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* 2. 确保右边所有信息框都是白色背景 */
-.profile-box {
-    background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    border-radius: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
     border: 1px solid #bdbad4 !important;
 }
 
-.instructions-box {
+/* 2. 强制右边所有信息框白色背景 */
+.info-column > div,
+.info-column .gr-box,
+.info-column .gradio-group,
+div[class*="profile-box"],
+div[class*="instructions-box"], 
+div[class*="scene-box"] {
     background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 12px !important;
+    padding: 20px !important;
     border: 1px solid #bdbad4 !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
+    margin-bottom: 20px !important;
 }
 
-.scene-box {
-    background-color: white !important;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: 1px solid #bdbad4 !important;
-}
-
-/* 3. 确保所有文字区域都有白色背景 */
-.profile-text, .instructions-text, .scene-instruction {
-    background-color: white !important;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-/* 4. 确保dropdown和textbox有白色背景 */
-.scene-dropdown select {
-    background-color: white !important;
-    border: 1px solid #bdbad4;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.custom-scene-input textarea {
-    background-color: white !important;
-    border: 1px solid #bdbad4;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.scene-description textarea {
-    background-color: white !important;
-    border: 1px solid #bdbad4;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-/* 5. 强制所有Gradio组件在右侧有白色背景 */
-.info-column .gradio-dropdown,
-.info-column .gradio-textbox,
+/* 3. 强制所有文字内容白色背景 */
+.info-column div,
+.info-column p,
+.info-column span,
+.info-column .gr-markdown,
 .info-column .gradio-markdown {
     background-color: white !important;
+    color: #2e285c !important;
 }
 
-.info-column .gradio-dropdown > div,
-.info-column .gradio-textbox > div {
-    background-color: white !important;
-}
-
-/* 6. 确保右侧所有输入框都是白色 */
+/* 4. 强制右侧所有输入框白色背景 */
+.info-column .gradio-dropdown,
+.info-column .gradio-textbox,
 .info-column select,
 .info-column textarea,
 .info-column input {
     background-color: white !important;
     border: 1px solid #bdbad4 !important;
+    border-radius: 8px !important;
+    color: #2e285c !important;
+}
+
+/* 5. 强制右侧所有容器白色背景 */
+.info-column .gradio-dropdown > div,
+.info-column .gradio-textbox > div,
+.info-column .gradio-group > div,
+.info-column .gr-form > div {
+    background-color: white !important;
+}
+
+/* 6. 特别针对标题区域 */
+.info-column h1,
+.info-column h2, 
+.info-column h3,
+.info-column .section-title {
+    background-color: white !important;
+    color: #2e285c !important;
+    padding: 10px !important;
+    margin: 0 !important;
+}
+
+/* 7. 确保Profile信息完全白色 */
+.profile-name,
+.profile-text,
+.student-name,
+.student-description {
+    background-color: white !important;
+    color: #2e285c !important;
+}
+
+/* 8. 针对具体的gradio组件类名 */
+.gr-box,
+.gr-panel,
+.gr-form,
+.gradio-group,
+.gradio-box {
+    background-color: white !important;
+}
+
+/* 9. 强制覆盖任何灰色背景 */
+.info-column * {
+    background-color: white !important;
+}
+
+/* 10. 但排除图片 */
+.info-column img,
+.info-column .gradio-image {
+    background-color: transparent !important;
 }
 
 """
