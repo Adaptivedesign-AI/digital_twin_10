@@ -96,13 +96,13 @@ body {
     gap: 20px;
 }
 
-/* Profile box styling - 移除边框，纯白色 */
+/* Profile box styling - 保持白色不透明 */
 .profile-box {
     background-color: white !important;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: none !important;
+    border: 1px solid #bdbad4 !important;
 }
 
 .profile-name {
@@ -124,12 +124,12 @@ body {
     margin: 0 !important;
 }
 
-/* Instructions box styling - 移除边框，纯白色 */
+/* Instructions box styling - 保持白色不透明 */
 .instructions-box {
     background-color: white !important;
     border-radius: 12px;
     padding: 20px;
-    border: none !important;
+    border: 1px solid #bdbad4 !important;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
 }
 
@@ -140,13 +140,13 @@ body {
     margin: 0 !important;
 }
 
-/* Scene box styling - 移除边框，纯白色 */
+/* Scene box styling - 保持白色不透明 */
 .scene-box {
     background-color: white !important;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    border: none !important;
+    border: 1px solid #bdbad4 !important;
 }
 
 .section-title {
@@ -167,6 +167,7 @@ body {
     border: 1px solid #bdbad4;
     padding: 10px;
     font-size: 14px;
+    background-color: white !important;
 }
 
 .custom-scene-input textarea {
@@ -175,6 +176,7 @@ body {
     padding: 10px;
     font-size: 14px;
     min-height: 80px;
+    background-color: white !important;
 }
 
 .scene-description textarea {
@@ -182,7 +184,7 @@ body {
     border: 1px solid #bdbad4;
     padding: 10px;
     font-size: 14px;
-    background-color: #f0edfe;
+    background-color: #f0edfe !important;
     min-height: 60px;
 }
 
@@ -194,6 +196,7 @@ body {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    background-color: transparent !important;
 }
 
 /* Responsive breakpoints for character grid at different screen sizes */
@@ -237,9 +240,10 @@ body {
     }
 }
 
-/* Card styling - updated with purple theme */
+/* 重要：Card styling - 强制保持紫色背景 */
 .character-card {
-    background: #bdbad4;
+    background: #bdbad4 !important;
+    background-color: #bdbad4 !important;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
@@ -417,91 +421,6 @@ body {
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.05);
 }
 
-/* Chat avatar styling */
-.gradio-chatbot .avatar img {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 50% !important;
-    border: none !important;
-    object-fit: cover !important;
-}
-
-/* Ensure avatars are visible and styled correctly */
-.gradio-chatbot .message-wrap.user .avatar,
-.gradio-chatbot .message-wrap.bot .avatar {
-    display: inline-block !important;
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    margin-right: 8px !important;
-    flex-shrink: 0 !important;
-    box-shadow: none !important;
-    border: 2px solid #bdbad4 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
-
-/* Chat bubbles: AI is purple with 50% transparency, user is white - 强制覆盖主题 */
-.gradio-chatbot .message.bot,
-.gradio-chatbot .message-wrap.bot .message,
-.gradio-chatbot .bot .message,
-.gradio-chatbot [data-testid="bot"] .message {
-    background-color: rgba(189, 186, 212, 0.5) !important;
-    color: #2e285c !important;
-    border-bottom-left-radius: 6px !important;
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
-    border-bottom-right-radius: 18px !important;
-    margin-left: 12px !important;
-    margin-right: auto !important;
-    max-width: 80% !important;
-    box-shadow: 0 1px 3px rgba(46, 40, 92, 0.1) !important;
-    padding: 12px 16px !important;
-    word-wrap: break-word !important;
-    border: 1px solid rgba(189, 186, 212, 0.3) !important;
-}
-
-.gradio-chatbot .message.user,
-.gradio-chatbot .message-wrap.user .message,
-.gradio-chatbot .user .message,
-.gradio-chatbot [data-testid="user"] .message {
-    background-color: white !important;
-    color: #2e285c !important;
-    border-bottom-right-radius: 6px !important;
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
-    border-bottom-left-radius: 18px !important;
-    margin-right: 12px !important;
-    margin-left: auto !important;
-    max-width: 80% !important;
-    border: 1px solid #bdbad4 !important;
-    box-shadow: 0 1px 3px rgba(46, 40, 92, 0.05) !important;
-    padding: 12px 16px !important;
-    word-wrap: break-word !important;
-}
-
-/* 更强力的选择器覆盖主题颜色 */
-.gradio-chatbot .message-row.bot .message,
-.gradio-chatbot .message-row[data-testid="bot"] .message {
-    background-color: rgba(189, 186, 212, 0.5) !important;
-    color: #2e285c !important;
-}
-
-.gradio-chatbot .message-row.user .message,
-.gradio-chatbot .message-row[data-testid="user"] .message {
-    background-color: white !important;
-    color: #2e285c !important;
-}
-
-/* Chat area overall background (white) */
-.character-ai-style.chatbox-container {
-    background-color: white !important;
-    padding: 20px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.05) !important;
-}
-
 /* Project description styling */
 .project-description {
     text-align: center;
@@ -512,25 +431,6 @@ body {
     line-height: 1.5;
     padding: 0 20px;
     font-style: italic;
-}
-
-/* Chat avatar containers */
-.gradio-chatbot .avatar-container {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
-    border: 2px solid #bdbad4 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-}
-
-/* Ensure proper message wrapping and alignment */
-.gradio-chatbot .message-wrap {
-    margin-bottom: 16px !important;
-    display: flex !important;
-    align-items: flex-start !important;
 }
 
 /* Selection heading styling for clear hierarchy */
@@ -547,105 +447,10 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
-}
-
-/* Fix Gradio spacing issues */
-.gradio-container {
-    max-width: 100% !important;
-}
-
-/* Hide unnecessary margins in Gradio blocks */
-.block {
-    margin-bottom: 0 !important;
-}
-
-/* Avatar image styling to ensure it fills the container */
-.gradio-chatbot .avatar-container img,
-.gradio-chatbot .avatar img,
-.gradio-chatbot img.avatar-image {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 50% !important;
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Remove image backgrounds - target all image and container elements */
-.gradio-container .gradio-image, 
-.gradio-container img, 
-.gradio-container [data-testid="image"],
-.gradio-container [class*="image"],
-.gradio-container [class*="avatar"],
-.character-card .gradio-image,
-.character-card img,
-.character-card [data-testid="image"] {
     background-color: transparent !important;
-    background: transparent !important;
 }
 
-/* Override any image background styles with !important */
-img, [data-testid="image"], [class*="image"] {
-    background-color: transparent !important;
-    background: transparent !important;
-}
-
-/* Additional fixes for Gradio's image component containers */
-.gradio-image > div, .gradio-image > div > div, .gradio-image > div > img {
-    background-color: transparent !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-/* Profile image specific styling */
-.profile-image img {
-    border-radius: 12px !important;
-    border: 2px solid #bdbad4 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-}
-
-/* Additional profile box styling */
-.profile-box .gradio-image {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* Ensure dropdown and textbox styling consistency */
-.gradio-dropdown, .gradio-textbox {
-    margin-bottom: 10px !important;
-}
-
-/* Custom scrollbar for chat area */
-.gradio-chatbot::-webkit-scrollbar {
-    width: 6px;
-}
-
-.gradio-chatbot::-webkit-scrollbar-track {
-    background: #f0edfe;
-    border-radius: 10px;
-}
-
-.gradio-chatbot::-webkit-scrollbar-thumb {
-    background: #bdbad4;
-    border-radius: 10px;
-}
-
-.gradio-chatbot::-webkit-scrollbar-thumb:hover {
-    background: #2e285c;
-}
-
-/* 🎯 CRITICAL FIX: Remove white bars and fix gray background */
-/* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
-.gradio-container > * {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* 2) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
+/* 🎯 CRITICAL FIX: 页面背景修复 */
 html, body, #root,
 .gradio-app, .app, .main,
 .gradio-container {
@@ -653,97 +458,25 @@ html, body, #root,
   background-color: #ffffff !important;
 }
 
-/* 3) 同时覆盖可能使用的主题变量（不同 gradio 版本变量名略有差异） */
 :root {
   --background-fill-primary: #ffffff !important;
   --background-fill-secondary: #ffffff !important;
   --block-background-fill: #ffffff !important;
   --panel-background-fill: #ffffff !important;
-
-  /* 部分版本还用这些变量名 */
   --color-background: #ffffff !important;
   --color-background-secondary: #ffffff !important;
 }
 
-/* 彻底移除所有Gradio组件的默认样式 */
-.gradio-container * {
-    border-color: transparent !important;
+/* 确保所有dropdown和textbox有白色背景 */
+.gradio-dropdown, 
+.gradio-textbox,
+.gradio-dropdown > div,
+.gradio-textbox > div {
+    background-color: white !important;
 }
 
-/* 确保只有我们想要的元素有边框 */
-.character-card, .profile-image, .avatar-container {
-    border-color: #bdbad4 !important;
-}
-/* Global styles for the entire application */
-body {
-    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background: white !important;
-    min-height: 100vh;
-}
-
-/* 你的所有现有 CSS 规则... */
-
-/* 🎯 CRITICAL FIX: 只修复页面背景，保持卡片颜色 */
-
-/* 1) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
-html, body, #root,
-.gradio-app, .app, .main,
-.gradio-container {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-}
-
-/* 2) 覆盖 Gradio 的主题变量 */
-:root {
-  --background-fill-primary: #ffffff !important;
-  --background-fill-secondary: #ffffff !important;
-  --block-background-fill: #ffffff !important;
-  --panel-background-fill: #ffffff !important;
-  
-  /* 部分版本还用这些变量名 */
-  --color-background: #ffffff !important;
-  --color-background-secondary: #ffffff !important;
-}
-
-/* 3) 确保主容器是白色，但不影响子元素 */
-.gradio-container {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-}
-
-/* 4) 重要：明确保持你的紫色卡片设计 */
-.character-card {
-    background: #bdbad4 !important;  /* 保持你的紫色 */
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #bdbad4;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    max-width: 220px;
-    margin: 0 auto;
-}
-
-/* 5) 保持其他紫色元素 */
-.chat-header {
-    background-color: white !important;  /* 聊天页面头部保持白色 */
-}
-
-.profile-box, .instructions-box, .scene-box {
-    background-color: white !important;  /* 右侧信息框保持白色 */
-}
-
-/* 6) 只清除不需要背景的元素 */
-.gradio-container > div:not(.character-card):not(.profile-box):not(.instructions-box):not(.scene-box) {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* 7) 确保页面整体容器是白色 */
-.container, .character-grid {
-    background-color: transparent !important;  /* 让网格容器透明，显示白色背景 */
+/* 确保所有表单元素有白色背景 */
+select, textarea, input {
+    background-color: white !important;
 }
 """
