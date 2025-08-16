@@ -84,7 +84,7 @@ body {
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
     border: 1px solid #bdbad4;
-    min-height: 100vh !important;
+    min-height: 120vh !important;
     display: flex !important;
     flex-direction: column !important;
 }
@@ -485,7 +485,7 @@ select, textarea, input {
 /* 1. Fix left chat column height only on chat page */
 .chat-page .chat-column,
 .main-chat-container .chat-column {
-    min-height: 800px !important;
+    min-height: 1000px !important;
     height: auto !important;
     background-color: white !important;
     border-radius: 12px !important;
