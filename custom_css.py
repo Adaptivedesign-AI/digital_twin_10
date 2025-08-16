@@ -480,16 +480,15 @@ select, textarea, input {
     background-color: white !important;
 }
 """
-# 在你的 custom_css 末尾添加这些强制规则：
+# 在你的 custom_css 末尾添加这些规则：
 
-additional_css = """
+precise_chat_fix_css = """
 
-/* 🎯 强制修复聊天页面布局 */
+/* 🎯 Precise fix for chat page only */
 
-/* 1. 强制左边聊天区域拉长 */
-.main-chat-container .chat-column,
-.gradio-container .chat-column,
-div[class*="chat-column"] {
+/* 1. Fix left chat column height only on chat page */
+.chat-page .chat-column,
+.main-chat-container .chat-column {
     min-height: 800px !important;
     height: auto !important;
     background-color: white !important;
@@ -499,13 +498,11 @@ div[class*="chat-column"] {
     border: 1px solid #bdbad4 !important;
 }
 
-/* 2. 强制右边所有信息框白色背景 */
-.info-column > div,
-.info-column .gr-box,
-.info-column .gradio-group,
-div[class*="profile-box"],
-div[class*="instructions-box"], 
-div[class*="scene-box"] {
+/* 2. Fix right info column only on chat page */
+.chat-page .info-column > div,
+.main-chat-container .info-column > div,
+.chat-page .info-column .gr-box,
+.chat-page .info-column .gradio-group {
     background-color: white !important;
     border-radius: 12px !important;
     padding: 20px !important;
@@ -514,77 +511,46 @@ div[class*="scene-box"] {
     margin-bottom: 20px !important;
 }
 
-/* 3. 强制所有文字内容白色背景 */
-.info-column div,
-.info-column p,
-.info-column span,
-.info-column .gr-markdown,
-.info-column .gradio-markdown {
+/* 3. Fix text content only on chat page */
+.chat-page .info-column div,
+.chat-page .info-column p,
+.chat-page .info-column span,
+.main-chat-container .info-column .gr-markdown,
+.main-chat-container .info-column .gradio-markdown {
     background-color: white !important;
     color: #2e285c !important;
 }
 
-/* 4. 强制右侧所有输入框白色背景 */
-.info-column .gradio-dropdown,
-.info-column .gradio-textbox,
-.info-column select,
-.info-column textarea,
-.info-column input {
+/* 4. Fix input fields only on chat page */
+.chat-page .info-column .gradio-dropdown,
+.chat-page .info-column .gradio-textbox,
+.main-chat-container .info-column select,
+.main-chat-container .info-column textarea,
+.main-chat-container .info-column input {
     background-color: white !important;
     border: 1px solid #bdbad4 !important;
     border-radius: 8px !important;
     color: #2e285c !important;
 }
 
-/* 5. 强制右侧所有容器白色背景 */
-.info-column .gradio-dropdown > div,
-.info-column .gradio-textbox > div,
-.info-column .gradio-group > div,
-.info-column .gr-form > div {
-    background-color: white !important;
+/* 5. Ensure selection page cards remain purple */
+.selection-page .character-card,
+.character-grid .character-card {
+    background: #bdbad4 !important;
+    background-color: #bdbad4 !important;
 }
 
-/* 6. 特别针对标题区域 */
-.info-column h1,
-.info-column h2, 
-.info-column h3,
-.info-column .section-title {
-    background-color: white !important;
-    color: #2e285c !important;
-    padding: 10px !important;
-    margin: 0 !important;
-}
-
-/* 7. 确保Profile信息完全白色 */
-.profile-name,
-.profile-text,
-.student-name,
-.student-description {
-    background-color: white !important;
-    color: #2e285c !important;
-}
-
-/* 8. 针对具体的gradio组件类名 */
-.gr-box,
-.gr-panel,
-.gr-form,
-.gradio-group,
-.gradio-box {
-    background-color: white !important;
-}
-
-/* 9. 强制覆盖任何灰色背景 */
-.info-column * {
-    background-color: white !important;
-}
-
-/* 10. 但排除图片 */
-.info-column img,
-.info-column .gradio-image {
+/* 6. Protect selection page from changes */
+.selection-page *:not(.character-card) {
     background-color: transparent !important;
+}
+
+/* 7. More specific chat page targeting */
+.main-chat-container .info-column *:not(img):not(.gradio-image) {
+    background-color: white !important;
 }
 
 """
 
-# 将这个添加到你的 custom_css 字符串末尾
-custom_css = custom_css + additional_css
+# Add this to your custom_css string
+custom_css = custom_css + precise_chat_fix_css
