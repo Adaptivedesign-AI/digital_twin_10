@@ -498,7 +498,7 @@ select, textarea, input {
 /* 1. Fix left chat column height only on chat page */
 .chat-page .chat-column,
 .main-chat-container .chat-column {
-    min-height: 1025px !important;
+    min-height: 1029px !important;
     height: auto !important;
     background-color: white !important;
     border-radius: 12px !important;
