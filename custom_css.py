@@ -681,26 +681,11 @@ body {
     min-height: 100vh;
 }
 
-/* Make header transparent - remove white backgrounds */
-.header-image-container, .header-image-container > div, .header-image, .header-image > div {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
+/* 你的所有现有 CSS 规则... */
 
-/* 你的其他所有现有 CSS 规则... */
+/* 🎯 CRITICAL FIX: 只修复页面背景，保持卡片颜色 */
 
-/* 🎯 CRITICAL FIX: 在最后添加这些强制白色背景的规则 */
-
-/* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
-.gradio-container > * {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* 2) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
+/* 1) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
 html, body, #root,
 .gradio-app, .app, .main,
 .gradio-container {
@@ -708,7 +693,7 @@ html, body, #root,
   background-color: #ffffff !important;
 }
 
-/* 3) 同时覆盖可能使用的主题变量（不同 gradio 版本变量名略有差异） */
+/* 2) 覆盖 Gradio 的主题变量 */
 :root {
   --background-fill-primary: #ffffff !important;
   --background-fill-secondary: #ffffff !important;
@@ -720,19 +705,45 @@ html, body, #root,
   --color-background-secondary: #ffffff !important;
 }
 
-/* 确保所有容器都是白色背景 */
-.gradio-container, .gradio-container > div {
+/* 3) 确保主容器是白色，但不影响子元素 */
+.gradio-container {
   background: #ffffff !important;
   background-color: #ffffff !important;
 }
 
-/* 彻底移除所有Gradio组件的默认灰色样式 */
-.gradio-container * {
-    background-color: transparent !important;
+/* 4) 重要：明确保持你的紫色卡片设计 */
+.character-card {
+    background: #bdbad4 !important;  /* 保持你的紫色 */
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #bdbad4;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    max-width: 220px;
+    margin: 0 auto;
 }
 
-/* 确保只有你想要的元素有背景色 */
-.character-card, .profile-box, .instructions-box, .scene-box {
-    background-color: white !important;
+/* 5) 保持其他紫色元素 */
+.chat-header {
+    background-color: white !important;  /* 聊天页面头部保持白色 */
+}
+
+.profile-box, .instructions-box, .scene-box {
+    background-color: white !important;  /* 右侧信息框保持白色 */
+}
+
+/* 6) 只清除不需要背景的元素 */
+.gradio-container > div:not(.character-card):not(.profile-box):not(.instructions-box):not(.scene-box) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 7) 确保页面整体容器是白色 */
+.container, .character-grid {
+    background-color: transparent !important;  /* 让网格容器透明，显示白色背景 */
 }
 """
