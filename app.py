@@ -11,15 +11,15 @@ from custom_css import custom_css  # Import the custom CSS from separate file
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
 
 # ================================
-# 数据监控系统
+# Data Monitoring System
 # ================================
 
 def init_monitoring_db():
-    """初始化监控数据库"""
+    """Initialize monitoring database"""
     conn = sqlite3.connect('monitoring.db')
     cursor = conn.cursor()
     
-    # 用户会话表
+    # User sessions table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_sessions (
             session_id TEXT PRIMARY KEY,
@@ -31,7 +31,7 @@ def init_monitoring_db():
         )
     ''')
     
-    # 对话记录表
+    # Conversations table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS conversations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,19 +47,19 @@ def init_monitoring_db():
         )
     ''')
     
-    # 用户行为表
+    # User actions table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_actions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT,
             action_type TEXT,  -- 'student_select', 'scene_change', 'clear_chat', etc.
-            action_data TEXT,  -- JSON格式的额外数据
+            action_data TEXT,  -- JSON format additional data
             timestamp TIMESTAMP,
             FOREIGN KEY (session_id) REFERENCES user_sessions (session_id)
         )
     ''')
     
-    # 系统性能表
+    # System metrics table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS system_metrics (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,7 +82,7 @@ class DataMonitor:
         return sqlite3.connect(self.db_path)
     
     def create_session(self, request_info=None):
-        """创建新的用户会话"""
+        """Create new user session"""
         session_id = str(uuid.uuid4())
         conn = self.get_db_connection()
         cursor = conn.cursor()
@@ -103,7 +103,7 @@ class DataMonitor:
     
     def log_conversation(self, session_id, student_id, user_message, ai_response, 
                         scene_context="", response_time_ms=0):
-        """记录对话数据"""
+        """Log conversation data"""
         conn = self.get_db_connection()
         cursor = conn.cursor()
         
@@ -123,7 +123,7 @@ class DataMonitor:
             len(user_message)
         ))
         
-        # 更新会话消息计数
+        # Update session message count
         cursor.execute('''
             UPDATE user_sessions 
             SET total_messages = total_messages + 1 
@@ -134,7 +134,7 @@ class DataMonitor:
         conn.close()
     
     def log_user_action(self, session_id, action_type, action_data=None):
-        """记录用户行为"""
+        """Log user action"""
         conn = self.get_db_connection()
         cursor = conn.cursor()
         
@@ -152,7 +152,7 @@ class DataMonitor:
         conn.close()
     
     def log_system_metric(self, metric_type, metric_value, details=""):
-        """记录系统指标"""
+        """Log system metric"""
         conn = self.get_db_connection()
         cursor = conn.cursor()
         
@@ -169,11 +169,11 @@ class DataMonitor:
         conn.commit()
         conn.close()
 
-# 初始化监控器
+# Initialize monitor
 monitor = DataMonitor()
 
 # ================================
-# 原有的应用逻辑
+# Original Application Logic
 # ================================
 
 # Load the shared prompt that will be used as a base for all student interactions
@@ -366,7 +366,7 @@ def chat(message, history, student_id, history_dict, scene_description, session_
     if not message or not message.strip():
         return "", history, history_dict
     
-    # 记录用户发送消息的行为
+    # Log user message sending action
     monitor.log_user_action(session_id, "send_message", {
         "student_id": student_id,
         "message_length": len(message),
@@ -398,11 +398,11 @@ def chat(message, history, student_id, history_dict, scene_description, session_
         )
         reply = response.choices[0].message.content.strip()
         
-        # 计算响应时间
+        # Calculate response time
         end_time = datetime.datetime.now()
         response_time_ms = (end_time - start_time).total_seconds() * 1000
         
-        # 记录对话到数据库
+        # Log conversation to database
         monitor.log_conversation(
             session_id=session_id,
             student_id=student_id,
@@ -412,7 +412,7 @@ def chat(message, history, student_id, history_dict, scene_description, session_
             response_time_ms=response_time_ms
         )
         
-        # 记录成功的API调用
+        # Log successful API call
         monitor.log_system_metric("api_call_success", response_time_ms, 
                                  f"Model: gpt-4o-mini, Student: {student_id}")
         
@@ -422,7 +422,7 @@ def chat(message, history, student_id, history_dict, scene_description, session_
         return "", history, history_dict
         
     except Exception as e:
-        # 记录API错误
+        # Log API error
         monitor.log_system_metric("api_call_error", 0, str(e))
         
         # Handle API errors gracefully
@@ -444,7 +444,7 @@ def clear_current_chat(student_id, history_dict, session_id):
     Returns:
         Empty history list and updated history_dict
     """
-    # 记录清除聊天的行为
+    # Log clear chat action
     monitor.log_user_action(session_id, "clear_chat", {"student_id": student_id})
     
     history_dict[student_id] = []
@@ -493,11 +493,11 @@ def select_student_direct(student_id, history_dict, session_id):
     Returns:
         UI updates to show chat interface with selected student info
     """
-    # 如果没有session_id，创建一个新的
+    # If no session_id, create a new one
     if not session_id:
         session_id = monitor.create_session()
     
-    # 记录学生选择行为
+    # Log student selection action
     monitor.log_user_action(session_id, "student_select", {"student_id": student_id})
     
     student_history = history_dict.get(student_id, [])
@@ -528,7 +528,7 @@ def return_to_selection(session_id):
     Returns:
         UI updates to show selection page and hide chat page
     """
-    # 记录返回选择页面的行为
+    # Log return to selection action
     monitor.log_user_action(session_id, "back_to_selection", {})
     
     return (
@@ -549,7 +549,7 @@ def update_scene_description(selected_scene, custom_description, session_id):
     Returns:
         Updated scene description
     """
-    # 记录场景更改行为
+    # Log scene change action
     monitor.log_user_action(session_id, "scene_change", {
         "selected_scene": selected_scene,
         "is_custom": selected_scene == "Custom scenario (describe below)"
@@ -562,11 +562,11 @@ def update_scene_description(selected_scene, custom_description, session_id):
     else:
         return selected_scene
 
-# 初始化会话的函数
+# Function to initialize session
 def initialize_session():
-    """创建新的用户会话"""
+    """Create new user session"""
     session_id = monitor.create_session()
-    print(f"新会话创建: {session_id}")
+    print(f"New session created: {session_id}")
     return session_id
 
 # --------------------------------------------
@@ -577,7 +577,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
     # Initialize state to track history and selected student
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
-    session_id_state = gr.State("")  # 新增：会话ID状态
+    session_id_state = gr.State("")  # New: session ID state
     
     # Create both pages as components for switching between them
     selection_page = gr.Group(visible=True)
@@ -723,7 +723,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                                 student_profile_text,
                                 student_profile_image,
                                 chatbot,
-                                session_id_state  # 更新session_id
+                                session_id_state  # Update session_id
                             ]
                         )
 
@@ -878,7 +878,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
     }
     """)
 
-    # 在应用加载时初始化session
+    # Initialize session on app load
     demo.load(
         initialize_session,
         inputs=[],
@@ -887,10 +887,10 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
 
 # Run the application
 if __name__ == "__main__":
-    # 确保数据库已初始化
-    print("🔍 数据监控系统已启动")
-    print("📊 数据将保存到 monitoring.db")
-    print("💡 提示: 运行 dashboard.py 查看监控数据可视化")
+    # Ensure database is initialized
+    print("🔍 Data monitoring system started")
+    print("📊 Data will be saved to monitoring.db")
+    print("💡 Tip: Run dashboard.py to view monitoring data visualization")
     
     port = int(os.environ.get("PORT", 7860))
     demo.launch(
