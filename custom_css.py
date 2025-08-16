@@ -47,22 +47,22 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Chat page header styling - 改成白色背景 */
+/* Chat page header styling - 改成紫色背景 */
 .chat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
     border-bottom: 1px solid #bdbad4;
-    background-color: white !important;
-    color: #2e285c !important;
+    background-color: #bdbad4 !important;  /* 👈 white → #bdbad4 */
+    color: white !important;               /* 👈 #2e285c → white */
     border-radius: 12px 12px 0 0;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
 }
 
 .page-title {
-    color: #2e285c !important;
+    color: white !important;  /* 👈 #2e285c → white */
     margin: 0 !important;
     text-align: center;
     flex-grow: 1;
