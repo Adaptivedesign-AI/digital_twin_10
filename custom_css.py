@@ -93,7 +93,7 @@ body {
 /* 确保聊天框占用大部分空间，输入框在底部 */
 .chat-column .gradio-chatbot {
     flex: 1 !important;
-    min-height: 950px !important;
+    min-height: 1150px !important;
 }
 
 /* 输入框区域固定在底部 */
