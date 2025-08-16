@@ -1,0 +1,48 @@
+{
+  "sessions": {
+    "session_123": {
+      "session_id": "session_123",
+      "ip_address": "127.0.0.1",
+      "user_agent": "test",
+      "start_time": "2025-08-16T10:00:00",
+      "end_time": null,
+      "total_messages": 2
+    }
+  },
+  "conversations": [
+    {
+      "id": 1,
+      "session_id": "session_123",
+      "student_id": "student001",
+      "user_message": "Hello Jaden!",
+      "ai_response": "Hey! What's up?",
+      "scene_context": "Meet with a new friend for the first time",
+      "timestamp": "2025-08-16T10:01:00",
+      "response_time_ms": 1500,
+      "message_length": 12
+    },
+    {
+      "id": 2,
+      "session_id": "session_123",
+      "student_id": "student002",
+      "user_message": "How are you doing?",
+      "ai_response": "I'm alright, just thinking about stuff.",
+      "scene_context": "Meet with a new friend for the first time",
+      "timestamp": "2025-08-16T10:05:00",
+      "response_time_ms": 2000,
+      "message_length": 18
+    }
+  ],
+  "user_actions": [
+    {
+      "id": 1,
+      "session_id": "session_123",
+      "action_type": "student_select",
+      "action_data": {"student_id": "student001"},
+      "timestamp": "2025-08-16T10:00:30"
+    }
+  ],
+  "system_metrics": [],
+  "last_updated": "2025-08-16T10:10:00",
+  "version": "1.0"
+}
