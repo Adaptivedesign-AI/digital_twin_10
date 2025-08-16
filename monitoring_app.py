@@ -1,20 +1,6 @@
 """
 Independent monitoring application for Digital Twins system
-Deploy this as a separate service on Render
-"""
-
-import gradio as gr
-import sqlite3
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from datetime import datetime, timedelta
-import json
-import os
-
-"""
-Independent monitoring application for Digital Twins system
-使用JSON文件作为数据源
+Uses JSON file as data source
 """
 
 import gradio as gr
@@ -33,7 +19,7 @@ class JSONMonitoringDashboard:
         self.github_enabled = self.setup_github()
         
     def setup_github(self):
-        """设置GitHub数据同步"""
+        """Setup GitHub data sync"""
         self.github_token = os.environ.get("GITHUB_TOKEN")
         self.github_repo = os.environ.get("GITHUB_REPO")
         self.github_branch = os.environ.get("GITHUB_BRANCH", "main")
@@ -46,12 +32,12 @@ class JSONMonitoringDashboard:
         return enabled
     
     def load_data(self):
-        """加载最新数据"""
-        # 首先尝试从GitHub下载最新数据
+        """Load latest data"""
+        # First try to download from GitHub
         if self.github_enabled:
             self.download_from_github()
         
-        # 加载本地数据
+        # Load local data
         if os.path.exists(self.data_file):
             try:
                 with open(self.data_file, 'r', encoding='utf-8') as f:
@@ -61,7 +47,7 @@ class JSONMonitoringDashboard:
             except Exception as e:
                 print(f"❌ Error loading data: {e}")
         
-        # 返回空数据
+        # Return empty data
         print("⚠️ No data file found")
         return {
             'sessions': {},
@@ -72,7 +58,7 @@ class JSONMonitoringDashboard:
         }
     
     def download_from_github(self):
-        """从GitHub下载最新数据"""
+        """Download latest data from GitHub"""
         if not self.github_enabled:
             return False
         
@@ -104,7 +90,7 @@ class JSONMonitoringDashboard:
         return False
     
     def get_basic_stats(self, days=7):
-        """获取基本统计数据"""
+        """Get basic statistics"""
         data = self.load_data()
         
         if not data.get('conversations'):
@@ -117,7 +103,7 @@ class JSONMonitoringDashboard:
         
         since_date = datetime.datetime.now() - timedelta(days=days)
         
-        # 过滤最近的数据
+        # Filter recent data
         recent_conversations = [
             conv for conv in data['conversations']
             if datetime.datetime.fromisoformat(conv['timestamp']) >= since_date
@@ -128,7 +114,7 @@ class JSONMonitoringDashboard:
             if datetime.datetime.fromisoformat(session['start_time']) >= since_date
         ]
         
-        # 计算统计数据
+        # Calculate statistics
         total_sessions = len(recent_sessions)
         total_messages = len(recent_conversations)
         
@@ -148,7 +134,7 @@ class JSONMonitoringDashboard:
         }
     
     def get_student_popularity(self, days=7):
-        """学生受欢迎程度分析"""
+        """Student popularity analysis"""
         data = self.load_data()
         
         if not data.get('conversations'):
@@ -166,14 +152,14 @@ class JSONMonitoringDashboard:
         
         student_counts = Counter(conv['student_id'] for conv in recent_conversations)
         
-        # 转换为DataFrame格式
+        # Convert to data format
         student_data = [
             {'student_id': student_id, 'message_count': count}
             for student_id, count in student_counts.most_common(10)
         ]
         
         if student_data:
-            # 映射学生ID到名字
+            # Map student IDs to names
             name_mapping = {
                 "student001": "Jaden", "student002": "Ethan", "student003": "Emily",
                 "student004": "Malik", "student005": "Aaliyah", "student006": "Brian",
@@ -198,7 +184,7 @@ class JSONMonitoringDashboard:
             return self._create_empty_figure("No student data available")
     
     def get_daily_usage(self, days=7):
-        """每日使用趋势"""
+        """Daily usage trends"""
         data = self.load_data()
         
         if not data.get('conversations'):
@@ -215,7 +201,7 @@ class JSONMonitoringDashboard:
                 date_str = conv_date.date().isoformat()
                 daily_data[date_str]['message_count'] += 1
                 
-                # 计算会话数（避免重复）
+                # Count sessions (avoid duplicates)
                 session_date_key = f"{conv['session_id']}_{date_str}"
                 if session_date_key not in processed_sessions:
                     daily_data[date_str]['session_count'] += 1
@@ -255,7 +241,7 @@ class JSONMonitoringDashboard:
         return fig
     
     def get_response_time_analysis(self, days=7):
-        """响应时间分析"""
+        """Response time analysis"""
         data = self.load_data()
         
         if not data.get('conversations'):
@@ -283,7 +269,7 @@ class JSONMonitoringDashboard:
         return fig
     
     def get_scene_usage(self, days=7):
-        """场景使用统计"""
+        """Scene usage statistics"""
         data = self.load_data()
         
         if not data.get('conversations'):
@@ -304,7 +290,7 @@ class JSONMonitoringDashboard:
         if not scene_counts:
             return self._create_empty_figure("No scene usage data available")
         
-        scenes = list(scene_counts.keys())[:8]  # 取前8个
+        scenes = list(scene_counts.keys())[:8]  # Top 8
         counts = [scene_counts[scene] for scene in scenes]
         
         fig = px.pie(
@@ -317,7 +303,7 @@ class JSONMonitoringDashboard:
         return fig
     
     def get_user_actions_summary(self, days=7):
-        """用户行为统计"""
+        """User actions statistics"""
         data = self.load_data()
         
         if not data.get('user_actions'):
@@ -333,7 +319,7 @@ class JSONMonitoringDashboard:
         if not action_counts:
             return self._create_empty_figure("No recent user action data")
         
-        # 翻译action类型
+        # Translate action types
         action_mapping = {
             'send_message': 'Send Message',
             'student_select': 'Select Student',
@@ -357,122 +343,6 @@ class JSONMonitoringDashboard:
         return fig
     
     def _create_empty_figure(self, message):
-        """创建空图表"""
-        fig = go.Figure()
-        fig.add_annotation(
-            text=message,
-            x=0.5, y=0.5,
-            xref="paper", yref="paper",
-            showarrow=False,
-            font=dict(size=16, color="gray")
-        )
-        fig.update_layout(
-            xaxis=dict(visible=False),
-            yaxis=dict(visible=False),
-            plot_bgcolor='white'
-        )
-        return fig 'Response Time (ms)', 'count': 'Frequency'},
-                    color_discrete_sequence=['#2E8B57']
-                )
-                fig.update_layout(showlegend=False)
-                return fig
-            else:
-                return self._create_empty_figure("No response time data available")
-        except Exception as e:
-            conn.close()
-            print(f"Error getting response time analysis: {e}")
-            return self._create_empty_figure("Data loading failed")
-    
-    def get_scene_usage(self, days=7):
-        """Scene usage statistics"""
-        conn = self.get_db_connection()
-        since_date = datetime.now() - timedelta(days=days)
-        
-        try:
-            query = '''
-                SELECT 
-                    CASE 
-                        WHEN scene_context = '' OR scene_context IS NULL THEN 'Default Scene'
-                        WHEN LENGTH(scene_context) > 30 THEN SUBSTR(scene_context, 1, 30) || '...'
-                        ELSE scene_context 
-                    END as scene,
-                    COUNT(*) as usage_count
-                FROM conversations 
-                WHERE timestamp >= ?
-                GROUP BY scene_context
-                ORDER BY usage_count DESC
-                LIMIT 8
-            '''
-            
-            df = pd.read_sql_query(query, conn, params=(since_date,))
-            conn.close()
-            
-            if len(df) > 0:
-                fig = px.pie(
-                    df, 
-                    values='usage_count', 
-                    names='scene',
-                    title='Scene Usage Distribution',
-                    color_discrete_sequence=px.colors.qualitative.Set3
-                )
-                fig.update_traces(textposition='inside', textinfo='percent+label')
-                return fig
-            else:
-                return self._create_empty_figure("No scene usage data available")
-        except Exception as e:
-            conn.close()
-            print(f"Error getting scene usage statistics: {e}")
-            return self._create_empty_figure("Data loading failed")
-    
-    def get_user_actions_summary(self, days=7):
-        """User actions summary"""
-        conn = self.get_db_connection()
-        since_date = datetime.now() - timedelta(days=days)
-        
-        try:
-            query = '''
-                SELECT 
-                    action_type,
-                    COUNT(*) as action_count
-                FROM user_actions 
-                WHERE timestamp >= ?
-                GROUP BY action_type
-                ORDER BY action_count DESC
-            '''
-            
-            df = pd.read_sql_query(query, conn, params=(since_date,))
-            conn.close()
-            
-            if len(df) > 0:
-                # Translate action_type to English
-                action_mapping = {
-                    'send_message': 'Send Message',
-                    'student_select': 'Select Student',
-                    'clear_chat': 'Clear Chat',
-                    'scene_change': 'Change Scene',
-                    'back_to_selection': 'Back to Selection'
-                }
-                df['action_name'] = df['action_type'].map(action_mapping).fillna(df['action_type'])
-                
-                fig = px.bar(
-                    df, 
-                    x='action_name', 
-                    y='action_count',
-                    title='User Action Statistics',
-                    labels={'action_name': 'Action Type', 'action_count': 'Count'},
-                    color='action_count',
-                    color_continuous_scale='blues'
-                )
-                fig.update_layout(showlegend=False)
-                return fig
-            else:
-                return self._create_empty_figure("No user action data available")
-        except Exception as e:
-            conn.close()
-            print(f"Error getting user actions summary: {e}")
-            return self._create_empty_figure("Data loading failed")
-    
-    def _create_empty_figure(self, message):
         """Create empty figure"""
         fig = go.Figure()
         fig.add_annotation(
@@ -491,7 +361,7 @@ class JSONMonitoringDashboard:
 
 def create_monitoring_dashboard():
     """Create monitoring dashboard"""
-    dashboard = MonitoringDashboard()
+    dashboard = JSONMonitoringDashboard()
     
     with gr.Blocks(title="Digital Twin Monitoring Dashboard", theme=gr.themes.Soft()) as demo:
         gr.Markdown("# 🔍 Digital Twin System Monitoring Dashboard")
@@ -506,6 +376,10 @@ def create_monitoring_dashboard():
                 info="Select the time range to analyze"
             )
             refresh_btn = gr.Button("🔄 Refresh Data", variant="primary", scale=0)
+        
+        # Data source info
+        with gr.Row():
+            data_source_info = gr.Markdown("**Data Source:** JSON file with GitHub sync")
         
         # Basic statistics cards
         gr.Markdown("## 📊 Basic Statistics")
@@ -548,6 +422,8 @@ def create_monitoring_dashboard():
             """Update dashboard data"""
             try:
                 stats = dashboard.get_basic_stats(days)
+                last_update = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
                 return (
                     stats.get('total_sessions', 0),
                     stats.get('total_messages', 0),
@@ -557,12 +433,14 @@ def create_monitoring_dashboard():
                     dashboard.get_daily_usage(days),
                     dashboard.get_response_time_analysis(days),
                     dashboard.get_scene_usage(days),
-                    dashboard.get_user_actions_summary(days)
+                    dashboard.get_user_actions_summary(days),
+                    f"**Data Source:** JSON file with GitHub sync (Last updated: {last_update})"
                 )
             except Exception as e:
                 print(f"Error updating dashboard: {e}")
                 empty_fig = dashboard._create_empty_figure("Data loading failed")
-                return (0, 0, 0, 0, empty_fig, empty_fig, empty_fig, empty_fig, empty_fig)
+                return (0, 0, 0, 0, empty_fig, empty_fig, empty_fig, empty_fig, empty_fig, 
+                       "**Data Source:** Error loading data")
         
         # Event handlers
         refresh_btn.click(
@@ -570,7 +448,8 @@ def create_monitoring_dashboard():
             inputs=[days_input],
             outputs=[
                 total_sessions, total_messages, avg_response_time, active_students,
-                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot
+                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot,
+                data_source_info
             ]
         )
         
@@ -579,7 +458,8 @@ def create_monitoring_dashboard():
             inputs=[days_input],
             outputs=[
                 total_sessions, total_messages, avg_response_time, active_students,
-                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot
+                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot,
+                data_source_info
             ]
         )
         
@@ -589,81 +469,24 @@ def create_monitoring_dashboard():
             inputs=[days_input],
             outputs=[
                 total_sessions, total_messages, avg_response_time, active_students,
-                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot
+                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot,
+                data_source_info
             ]
         )
     
     return demo
 
-def create_protected_dashboard():
-    """创建带密码保护的监控仪表板"""
-    
-    # 从环境变量获取密码
-    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "your-secret-password-123")
-    
-    def check_password(password):
-        """验证密码"""
-        return password == ADMIN_PASSWORD
-    
-    def login_interface():
-        """登录界面"""
-        with gr.Blocks(title="Access Required") as login_demo:
-            gr.Markdown("# 🔐 Access Required")
-            gr.Markdown("Please enter the access password:")
-            
-            with gr.Row():
-                password_input = gr.Textbox(
-                    placeholder="Enter password...", 
-                    type="password",
-                    label="Password"
-                )
-                login_btn = gr.Button("Login", variant="primary")
-            
-            status_msg = gr.Markdown("")
-            
-            def handle_login(password):
-                if check_password(password):
-                    return "✅ Access granted! Redirecting to dashboard..."
-                else:
-                    return "❌ Invalid password. Please try again."
-            
-            login_btn.click(
-                handle_login,
-                inputs=[password_input],
-                outputs=[status_msg]
-            )
-        
-        return login_demo
-    
-    # 检查是否提供了密码参数
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] == ADMIN_PASSWORD:
-        # 直接启动监控面板
-        return create_monitoring_dashboard()
-    else:
-        # 显示登录界面
-        return login_interface()
-
 if __name__ == "__main__":
-    print("🔍 Starting protected monitoring dashboard...")
-    print("📊 Data source: monitoring.db")
-    print("🔐 Password protection enabled")
+    print("🔍 Starting JSON-based monitoring dashboard...")
+    print("📊 Data source: monitoring_data.json")
+    print("🌐 Monitoring dashboard ready")
     
     port = int(os.environ.get("PORT", 7861))
-    
-    # 检查是否通过环境变量直接访问
-    if os.environ.get("DIRECT_ACCESS") == "true":
-        demo = create_monitoring_dashboard()
-        print("🌐 Direct access mode - no password required")
-    else:
-        demo = create_protected_dashboard()
-        print("🔐 Protected mode - password required")
-    
-    demo.launch(
+    monitoring_demo = create_monitoring_dashboard()
+    monitoring_demo.launch(
         server_name="0.0.0.0",
         server_port=port,
-        share=False,  # 不公开分享链接
+        share=False,  # Don't share publicly
         debug=False,
-        show_api=False,
-        auth=("admin", os.environ.get("ADMIN_PASSWORD", "your-secret-password-123"))  # HTTP基本认证
+        show_api=False
     )
