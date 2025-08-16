@@ -6,171 +6,272 @@ import datetime
 import uuid
 from openai import OpenAI
 from custom_css import custom_css  # Import the custom CSS from separate file
+from typing import Dict, List, Any
+import requests
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
 
+# 在你的 app.py 中，找到数据监控相关部分，替换为以下代码：
+
 # ================================
-# Data Monitoring System
+# JSON数据监控系统
 # ================================
 
-def init_monitoring_db():
-    """Initialize monitoring database"""
-    conn = sqlite3.connect('monitoring.db')
-    cursor = conn.cursor()
-    
-    # User sessions table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_sessions (
-            session_id TEXT PRIMARY KEY,
-            ip_address TEXT,
-            user_agent TEXT,
-            start_time TIMESTAMP,
-            end_time TIMESTAMP,
-            total_messages INTEGER DEFAULT 0
-        )
-    ''')
-    
-    # Conversations table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS conversations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT,
-            student_id TEXT,
-            user_message TEXT,
-            ai_response TEXT,
-            scene_context TEXT,
-            timestamp TIMESTAMP,
-            response_time_ms INTEGER,
-            message_length INTEGER,
-            FOREIGN KEY (session_id) REFERENCES user_sessions (session_id)
-        )
-    ''')
-    
-    # User actions table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_actions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT,
-            action_type TEXT,  -- 'student_select', 'scene_change', 'clear_chat', etc.
-            action_data TEXT,  -- JSON format additional data
-            timestamp TIMESTAMP,
-            FOREIGN KEY (session_id) REFERENCES user_sessions (session_id)
-        )
-    ''')
-    
-    # System metrics table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS system_metrics (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            metric_type TEXT,  -- 'api_call', 'error', 'performance'
-            metric_value REAL,
-            details TEXT,
-            timestamp TIMESTAMP
-        )
-    ''')
-    
-    conn.commit()
-    conn.close()
 
-class DataMonitor:
+class JSONDataMonitor:
     def __init__(self):
-        self.db_path = 'monitoring.db'
-        init_monitoring_db()
+        self.data_file = 'monitoring_data.json'
+        self.github_enabled = self.setup_github()
+        self.data = self.load_data()
+        
+        # 定期保存计数器（每5次操作保存一次）
+        self.operation_count = 0
+        self.save_frequency = 5
     
-    def get_db_connection(self):
-        return sqlite3.connect(self.db_path)
+    def setup_github(self):
+        """设置GitHub数据同步（可选）"""
+        self.github_token = os.environ.get("GITHUB_TOKEN")
+        self.github_repo = os.environ.get("GITHUB_REPO")  # 格式: "username/repo"
+        self.github_branch = os.environ.get("GITHUB_BRANCH", "main")
+        
+        enabled = bool(self.github_token and self.github_repo)
+        if enabled:
+            print("✅ GitHub sync enabled")
+        else:
+            print("📁 Using local file storage only")
+        return enabled
+    
+    def load_data(self):
+        """加载数据"""
+        # 首先尝试从GitHub下载最新数据
+        if self.github_enabled:
+            self.download_from_github()
+        
+        # 加载本地数据
+        if os.path.exists(self.data_file):
+            try:
+                with open(self.data_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    print(f"✅ Loaded {len(data.get('conversations', []))} conversations from {self.data_file}")
+                    return data
+            except Exception as e:
+                print(f"❌ Error loading data: {e}")
+        
+        # 返回空数据结构
+        empty_data = {
+            'sessions': {},
+            'conversations': [],
+            'user_actions': [],
+            'system_metrics': [],
+            'last_updated': datetime.datetime.now().isoformat(),
+            'version': '1.0'
+        }
+        
+        # 创建初始文件
+        self.save_data_to_file(empty_data)
+        print("📝 Created new monitoring data file")
+        return empty_data
+    
+    def save_data_to_file(self, data=None):
+        """保存数据到文件"""
+        if data is None:
+            data = self.data
+            
+        data['last_updated'] = datetime.datetime.now().isoformat()
+        
+        try:
+            # 保存到本地
+            with open(self.data_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False, default=str)
+            
+            print(f"💾 Data saved locally ({len(data.get('conversations', []))} conversations)")
+            return True
+        except Exception as e:
+            print(f"❌ Error saving data: {e}")
+            return False
+    
+    def save_data(self, force_upload=False):
+        """智能保存数据"""
+        self.operation_count += 1
+        
+        # 总是保存到本地
+        self.save_data_to_file()
+        
+        # 每隔几次操作或强制时上传到GitHub
+        if self.github_enabled and (self.operation_count % self.save_frequency == 0 or force_upload):
+            self.upload_to_github()
+    
+    def download_from_github(self):
+        """从GitHub下载数据文件"""
+        if not self.github_enabled:
+            return False
+        
+        try:
+            url = f"https://api.github.com/repos/{self.github_repo}/contents/{self.data_file}"
+            headers = {
+                'Authorization': f'token {self.github_token}',
+                'Accept': 'application/vnd.github.v3+json'
+            }
+            
+            response = requests.get(url, headers=headers, timeout=10)
+            if response.status_code == 200:
+                content = response.json()
+                import base64
+                file_content = base64.b64decode(content['content']).decode('utf-8')
+                
+                with open(self.data_file, 'w', encoding='utf-8') as f:
+                    f.write(file_content)
+                
+                print("✅ Downloaded latest data from GitHub")
+                return True
+            elif response.status_code == 404:
+                print("📁 No existing data file in GitHub (will create new)")
+                return False
+            else:
+                print(f"⚠️ GitHub download failed: {response.status_code}")
+        except Exception as e:
+            print(f"⚠️ Failed to download from GitHub: {e}")
+        
+        return False
+    
+    def upload_to_github(self):
+        """上传数据文件到GitHub"""
+        if not self.github_enabled:
+            return False
+        
+        try:
+            with open(self.data_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            import base64
+            encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
+            
+            # 获取当前文件的SHA（如果存在）
+            url = f"https://api.github.com/repos/{self.github_repo}/contents/{self.data_file}"
+            headers = {
+                'Authorization': f'token {self.github_token}',
+                'Accept': 'application/vnd.github.v3+json'
+            }
+            
+            get_response = requests.get(url, headers=headers, timeout=10)
+            sha = None
+            if get_response.status_code == 200:
+                sha = get_response.json()['sha']
+            
+            # 上传文件
+            data = {
+                'message': f'Update monitoring data - {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                'content': encoded_content,
+                'branch': self.github_branch
+            }
+            
+            if sha:
+                data['sha'] = sha
+            
+            response = requests.put(url, headers=headers, json=data, timeout=15)
+            if response.status_code in [200, 201]:
+                print("✅ Uploaded data to GitHub")
+                return True
+            else:
+                print(f"❌ GitHub upload failed: {response.status_code} - {response.text}")
+        
+        except Exception as e:
+            print(f"❌ Error uploading to GitHub: {e}")
+        
+        return False
     
     def create_session(self, request_info=None):
-        """Create new user session"""
+        """创建新的用户会话"""
         session_id = str(uuid.uuid4())
-        conn = self.get_db_connection()
-        cursor = conn.cursor()
         
-        cursor.execute('''
-            INSERT INTO user_sessions (session_id, ip_address, user_agent, start_time)
-            VALUES (?, ?, ?, ?)
-        ''', (
-            session_id,
-            request_info.get('ip', 'unknown') if request_info else 'unknown',
-            request_info.get('user_agent', 'unknown') if request_info else 'unknown',
-            datetime.datetime.now()
-        ))
+        session_data = {
+            'session_id': session_id,
+            'ip_address': request_info.get('ip', 'unknown') if request_info else 'unknown',
+            'user_agent': request_info.get('user_agent', 'unknown') if request_info else 'unknown',
+            'start_time': datetime.datetime.now().isoformat(),
+            'end_time': None,
+            'total_messages': 0
+        }
         
-        conn.commit()
-        conn.close()
+        self.data['sessions'][session_id] = session_data
+        self.save_data()
+        
+        print(f"📝 New session created: {session_id}")
         return session_id
     
     def log_conversation(self, session_id, student_id, user_message, ai_response, 
                         scene_context="", response_time_ms=0):
-        """Log conversation data"""
-        conn = self.get_db_connection()
-        cursor = conn.cursor()
+        """记录对话数据"""
+        conversation = {
+            'id': len(self.data['conversations']) + 1,
+            'session_id': session_id,
+            'student_id': student_id,
+            'user_message': user_message[:1000],  # 限制长度防止文件过大
+            'ai_response': ai_response[:2000],
+            'scene_context': scene_context,
+            'timestamp': datetime.datetime.now().isoformat(),
+            'response_time_ms': response_time_ms,
+            'message_length': len(user_message)
+        }
         
-        cursor.execute('''
-            INSERT INTO conversations 
-            (session_id, student_id, user_message, ai_response, scene_context, 
-             timestamp, response_time_ms, message_length)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            session_id,
-            student_id,
-            user_message,
-            ai_response,
-            scene_context,
-            datetime.datetime.now(),
-            response_time_ms,
-            len(user_message)
-        ))
+        self.data['conversations'].append(conversation)
         
-        # Update session message count
-        cursor.execute('''
-            UPDATE user_sessions 
-            SET total_messages = total_messages + 1 
-            WHERE session_id = ?
-        ''', (session_id,))
+        # 更新会话消息计数
+        if session_id in self.data['sessions']:
+            self.data['sessions'][session_id]['total_messages'] += 1
         
-        conn.commit()
-        conn.close()
+        self.save_data()
+        print(f"💬 Conversation logged: {session_id} -> {student_id}")
     
     def log_user_action(self, session_id, action_type, action_data=None):
-        """Log user action"""
-        conn = self.get_db_connection()
-        cursor = conn.cursor()
+        """记录用户行为"""
+        action = {
+            'id': len(self.data['user_actions']) + 1,
+            'session_id': session_id,
+            'action_type': action_type,
+            'action_data': action_data,
+            'timestamp': datetime.datetime.now().isoformat()
+        }
         
-        cursor.execute('''
-            INSERT INTO user_actions (session_id, action_type, action_data, timestamp)
-            VALUES (?, ?, ?, ?)
-        ''', (
-            session_id,
-            action_type,
-            json.dumps(action_data) if action_data else None,
-            datetime.datetime.now()
-        ))
-        
-        conn.commit()
-        conn.close()
+        self.data['user_actions'].append(action)
+        self.save_data()
+        print(f"🎯 User action logged: {action_type}")
     
     def log_system_metric(self, metric_type, metric_value, details=""):
-        """Log system metric"""
-        conn = self.get_db_connection()
-        cursor = conn.cursor()
+        """记录系统指标"""
+        metric = {
+            'id': len(self.data['system_metrics']) + 1,
+            'metric_type': metric_type,
+            'metric_value': metric_value,
+            'details': details,
+            'timestamp': datetime.datetime.now().isoformat()
+        }
         
-        cursor.execute('''
-            INSERT INTO system_metrics (metric_type, metric_value, details, timestamp)
-            VALUES (?, ?, ?, ?)
-        ''', (
-            metric_type,
-            metric_value,
-            details,
-            datetime.datetime.now()
-        ))
+        self.data['system_metrics'].append(metric)
+        self.save_data()
+        print(f"📊 System metric logged: {metric_type} = {metric_value}")
+    
+    def cleanup_old_data(self, days_to_keep=30):
+        """清理旧数据（可选）"""
+        cutoff_date = datetime.datetime.now() - datetime.timedelta(days=days_to_keep)
         
-        conn.commit()
-        conn.close()
+        # 清理旧对话
+        original_count = len(self.data['conversations'])
+        self.data['conversations'] = [
+            conv for conv in self.data['conversations']
+            if datetime.datetime.fromisoformat(conv['timestamp']) > cutoff_date
+        ]
+        
+        cleaned_count = original_count - len(self.data['conversations'])
+        if cleaned_count > 0:
+            print(f"🧹 Cleaned {cleaned_count} old conversations")
+            self.save_data(force_upload=True)
 
-# Initialize monitor
-monitor = DataMonitor()
+# 替换原来的monitor实例
+monitor = JSONDataMonitor()
+
+
 
 # ================================
 # Original Application Logic
