@@ -68,87 +68,87 @@ student_descriptions = {
     "student010": "16 years old. Restless and emotionally conflicted."
 }
 
-# Define detailed student profiles for the new interface
+# Define detailed student profiles based on REAL data from CSV (no fictional hobbies)
 student_profiles = {
-    "student001": {
+    "student001": {  # Jaden
         "age": 14,
-        "sex": "Male",
-        "race_ethnicity": "African American",
-        "hobbies": "Basketball, hip-hop music, video games",
-        "emotional_health": "Struggles with anger management and trust issues",
-        "mental_health": "Mild anxiety in social situations, difficulty expressing emotions"
+        "sex": "Male", 
+        "race_ethnicity": "Hispanic/Latino, Black or African American",
+        "grade": "9th grade",
+        "emotional_health": "Experienced threats with weapons at school but did not engage in physical fights. Carries weapon for protection some days.",
+        "mental_health": "No depression or suicidal ideation. Not bullied. Has some alcohol use (1-2 days/month). Started drinking early (age 9-10)."
     },
-    "student002": {
+    "student002": {  # Ethan
         "age": 16,
         "sex": "Male",
-        "race_ethnicity": "Caucasian",
-        "hobbies": "Skateboarding, alternative music, graphic design",
-        "emotional_health": "Emotionally detached, impulsive decision-making",
-        "mental_health": "Reports feeling disconnected from peers, occasional mood swings"
+        "race_ethnicity": "Hispanic/Latino, White", 
+        "grade": "11th grade",
+        "emotional_health": "Generally stable social relationships. No history of violence or threats.",
+        "mental_health": "No depression or suicidal thoughts. Not bullied. Moderate alcohol use (3-5 days/month)."
     },
-    "student003": {
+    "student003": {  # Emily
         "age": 14,
         "sex": "Female",
-        "race_ethnicity": "Caucasian",
-        "hobbies": "Reading, creative writing, painting",
-        "emotional_health": "Highly sensitive, self-critical, perfectionist tendencies",
-        "mental_health": "Mild depression symptoms, low self-esteem, overthinking"
+        "race_ethnicity": "Asian",
+        "grade": "9th grade",
+        "emotional_health": "Experiences both school and electronic bullying. Socially vulnerable.",
+        "mental_health": "Reports feeling sad or hopeless for extended periods. Experiences bullying both in-person and online."
     },
-    "student004": {
+    "student004": {  # Malik
         "age": 13,
         "sex": "Male",
-        "race_ethnicity": "Latino/Hispanic",
-        "hobbies": "Soccer, family gatherings, cooking",
-        "emotional_health": "Emotionally guarded, tough exterior to protect vulnerability",
-        "mental_health": "Family-related stress, pressure to succeed academically"
+        "race_ethnicity": "Black or African American",
+        "grade": "9th grade",
+        "emotional_health": "Stable social environment, no bullying or violence exposure.",
+        "mental_health": "No depression or suicidal ideation. Not bullied. Some alcohol use (1-2 days/month)."
     },
-    "student005": {
+    "student005": {  # Aaliyah
         "age": 15,
-        "sex": "Female",
-        "race_ethnicity": "African American",
-        "hobbies": "Poetry, social justice activism, yoga",
-        "emotional_health": "Highly introspective, emotionally aware and articulate",
-        "mental_health": "Anxiety about social issues, occasional overwhelm from empathy"
+        "sex": "Female", 
+        "race_ethnicity": "Black or African American",
+        "grade": "9th grade",
+        "emotional_health": "Not bullied, stable peer relationships.",
+        "mental_health": "Reports periods of sadness or hopelessness. No substance use reported."
     },
-    "student006": {
+    "student006": {  # Brian
         "age": 17,
         "sex": "Male",
-        "race_ethnicity": "Asian American",
-        "hobbies": "Academic competitions, chess, classical music",
-        "emotional_health": "Disciplined but emotionally withdrawn, difficulty connecting",
-        "mental_health": "High-functioning anxiety, perfectionist stress, social isolation"
+        "race_ethnicity": "Asian",
+        "grade": "11th grade",
+        "emotional_health": "Stable social environment, no violence or bullying.",
+        "mental_health": "No depression or suicidal thoughts. Not bullied. No substance use."
     },
-    "student007": {
+    "student007": {  # Grace
         "age": 16,
         "sex": "Female",
-        "race_ethnicity": "Caucasian",
-        "hobbies": "Student government, debate team, volunteering",
-        "emotional_health": "Goal-oriented, emotionally steady, natural leader",
-        "mental_health": "Generally stable, occasional stress from high expectations"
+        "race_ethnicity": "Asian", 
+        "grade": "10th grade",
+        "emotional_health": "Stable peer relationships, no bullying or violence.",
+        "mental_health": "No depression or suicidal ideation. Not bullied. No substance use reported."
     },
-    "student008": {
+    "student008": {  # Brianna
         "age": 15,
         "sex": "Female",
-        "race_ethnicity": "Mixed race (African American/Caucasian)",
-        "hobbies": "Dance, photography, social media",
-        "emotional_health": "Friendly but cautious, struggles with identity",
-        "mental_health": "Body image concerns, social comparison anxiety"
+        "race_ethnicity": "Mixed race (Black or African American, White)",
+        "grade": "9th grade",
+        "emotional_health": "Stable social environment, no bullying or threats.",
+        "mental_health": "No depression or suicidal thoughts. Not bullied. No substance use."
     },
-    "student009": {
+    "student009": {  # Leilani
         "age": 17,
         "sex": "Female",
-        "race_ethnicity": "Pacific Islander",
-        "hobbies": "Marine biology, surfing, environmental activism",
-        "emotional_health": "Thoughtful, quietly confident, calm demeanor",
-        "mental_health": "Generally well-adjusted, environmental anxiety"
+        "race_ethnicity": "Mixed race (Native Hawaiian/Pacific Islander, White)",
+        "grade": "12th grade",
+        "emotional_health": "Stable peer relationships, no violence or bullying exposure.",
+        "mental_health": "No depression or suicidal ideation. Not bullied. No substance use reported."
     },
-    "student010": {
+    "student010": {  # Tyler
         "age": 16,
-        "sex": "Male",
-        "race_ethnicity": "Native American",
-        "hobbies": "Traditional crafts, hiking, storytelling",
-        "emotional_health": "Restless, emotionally conflicted, seeking identity",
-        "mental_health": "Cultural identity struggles, feelings of not belonging"
+        "sex": "Male", 
+        "race_ethnicity": "Mixed race (Native Hawaiian/Pacific Islander, White)",
+        "grade": "10th grade",
+        "emotional_health": "Stable social environment, no bullying or violence.",
+        "mental_health": "No depression or suicidal thoughts. Not bullied. No substance use."
     }
 }
 
@@ -267,7 +267,7 @@ def update_student_profile(student_id):
 **Age:** {profile['age']}  
 **Sex:** {profile['sex']}  
 **Race/Ethnicity:** {profile['race_ethnicity']}  
-**Hobbies:** {profile['hobbies']}  
+**Grade:** {profile['grade']}
 **Emotional Health:** {profile['emotional_health']}  
 **Mental Health:** {profile['mental_health']}
     """.strip()
