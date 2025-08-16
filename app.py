@@ -1,11 +1,180 @@
 import gradio as gr
 import json
 import os
+import sqlite3
+import datetime
+import uuid
 from openai import OpenAI
 from custom_css import custom_css  # Import the custom CSS from separate file
 
 # Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
+
+# ================================
+# 数据监控系统
+# ================================
+
+def init_monitoring_db():
+    """初始化监控数据库"""
+    conn = sqlite3.connect('monitoring.db')
+    cursor = conn.cursor()
+    
+    # 用户会话表
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_sessions (
+            session_id TEXT PRIMARY KEY,
+            ip_address TEXT,
+            user_agent TEXT,
+            start_time TIMESTAMP,
+            end_time TIMESTAMP,
+            total_messages INTEGER DEFAULT 0
+        )
+    ''')
+    
+    # 对话记录表
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS conversations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            student_id TEXT,
+            user_message TEXT,
+            ai_response TEXT,
+            scene_context TEXT,
+            timestamp TIMESTAMP,
+            response_time_ms INTEGER,
+            message_length INTEGER,
+            FOREIGN KEY (session_id) REFERENCES user_sessions (session_id)
+        )
+    ''')
+    
+    # 用户行为表
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_actions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            action_type TEXT,  -- 'student_select', 'scene_change', 'clear_chat', etc.
+            action_data TEXT,  -- JSON格式的额外数据
+            timestamp TIMESTAMP,
+            FOREIGN KEY (session_id) REFERENCES user_sessions (session_id)
+        )
+    ''')
+    
+    # 系统性能表
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS system_metrics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            metric_type TEXT,  -- 'api_call', 'error', 'performance'
+            metric_value REAL,
+            details TEXT,
+            timestamp TIMESTAMP
+        )
+    ''')
+    
+    conn.commit()
+    conn.close()
+
+class DataMonitor:
+    def __init__(self):
+        self.db_path = 'monitoring.db'
+        init_monitoring_db()
+    
+    def get_db_connection(self):
+        return sqlite3.connect(self.db_path)
+    
+    def create_session(self, request_info=None):
+        """创建新的用户会话"""
+        session_id = str(uuid.uuid4())
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO user_sessions (session_id, ip_address, user_agent, start_time)
+            VALUES (?, ?, ?, ?)
+        ''', (
+            session_id,
+            request_info.get('ip', 'unknown') if request_info else 'unknown',
+            request_info.get('user_agent', 'unknown') if request_info else 'unknown',
+            datetime.datetime.now()
+        ))
+        
+        conn.commit()
+        conn.close()
+        return session_id
+    
+    def log_conversation(self, session_id, student_id, user_message, ai_response, 
+                        scene_context="", response_time_ms=0):
+        """记录对话数据"""
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO conversations 
+            (session_id, student_id, user_message, ai_response, scene_context, 
+             timestamp, response_time_ms, message_length)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            session_id,
+            student_id,
+            user_message,
+            ai_response,
+            scene_context,
+            datetime.datetime.now(),
+            response_time_ms,
+            len(user_message)
+        ))
+        
+        # 更新会话消息计数
+        cursor.execute('''
+            UPDATE user_sessions 
+            SET total_messages = total_messages + 1 
+            WHERE session_id = ?
+        ''', (session_id,))
+        
+        conn.commit()
+        conn.close()
+    
+    def log_user_action(self, session_id, action_type, action_data=None):
+        """记录用户行为"""
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO user_actions (session_id, action_type, action_data, timestamp)
+            VALUES (?, ?, ?, ?)
+        ''', (
+            session_id,
+            action_type,
+            json.dumps(action_data) if action_data else None,
+            datetime.datetime.now()
+        ))
+        
+        conn.commit()
+        conn.close()
+    
+    def log_system_metric(self, metric_type, metric_value, details=""):
+        """记录系统指标"""
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO system_metrics (metric_type, metric_value, details, timestamp)
+            VALUES (?, ?, ?, ?)
+        ''', (
+            metric_type,
+            metric_value,
+            details,
+            datetime.datetime.now()
+        ))
+        
+        conn.commit()
+        conn.close()
+
+# 初始化监控器
+monitor = DataMonitor()
+
+# ================================
+# 原有的应用逻辑
+# ================================
 
 # Load the shared prompt that will be used as a base for all student interactions
 def load_shared_prompt():
@@ -175,10 +344,10 @@ def get_empty_history_dict():
     """
     return {student_id: [] for student_id in name_dict.keys()}
 
-# Core chat function that handles message processing and AI responses
-def chat(message, history, student_id, history_dict, scene_description):
+# Core chat function that handles message processing and AI responses with monitoring
+def chat(message, history, student_id, history_dict, scene_description, session_id):
     """
-    Process user messages and generate AI responses.
+    Process user messages and generate AI responses with monitoring.
     
     Args:
         message: The user's input message
@@ -186,13 +355,23 @@ def chat(message, history, student_id, history_dict, scene_description):
         student_id: ID of the currently selected student
         history_dict: Dictionary containing all students' chat histories
         scene_description: Current scene context for the conversation
+        session_id: User session ID for monitoring
         
     Returns:
         Empty message input, updated history, and updated history_dict
     """
+    start_time = datetime.datetime.now()
+    
     # Check for empty messages
     if not message or not message.strip():
         return "", history, history_dict
+    
+    # 记录用户发送消息的行为
+    monitor.log_user_action(session_id, "send_message", {
+        "student_id": student_id,
+        "message_length": len(message),
+        "scene": scene_description
+    })
         
     # Get the appropriate system prompt for the selected student
     base_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
@@ -219,11 +398,33 @@ def chat(message, history, student_id, history_dict, scene_description):
         )
         reply = response.choices[0].message.content.strip()
         
+        # 计算响应时间
+        end_time = datetime.datetime.now()
+        response_time_ms = (end_time - start_time).total_seconds() * 1000
+        
+        # 记录对话到数据库
+        monitor.log_conversation(
+            session_id=session_id,
+            student_id=student_id,
+            user_message=message,
+            ai_response=reply,
+            scene_context=scene_description,
+            response_time_ms=response_time_ms
+        )
+        
+        # 记录成功的API调用
+        monitor.log_system_metric("api_call_success", response_time_ms, 
+                                 f"Model: gpt-4o-mini, Student: {student_id}")
+        
         # Update conversation history
         history.append([message, reply])
         history_dict[student_id] = history
         return "", history, history_dict
+        
     except Exception as e:
+        # 记录API错误
+        monitor.log_system_metric("api_call_error", 0, str(e))
+        
         # Handle API errors gracefully
         error_message = f"⚠️ Error: {str(e)}"
         history.append([message, error_message])
@@ -231,17 +432,21 @@ def chat(message, history, student_id, history_dict, scene_description):
         return "", history, history_dict
 
 # Function to clear chat history for the current student
-def clear_current_chat(student_id, history_dict):
+def clear_current_chat(student_id, history_dict, session_id):
     """
     Clear the chat history for the currently selected student.
     
     Args:
         student_id: ID of the currently selected student
         history_dict: Dictionary containing all students' chat histories
+        session_id: User session ID for monitoring
         
     Returns:
         Empty history list and updated history_dict
     """
+    # 记录清除聊天的行为
+    monitor.log_user_action(session_id, "clear_chat", {"student_id": student_id})
+    
     history_dict[student_id] = []
     return [], history_dict
 
@@ -276,22 +481,30 @@ def update_student_profile(student_id):
     return f"# {student_name}", profile_text, f"avatar/{student_id}.png"
 
 # Function to handle direct student selection and switch to chat interface
-def select_student_direct(student_id, history_dict):
+def select_student_direct(student_id, history_dict, session_id):
     """
-    Handle direct student selection and switch to chat interface.
+    Handle direct student selection and switch to chat interface with monitoring.
     
     Args:
         student_id: ID of the selected student
         history_dict: Dictionary containing all students' chat histories
+        session_id: User session ID for monitoring
         
     Returns:
         UI updates to show chat interface with selected student info
     """
+    # 如果没有session_id，创建一个新的
+    if not session_id:
+        session_id = monitor.create_session()
+    
+    # 记录学生选择行为
+    monitor.log_user_action(session_id, "student_select", {"student_id": student_id})
+    
     student_history = history_dict.get(student_id, [])
     student_name, profile_text, profile_image = update_student_profile(student_id)
     
     # Debug print for server logs
-    print(f"Selecting student: {student_id}, Name: {student_name}")
+    print(f"Selecting student: {student_id}, Name: {student_name}, Session: {session_id}")
     
     return (
         gr.update(visible=False),  # Hide selection page
@@ -300,40 +513,61 @@ def select_student_direct(student_id, history_dict):
         student_name,              # Update student name display
         profile_text,              # Update profile text
         profile_image,             # Update profile image
-        student_history            # Update chat history
+        student_history,           # Update chat history
+        session_id                 # Return session_id
     )
 
 # Function to return to the student selection page
-def return_to_selection():
+def return_to_selection(session_id):
     """
     Return to the student selection page from the chat interface.
     
+    Args:
+        session_id: User session ID for monitoring
+        
     Returns:
         UI updates to show selection page and hide chat page
     """
+    # 记录返回选择页面的行为
+    monitor.log_user_action(session_id, "back_to_selection", {})
+    
     return (
         gr.update(visible=True),   # Show selection page
         gr.update(visible=False)   # Hide chat page
     )
 
 # Function to update scene description based on dropdown selection
-def update_scene_description(selected_scene, custom_description):
+def update_scene_description(selected_scene, custom_description, session_id):
     """
     Update scene description based on dropdown selection.
     
     Args:
         selected_scene: Selected scene from dropdown
         custom_description: Custom description if "Custom scenario" is selected
+        session_id: User session ID for monitoring
         
     Returns:
         Updated scene description
     """
+    # 记录场景更改行为
+    monitor.log_user_action(session_id, "scene_change", {
+        "selected_scene": selected_scene,
+        "is_custom": selected_scene == "Custom scenario (describe below)"
+    })
+    
     if selected_scene == "Custom scenario (describe below)":
         return custom_description
     elif selected_scene == "Posted a video on TikTok and received hateful comments":
         return "Posted a short video on TikTok. Anonymous users flooded the comments with anti-Asian slurs and told her to 'go back where you came from.' The twin deleted the post and now feels afraid to post anything."
     else:
         return selected_scene
+
+# 初始化会话的函数
+def initialize_session():
+    """创建新的用户会话"""
+    session_id = monitor.create_session()
+    print(f"新会话创建: {session_id}")
+    return session_id
 
 # --------------------------------------------
 # = UI BUILDING =
@@ -343,6 +577,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
     # Initialize state to track history and selected student
     history_dict_state = gr.State(get_empty_history_dict())
     selected_id_state = gr.State("")
+    session_id_state = gr.State("")  # 新增：会话ID状态
     
     # Create both pages as components for switching between them
     selection_page = gr.Group(visible=True)
@@ -477,7 +712,8 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                             select_student_direct,
                             inputs=[
                                 gr.Textbox(value=student_id, visible=False),
-                                history_dict_state
+                                history_dict_state,
+                                session_id_state
                             ],
                             outputs=[
                                 selection_page, 
@@ -486,7 +722,8 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                                 student_name_display,
                                 student_profile_text,
                                 student_profile_image,
-                                chatbot
+                                chatbot,
+                                session_id_state  # 更新session_id
                             ]
                         )
 
@@ -528,41 +765,41 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
         outputs=[custom_scene_input]
     )
     
-    # Update scene description when dropdown or custom input changes
+    # Update scene description when dropdown or custom input changes (with monitoring)
     scene_dropdown.change(
         update_scene_description,
-        inputs=[scene_dropdown, custom_scene_input],
+        inputs=[scene_dropdown, custom_scene_input, session_id_state],
         outputs=[scene_description]
     )
     
     custom_scene_input.change(
         update_scene_description,
-        inputs=[scene_dropdown, custom_scene_input],
+        inputs=[scene_dropdown, custom_scene_input, session_id_state],
         outputs=[scene_description]
     )
     
-    # Chat event handlers
+    # Chat event handlers (with monitoring)
     back_button.click(
         return_to_selection,
-        inputs=[],
+        inputs=[session_id_state],
         outputs=[selection_page, chat_page]
     )
     
     msg.submit(
         chat,
-        inputs=[msg, chatbot, selected_id_state, history_dict_state, scene_description],
+        inputs=[msg, chatbot, selected_id_state, history_dict_state, scene_description, session_id_state],
         outputs=[msg, chatbot, history_dict_state],
     )
     
     send_btn.click(
         chat,
-        inputs=[msg, chatbot, selected_id_state, history_dict_state, scene_description],
+        inputs=[msg, chatbot, selected_id_state, history_dict_state, scene_description, session_id_state],
         outputs=[msg, chatbot, history_dict_state],
     )
     
     clear_btn.click(
         clear_current_chat,
-        inputs=[selected_id_state, history_dict_state],
+        inputs=[selected_id_state, history_dict_state, session_id_state],
         outputs=[chatbot, history_dict_state],
         queue=False
     )
@@ -641,8 +878,20 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
     }
     """)
 
+    # 在应用加载时初始化session
+    demo.load(
+        initialize_session,
+        inputs=[],
+        outputs=[session_id_state]
+    )
+
 # Run the application
 if __name__ == "__main__":
+    # 确保数据库已初始化
+    print("🔍 数据监控系统已启动")
+    print("📊 数据将保存到 monitoring.db")
+    print("💡 提示: 运行 dashboard.py 查看监控数据可视化")
+    
     port = int(os.environ.get("PORT", 7860))
     demo.launch(
         server_name="0.0.0.0",
