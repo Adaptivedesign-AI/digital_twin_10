@@ -674,4 +674,65 @@ html, body, #root,
 .character-card, .profile-image, .avatar-container {
     border-color: #bdbad4 !important;
 }
+/* Global styles for the entire application */
+body {
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background: white !important;
+    min-height: 100vh;
+}
+
+/* Make header transparent - remove white backgrounds */
+.header-image-container, .header-image-container > div, .header-image, .header-image > div {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 你的其他所有现有 CSS 规则... */
+
+/* 🎯 CRITICAL FIX: 在最后添加这些强制白色背景的规则 */
+
+/* 1) 撤销"把所有直系子元素刷白"的副作用（避免白条） */
+.gradio-container > * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 2) 彻底把最外层背景改白（覆盖主题的 secondary 背景） */
+html, body, #root,
+.gradio-app, .app, .main,
+.gradio-container {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* 3) 同时覆盖可能使用的主题变量（不同 gradio 版本变量名略有差异） */
+:root {
+  --background-fill-primary: #ffffff !important;
+  --background-fill-secondary: #ffffff !important;
+  --block-background-fill: #ffffff !important;
+  --panel-background-fill: #ffffff !important;
+  
+  /* 部分版本还用这些变量名 */
+  --color-background: #ffffff !important;
+  --color-background-secondary: #ffffff !important;
+}
+
+/* 确保所有容器都是白色背景 */
+.gradio-container, .gradio-container > div {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* 彻底移除所有Gradio组件的默认灰色样式 */
+.gradio-container * {
+    background-color: transparent !important;
+}
+
+/* 确保只有你想要的元素有背景色 */
+.character-card, .profile-box, .instructions-box, .scene-box {
+    background-color: white !important;
+}
 """
