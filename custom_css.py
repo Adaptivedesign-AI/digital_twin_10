@@ -520,10 +520,32 @@ select, textarea, input {
 
 /* 强制chatbot容器也跟着拉长 */
 .main-chat-container .gradio-chatbot,
-.chat-column .gradio-chatbot {
+.chat-column .gradio-chatbot,
+.gradio-chatbot,
+[data-testid="chatbot"],
+.chatbot-container {
     min-height: 850px !important;
-    height: auto !important;
+    height: 850px !important;
     max-height: none !important;
+    flex: 1 !important;
+}
+
+/* 更强力的chatbot内容区域控制 */
+.gradio-chatbot > div,
+.gradio-chatbot .chatbot,
+.gradio-chatbot .chat-container,
+.main-chat-container .gradio-chatbot > div {
+    min-height: 850px !important;
+    height: 850px !important;
+    max-height: none !important;
+}
+
+/* 针对可能的chatbot wrapper */
+.gradio-chatbot .overflow-y-auto,
+.gradio-chatbot [class*="overflow"],
+.gradio-chatbot [class*="scroll"] {
+    min-height: 850px !important;
+    height: 850px !important;
 }
 
 /* 确保输入框区域在聊天页面底部 */
