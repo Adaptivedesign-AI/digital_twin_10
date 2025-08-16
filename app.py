@@ -733,6 +733,9 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                                 show_label=False,
                                 elem_classes="profile-image",
                                 height=120
+                                show_download_button=False,   # ← 关闭下载
+                                show_fullscreen_button=False, # ← 关闭全屏
+                                show_share_button=False 
                             )
                         with gr.Column(scale=3):
                             student_profile_text = gr.Markdown("Profile information will appear here.", elem_classes="profile-text")
@@ -780,10 +783,13 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
             with gr.Column(elem_classes="header-image-container"):
                 gr.Image(
                     value="avatar/brain_with_title.png",
-                    show_label=False,
                     elem_classes="header-image",
                     height=120,
                     container=False,
+                    show_label=False,
+                    show_download_button=False,   # ← 关闭下载
+                    show_fullscreen_button=False, # ← 关闭全屏
+                    show_share_button=False 
                 )
             
             gr.Markdown("### Choose a digital adolescent to chat with", elem_classes="selection-heading")
@@ -802,6 +808,9 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
                                 elem_classes="avatar-img"
+                                show_download_button=False,   # ← 关闭下载
+                                show_fullscreen_button=False, # ← 关闭全屏
+                                show_share_button=False 
                             )
                         
                         # Student name - prominent and bold
