@@ -479,10 +479,6 @@ html, body, #root,
 select, textarea, input {
     background-color: white !important;
 }
-"""
-# 在你的 custom_css 末尾添加这些规则：
-
-precise_chat_fix_css = """
 
 /* 🎯 Precise fix for chat page only */
 
@@ -549,8 +545,4 @@ precise_chat_fix_css = """
 .main-chat-container .info-column *:not(img):not(.gradio-image) {
     background-color: white !important;
 }
-
 """
-
-# Add this to your custom_css string
-custom_css = custom_css + precise_chat_fix_css
