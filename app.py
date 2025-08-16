@@ -732,7 +732,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                                 value="avatar/student001.png",
                                 show_label=False,
                                 elem_classes="profile-image",
-                                height=120
+                                height=120,
                                 show_download_button=False,   # ← 关闭下载
                                 show_fullscreen_button=False, # ← 关闭全屏
                                 show_share_button=False 
@@ -807,7 +807,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                             gr.Image(
                                 value=f"avatar/{student_id}.png",
                                 show_label=False,
-                                elem_classes="avatar-img"
+                                elem_classes="avatar-img",
                                 show_download_button=False,   # ← 关闭下载
                                 show_fullscreen_button=False, # ← 关闭全屏
                                 show_share_button=False 
