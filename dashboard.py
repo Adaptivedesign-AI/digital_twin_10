@@ -14,12 +14,12 @@ class MonitoringDashboard:
         return sqlite3.connect(self.db_path)
     
     def get_basic_stats(self, days=7):
-        """获取基本统计数据"""
+        """Get basic statistics"""
         conn = self.get_db_connection()
         since_date = datetime.now() - timedelta(days=days)
         
         try:
-            # 总体统计
+            # Overall statistics
             query = '''
                 SELECT 
                     COUNT(DISTINCT s.session_id) as total_sessions,
@@ -34,7 +34,7 @@ class MonitoringDashboard:
             df = pd.read_sql_query(query, conn, params=(since_date,))
             result = df.iloc[0].to_dict()
             
-            # 处理NULL值
+            # Handle NULL values
             for key, value in result.items():
                 if pd.isna(value):
                     result[key] = 0
@@ -43,7 +43,7 @@ class MonitoringDashboard:
             return result
         except Exception as e:
             conn.close()
-            print(f"获取基本统计数据时出错: {e}")
+            print(f"Error getting basic statistics: {e}")
             return {
                 'total_sessions': 0,
                 'total_messages': 0,
@@ -52,7 +52,7 @@ class MonitoringDashboard:
             }
     
     def get_student_popularity(self, days=7):
-        """学生受欢迎程度"""
+        """Student popularity analysis"""
         conn = self.get_db_connection()
         since_date = datetime.now() - timedelta(days=days)
         
@@ -70,7 +70,7 @@ class MonitoringDashboard:
             conn.close()
             
             if len(df) > 0:
-                # 映射学生ID到名字
+                # Map student IDs to names
                 name_mapping = {
                     "student001": "Jaden", "student002": "Ethan", "student003": "Emily",
                     "student004": "Malik", "student005": "Aaliyah", "student006": "Brian",
@@ -80,21 +80,21 @@ class MonitoringDashboard:
                 df['student_name'] = df['student_id'].map(name_mapping).fillna(df['student_id'])
                 
                 fig = px.bar(df, x='student_name', y='message_count',
-                            title='学生聊天消息数量',
-                            labels={'student_name': '学生姓名', 'message_count': '消息数量'},
+                            title='Student Message Count',
+                            labels={'student_name': 'Student Name', 'message_count': 'Message Count'},
                             color='message_count',
                             color_continuous_scale='viridis')
                 fig.update_layout(showlegend=False)
                 return fig
             else:
-                return self._create_empty_figure("暂无学生对话数据")
+                return self._create_empty_figure("No student conversation data available")
         except Exception as e:
             conn.close()
-            print(f"获取学生受欢迎程度时出错: {e}")
-            return self._create_empty_figure("数据加载失败")
+            print(f"Error getting student popularity: {e}")
+            return self._create_empty_figure("Data loading failed")
     
     def get_daily_usage(self, days=7):
-        """每日使用情况"""
+        """Daily usage analysis"""
         conn = self.get_db_connection()
         since_date = datetime.now() - timedelta(days=days)
         
@@ -119,35 +119,35 @@ class MonitoringDashboard:
                     x=df['date'], 
                     y=df['message_count'],
                     mode='lines+markers', 
-                    name='消息数量',
+                    name='Message Count',
                     line=dict(color='#1f77b4')
                 ))
                 fig.add_trace(go.Scatter(
                     x=df['date'], 
                     y=df['session_count'],
                     mode='lines+markers', 
-                    name='会话数量', 
+                    name='Session Count', 
                     yaxis='y2',
                     line=dict(color='#ff7f0e')
                 ))
                 
                 fig.update_layout(
-                    title='每日使用趋势',
-                    xaxis_title='日期',
-                    yaxis_title='消息数量',
-                    yaxis2=dict(title='会话数量', overlaying='y', side='right'),
+                    title='Daily Usage Trends',
+                    xaxis_title='Date',
+                    yaxis_title='Message Count',
+                    yaxis2=dict(title='Session Count', overlaying='y', side='right'),
                     hovermode='x unified'
                 )
                 return fig
             else:
-                return self._create_empty_figure("暂无每日使用数据")
+                return self._create_empty_figure("No daily usage data available")
         except Exception as e:
             conn.close()
-            print(f"获取每日使用情况时出错: {e}")
-            return self._create_empty_figure("数据加载失败")
+            print(f"Error getting daily usage: {e}")
+            return self._create_empty_figure("Data loading failed")
     
     def get_response_time_analysis(self, days=7):
-        """响应时间分析"""
+        """Response time analysis"""
         conn = self.get_db_connection()
         since_date = datetime.now() - timedelta(days=days)
         
@@ -166,21 +166,21 @@ class MonitoringDashboard:
                     df, 
                     x='response_time_ms', 
                     nbins=20,
-                    title='API响应时间分布',
-                    labels={'response_time_ms': '响应时间(毫秒)', 'count': '频次'},
+                    title='API Response Time Distribution',
+                    labels={'response_time_ms': 'Response Time (ms)', 'count': 'Frequency'},
                     color_discrete_sequence=['#2E8B57']
                 )
                 fig.update_layout(showlegend=False)
                 return fig
             else:
-                return self._create_empty_figure("暂无响应时间数据")
+                return self._create_empty_figure("No response time data available")
         except Exception as e:
             conn.close()
-            print(f"获取响应时间分析时出错: {e}")
-            return self._create_empty_figure("数据加载失败")
+            print(f"Error getting response time analysis: {e}")
+            return self._create_empty_figure("Data loading failed")
     
     def get_scene_usage(self, days=7):
-        """场景使用统计"""
+        """Scene usage statistics"""
         conn = self.get_db_connection()
         since_date = datetime.now() - timedelta(days=days)
         
@@ -188,7 +188,7 @@ class MonitoringDashboard:
             query = '''
                 SELECT 
                     CASE 
-                        WHEN scene_context = '' OR scene_context IS NULL THEN '默认场景'
+                        WHEN scene_context = '' OR scene_context IS NULL THEN 'Default Scene'
                         WHEN LENGTH(scene_context) > 30 THEN SUBSTR(scene_context, 1, 30) || '...'
                         ELSE scene_context 
                     END as scene,
@@ -208,20 +208,20 @@ class MonitoringDashboard:
                     df, 
                     values='usage_count', 
                     names='scene',
-                    title='场景使用分布',
+                    title='Scene Usage Distribution',
                     color_discrete_sequence=px.colors.qualitative.Set3
                 )
                 fig.update_traces(textposition='inside', textinfo='percent+label')
                 return fig
             else:
-                return self._create_empty_figure("暂无场景使用数据")
+                return self._create_empty_figure("No scene usage data available")
         except Exception as e:
             conn.close()
-            print(f"获取场景使用统计时出错: {e}")
-            return self._create_empty_figure("数据加载失败")
+            print(f"Error getting scene usage statistics: {e}")
+            return self._create_empty_figure("Data loading failed")
     
     def get_user_actions_summary(self, days=7):
-        """用户行为摘要"""
+        """User actions summary"""
         conn = self.get_db_connection()
         since_date = datetime.now() - timedelta(days=days)
         
@@ -240,13 +240,13 @@ class MonitoringDashboard:
             conn.close()
             
             if len(df) > 0:
-                # 中文化action_type
+                # Translate action_type to English
                 action_mapping = {
-                    'send_message': '发送消息',
-                    'student_select': '选择学生',
-                    'clear_chat': '清除聊天',
-                    'scene_change': '切换场景',
-                    'back_to_selection': '返回选择页'
+                    'send_message': 'Send Message',
+                    'student_select': 'Select Student',
+                    'clear_chat': 'Clear Chat',
+                    'scene_change': 'Change Scene',
+                    'back_to_selection': 'Back to Selection'
                 }
                 df['action_name'] = df['action_type'].map(action_mapping).fillna(df['action_type'])
                 
@@ -254,22 +254,22 @@ class MonitoringDashboard:
                     df, 
                     x='action_name', 
                     y='action_count',
-                    title='用户行为统计',
-                    labels={'action_name': '行为类型', 'action_count': '次数'},
+                    title='User Action Statistics',
+                    labels={'action_name': 'Action Type', 'action_count': 'Count'},
                     color='action_count',
                     color_continuous_scale='blues'
                 )
                 fig.update_layout(showlegend=False)
                 return fig
             else:
-                return self._create_empty_figure("暂无用户行为数据")
+                return self._create_empty_figure("No user action data available")
         except Exception as e:
             conn.close()
-            print(f"获取用户行为摘要时出错: {e}")
-            return self._create_empty_figure("数据加载失败")
+            print(f"Error getting user actions summary: {e}")
+            return self._create_empty_figure("Data loading failed")
     
     def _create_empty_figure(self, message):
-        """创建空图表"""
+        """Create empty figure"""
         fig = go.Figure()
         fig.add_annotation(
             text=message,
@@ -286,62 +286,62 @@ class MonitoringDashboard:
         return fig
 
 def create_dashboard():
-    """创建监控仪表板"""
+    """Create monitoring dashboard"""
     dashboard = MonitoringDashboard()
     
-    with gr.Blocks(title="数字孪生监控仪表板", theme=gr.themes.Soft()) as demo:
-        gr.Markdown("# 🔍 数字孪生系统监控仪表板")
-        gr.Markdown("*实时监控用户行为、对话质量和系统性能*")
+    with gr.Blocks(title="Digital Twin Monitoring Dashboard", theme=gr.themes.Soft()) as demo:
+        gr.Markdown("# 🔍 Digital Twin System Monitoring Dashboard")
+        gr.Markdown("*Real-time monitoring of user behavior, conversation quality, and system performance*")
         
         with gr.Row():
             days_input = gr.Slider(
                 1, 30, 
                 value=7, 
                 step=1, 
-                label="📅 查看过去几天的数据",
-                info="选择要分析的时间范围"
+                label="📅 View data for the past N days",
+                info="Select the time range to analyze"
             )
-            refresh_btn = gr.Button("🔄 刷新数据", variant="primary", scale=0)
+            refresh_btn = gr.Button("🔄 Refresh Data", variant="primary", scale=0)
         
-        # 基本统计卡片
-        gr.Markdown("## 📊 基本统计")
+        # Basic statistics cards
+        gr.Markdown("## 📊 Basic Statistics")
         with gr.Row():
             total_sessions = gr.Number(
-                label="👥 总会话数", 
+                label="👥 Total Sessions", 
                 interactive=False,
                 container=True
             )
             total_messages = gr.Number(
-                label="💬 总消息数", 
+                label="💬 Total Messages", 
                 interactive=False,
                 container=True
             )
             avg_response_time = gr.Number(
-                label="⏱️ 平均响应时间(ms)", 
+                label="⏱️ Avg Response Time (ms)", 
                 interactive=False,
                 container=True
             )
             active_students = gr.Number(
-                label="🎭 活跃学生数", 
+                label="🎭 Active Students", 
                 interactive=False,
                 container=True
             )
         
-        # 图表区域
-        gr.Markdown("## 📈 详细分析")
+        # Chart areas
+        gr.Markdown("## 📈 Detailed Analysis")
         with gr.Row():
             with gr.Column():
-                student_plot = gr.Plot(label="🎯 学生受欢迎程度")
-                response_time_plot = gr.Plot(label="⚡ 响应时间分析")
+                student_plot = gr.Plot(label="🎯 Student Popularity")
+                response_time_plot = gr.Plot(label="⚡ Response Time Analysis")
             with gr.Column():
-                daily_plot = gr.Plot(label="📅 每日使用趋势")
-                user_actions_plot = gr.Plot(label="🎮 用户行为统计")
+                daily_plot = gr.Plot(label="📅 Daily Usage Trends")
+                user_actions_plot = gr.Plot(label="🎮 User Action Statistics")
         
         with gr.Row():
-            scene_plot = gr.Plot(label="🎬 场景使用分布")
+            scene_plot = gr.Plot(label="🎬 Scene Usage Distribution")
         
         def update_dashboard(days):
-            """更新仪表板数据"""
+            """Update dashboard data"""
             try:
                 stats = dashboard.get_basic_stats(days)
                 return (
@@ -356,11 +356,11 @@ def create_dashboard():
                     dashboard.get_user_actions_summary(days)
                 )
             except Exception as e:
-                print(f"更新仪表板时出错: {e}")
-                empty_fig = dashboard._create_empty_figure("数据加载失败")
+                print(f"Error updating dashboard: {e}")
+                empty_fig = dashboard._create_empty_figure("Data loading failed")
                 return (0, 0, 0, 0, empty_fig, empty_fig, empty_fig, empty_fig, empty_fig)
         
-        # 事件处理
+        # Event handlers
         refresh_btn.click(
             update_dashboard,
             inputs=[days_input],
@@ -379,7 +379,7 @@ def create_dashboard():
             ]
         )
         
-        # 初始化加载
+        # Initial load
         demo.load(
             update_dashboard,
             inputs=[days_input],
@@ -392,9 +392,9 @@ def create_dashboard():
     return demo
 
 if __name__ == "__main__":
-    print("🔍 启动监控仪表板...")
-    print("📊 数据源: monitoring.db")
-    print("🌐 访问地址: http://localhost:7861")
+    print("🔍 Starting monitoring dashboard...")
+    print("📊 Data source: monitoring.db")
+    print("🌐 Access URL: http://localhost:7861")
     
     dashboard_demo = create_dashboard()
     dashboard_demo.launch(
