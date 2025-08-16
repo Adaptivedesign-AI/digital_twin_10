@@ -498,7 +498,7 @@ select, textarea, input {
 /* 1. Fix left chat column height only on chat page */
 .chat-page .chat-column,
 .main-chat-container .chat-column {
-    min-height: 1050px !important;
+    min-height: 1025px !important;
     height: auto !important;
     background-color: white !important;
     border-radius: 12px !important;
@@ -510,10 +510,20 @@ select, textarea, input {
     justify-content: space-between !important;
 }
 
-/* 确保聊天框在聊天页面占用大部分空间 */
+/* 确保聊天框在聊天页面占用大部分空间，并且可以随内容扩展 */
 .main-chat-container .chat-column .gradio-chatbot {
     flex: 1 !important;
-    min-height: 900px !important;
+    min-height: 850px !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+}
+
+/* 强制chatbot容器也跟着拉长 */
+.main-chat-container .gradio-chatbot,
+.chat-column .gradio-chatbot {
+    min-height: 850px !important;
+    height: auto !important;
+    max-height: none !important;
 }
 
 /* 确保输入框区域在聊天页面底部 */
