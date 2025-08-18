@@ -314,7 +314,7 @@ body {
 
 /* NEW: Avatar styling - RECTANGULAR with rounded corners (not circular) */
 .character-card .avatar-container {
-    width: 85% !important;
+    width: 60% !important; /* 👈 从85%调整到60%，让头像变窄 */
     height: 100px !important;
     overflow: hidden !important;
     margin: 15px auto 8px auto !important;
