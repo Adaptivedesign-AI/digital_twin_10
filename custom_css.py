@@ -632,19 +632,17 @@ select, textarea, input {
     }
     
     .character-card {
-        max-width: 180px;
-        min-width: 160px;
+        width: 300px; /* 👈 调整宽度 */
     }
 }
 
 @media (max-width: 992px) {
     .character-row {
-        justify-content: center;
+        justify-content: flex-start;
     }
     
     .character-card {
-        max-width: 160px;
-        min-width: 140px;
+        width: 280px; /* 👈 进一步缩小 */
     }
     
     .age-group-container {
@@ -663,12 +661,12 @@ select, textarea, input {
     
     .character-row {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start; /* 👈 左对齐 */
     }
     
     .character-card {
-        max-width: 250px;
-        min-width: 200px;
+        width: 100%; /* 👈 全宽 */
+        max-width: 400px;
     }
     
     .age-group-container {
@@ -687,8 +685,32 @@ select, textarea, input {
     }
     
     .character-card {
-        max-width: 280px;
-        min-width: 220px;
+        width: 100%;
+        max-width: none;
+        height: auto; /* 👈 自动高度 */
+        flex-direction: column; /* 👈 小屏幕时改为垂直布局 */
+    }
+    
+    .character-card .avatar-container {
+        width: 80px !important;
+        height: 80px !important;
+        margin: 10px auto !important;
+    }
+    
+    .character-card-content {
+        text-align: center;
+    }
+    
+    .student-name {
+        text-align: center !important;
+    }
+    
+    .student-description {
+        text-align: center !important;
+    }
+    
+    .chat-btn {
+        align-self: center !important;
     }
     
     .mental-health-group {
