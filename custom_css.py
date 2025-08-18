@@ -200,143 +200,158 @@ body {
 }
 
 /* ============================================
-   NEW COMPACT CARD-BASED LAYOUT
+   CHARACTER.AI STYLE HORIZONTAL LAYOUT
 ============================================ */
 
-/* Age group containers */
-.age-group {
-    background-color: #f8f9fc !important;
-    border-radius: 16px !important;
-    padding: 25px !important;
-    margin: 20px 0 !important;
-    border: 2px solid #e6e8f2 !important;
-}
-
+/* Age group titles */
 .age-group-title {
     color: #2e285c !important;
-    margin: 0 0 20px 0 !important;
+    margin: 40px 0 20px 0 !important;
     text-align: center !important;
     font-weight: bold !important;
-    font-size: 24px !important;
-    border-bottom: 2px solid #bdbad4 !important;
-    padding-bottom: 10px !important;
+    font-size: 28px !important;
+    border-bottom: 3px solid #bdbad4 !important;
+    padding-bottom: 15px !important;
 }
 
-/* Mental health subgroups */
-.mental-health-subgroup {
-    background-color: white !important;
-    border-radius: 12px !important;
-    padding: 20px !important;
-    margin: 15px 0 !important;
-    border: 1px solid #bdbad4 !important;
-    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.05) !important;
-}
-
+/* Subgroup titles with color coding */
 .subgroup-title {
     color: #2e285c !important;
-    margin: 0 0 15px 0 !important;
+    margin: 30px 0 20px 0 !important;
     font-weight: 600 !important;
-    font-size: 18px !important;
-    text-align: center !important;
+    font-size: 20px !important;
+    text-align: left !important;
+    padding-left: 15px !important;
 }
 
 .mental-health-issues {
-    border-left: 4px solid #dc3545 !important;
-    padding-left: 15px !important;
+    border-left: 5px solid #dc3545 !important;
+    background: linear-gradient(90deg, rgba(220, 53, 69, 0.1) 0%, transparent 100%) !important;
+    padding: 10px 0 10px 15px !important;
+    border-radius: 0 8px 8px 0 !important;
 }
 
 .no-mental-health-issues {
-    border-left: 4px solid #28a745 !important;
-    padding-left: 15px !important;
+    border-left: 5px solid #28a745 !important;
+    background: linear-gradient(90deg, rgba(40, 167, 69, 0.1) 0%, transparent 100%) !important;
+    padding: 10px 0 10px 15px !important;
+    border-radius: 0 8px 8px 0 !important;
 }
 
-/* Student cards container */
-.student-cards-container {
+/* Character grid row - horizontal layout like Character.AI */
+.character-grid-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    margin: 0 0 30px 0 !important;
+    padding: 0 !important;
+}
+
+/* Individual character cards - Character.AI style */
+.character-card {
+    background: #bdbad4 !important;
+    background-color: #bdbad4 !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.15) !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+    height: auto !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
-}
-
-/* Individual student card row */
-.student-card-row {
-    background-color: #fafbfd !important;
-    border: 1px solid #e6e8f2 !important;
-    border-radius: 12px !important;
-    padding: 15px !important;
-    transition: all 0.2s ease !important;
     cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 15px !important;
-}
-
-.student-card-row:hover {
-    background-color: #f0f2f8 !important;
-    border-color: #bdbad4 !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
-}
-
-/* Avatar column in card */
-.avatar-column {
+    width: 220px !important;
+    min-height: 320px !important;
     flex-shrink: 0 !important;
-    width: 80px !important;
 }
 
-.card-avatar {
-    width: 80px !important;
-    height: 80px !important;
-    border-radius: 12px !important;
-    border: 2px solid #bdbad4 !important;
-    object-fit: cover !important;
+.character-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 20px rgba(46, 40, 92, 0.25) !important;
+    border-color: #2e285c !important;
+}
+
+/* Avatar styling - circular and centered */
+.character-card .avatar-container {
+    width: 80% !important;
+    height: 140px !important;
+    overflow: hidden !important;
+    margin: 20px auto 15px auto !important;
+    border: 3px solid white !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.2) !important;
     background-color: white !important;
+    position: relative !important;
 }
 
-.card-avatar img {
+.character-card .avatar-container img,
+.character-card .avatar-container > div,
+.character-card .avatar-img,
+.character-card [data-testid="image"],
+.character-card [data-testid="image"] > div {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    border-radius: 10px !important;
-}
-
-/* Info column in card */
-.info-column-card {
-    flex-grow: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-}
-
-.card-student-name {
-    color: #2e285c !important;
+    display: block !important;
+    background-color: white !important;
+    border: none !important;
+    box-shadow: none !important;
     margin: 0 !important;
-    font-weight: bold !important;
-    font-size: 18px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
 }
 
-.card-student-info {
-    color: #666 !important;
-    margin: 0 !important;
+/* Student info styling - compact and readable */
+.student-name {
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    margin: 0 0 10px !important;
+    text-align: center !important;
+    color: white !important;
+    letter-spacing: 0.5px !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.student-description {
+    padding: 0 15px !important;
+    text-align: center !important;
+    color: white !important;
     font-size: 14px !important;
     line-height: 1.4 !important;
+    min-height: 50px !important;
+    overflow: hidden !important;
+    flex-grow: 1 !important;
+    margin-bottom: 15px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    font-weight: 500 !important;
 }
 
-.card-chat-btn {
-    background-color: #bdbad4 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
+/* Chat button styling */
+.chat-btn {
+    background-color: white !important;
+    color: #2e285c !important;
+    border: 2px solid transparent !important;
+    border-radius: 25px !important;
+    padding: 10px 0 !important;
+    margin: 0 auto 20px auto !important;
+    width: 85% !important;
+    display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    transition: all 0.2s !important;
-    align-self: flex-start !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
 }
 
-.card-chat-btn:hover {
-    background-color: #2e285c !important;
+.chat-btn:hover {
+    background-color: #f0edfe !important;
+    border-color: #2e285c !important;
     transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
 }
 
 /* Back button styling */
@@ -417,7 +432,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 25px;
+    margin: 0 auto 40px;
     max-width: 800px;
     color: #2e285c;
     font-size: 14px;
@@ -431,13 +446,13 @@ body {
     text-align: center;
     margin: 1px 0 10px;
     color: #2e285c;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: bold;
 }
 
 /* Container for main content */
 .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
     background-color: transparent !important;
@@ -551,45 +566,73 @@ select, textarea, input {
     color: #2e285c !important;
 }
 
-/* Remove old grid styles for selection page */
-.character-grid {
-    display: none !important;
+/* Responsive design for horizontal layout */
+@media (max-width: 1200px) {
+    .character-grid-row {
+        justify-content: center !important;
+    }
+    
+    .character-card {
+        width: 200px !important;
+    }
+    
+    .main-chat-container {
+        flex-direction: column;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
 }
 
-.character-card {
-    display: none !important;
+@media (max-width: 992px) {
+    .character-grid-row {
+        gap: 15px !important;
+    }
+    
+    .character-card {
+        width: 180px !important;
+        min-height: 300px !important;
+    }
+    
+    .avatar-container {
+        height: 120px !important;
+    }
+    
+    .student-name {
+        font-size: 20px !important;
+    }
+    
+    .student-description {
+        font-size: 13px !important;
+        min-height: 45px !important;
+    }
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .container {
         padding: 0 15px;
-        max-width: 100%;
     }
     
-    .age-group {
-        padding: 15px !important;
-        margin: 15px 0 !important;
-    }
-    
-    .mental-health-subgroup {
-        padding: 15px !important;
-    }
-    
-    .student-card-row {
+    .character-grid-row {
         flex-direction: column !important;
-        text-align: center !important;
-        gap: 10px !important;
+        align-items: center !important;
+        gap: 20px !important;
     }
     
-    .avatar-column {
-        width: 100% !important;
+    .character-card {
+        width: 250px !important;
+        max-width: 90vw !important;
     }
     
-    .card-avatar {
-        width: 60px !important;
-        height: 60px !important;
-        margin: 0 auto !important;
+    .age-group-title {
+        font-size: 24px !important;
+        margin: 30px 0 15px 0 !important;
+    }
+    
+    .subgroup-title {
+        font-size: 18px !important;
+        margin: 20px 0 15px 0 !important;
     }
     
     .main-chat-container {
@@ -600,23 +643,50 @@ select, textarea, input {
     .chat-column, .info-column {
         width: 100%;
     }
+}
+
+@media (max-width: 480px) {
+    .character-card {
+        width: 200px !important;
+    }
     
-    .age-group-title {
+    .selection-heading {
         font-size: 20px !important;
     }
     
-    .subgroup-title {
-        font-size: 16px !important;
+    .project-description {
+        font-size: 13px !important;
+        margin: 0 auto 30px !important;
     }
 }
 
-@media (max-width: 1200px) {
-    .main-chat-container {
-        flex-direction: column;
-    }
-    
-    .chat-column, .info-column {
-        width: 100%;
-    }
+/* Remove any old grid styles that might conflict */
+.character-grid {
+    display: none !important;
+}
+
+/* Ensure proper spacing between groups */
+.age-group-title:first-of-type {
+    margin-top: 20px !important;
+}
+
+/* Additional hover effects for better UX */
+.character-card:hover .student-name {
+    transform: scale(1.05) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.character-card:hover .avatar-container {
+    transform: scale(1.05) !important;
+    transition: transform 0.3s ease !important;
+    border-color: white !important;
+    box-shadow: 0 6px 16px rgba(46, 40, 92, 0.3) !important;
+}
+
+/* Fix for Gradio's default row behavior */
+.character-grid-row > div {
+    flex: none !important;
+    width: auto !important;
+    min-width: 220px !important;
 }
 """
