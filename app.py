@@ -811,7 +811,7 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                         interactive=False
                     )
     
-    # Define selection page with new grouped layout
+    # Define selection page with horizontal Character.AI style layout
     with selection_page:
         with gr.Column(elem_classes="container"):
             # 标题部分
@@ -835,224 +835,186 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
             middle_adolescence, late_adolescence = categorize_students()
             
             # 中期青少年组 (13-15岁)
-            with gr.Group(elem_classes="age-group"):
-                gr.Markdown("## Middle Adolescence (13-15 years)", elem_classes="age-group-title")
+            gr.Markdown("## Middle Adolescence (13-15 years)", elem_classes="age-group-title")
+            
+            # 有心理健康问题的子组 - 横向排列
+            if middle_adolescence["with_mental_health_issues"]:
+                gr.Markdown("### Self-reported mental health issues", elem_classes="subgroup-title mental-health-issues")
                 
-                # 有心理健康问题的子组
-                if middle_adolescence["with_mental_health_issues"]:
-                    with gr.Group(elem_classes="mental-health-subgroup"):
-                        gr.Markdown("### Self-reported mental health issues", 
-                                   elem_classes="subgroup-title mental-health-issues")
+                with gr.Row(elem_classes="character-grid-row"):
+                    for student_id in middle_adolescence["with_mental_health_issues"]:
+                        student_name = name_dict[student_id]
                         
-                        with gr.Column(elem_classes="student-cards-container"):
-                            for student_id in middle_adolescence["with_mental_health_issues"]:
-                                student_name = name_dict[student_id]
-                                profile = student_profiles[student_id]
-                                
-                                with gr.Row(elem_classes="student-card-row"):
-                                    # 左侧：头像
-                                    with gr.Column(scale=1, elem_classes="avatar-column"):
-                                        gr.Image(
-                                            value=f"avatar/{student_id}.png",
-                                            show_label=False,
-                                            elem_classes="card-avatar",
-                                            show_download_button=False,
-                                            show_fullscreen_button=False,
-                                            show_share_button=False,
-                                            height=80
-                                        )
-                                    
-                                    # 右侧：信息和按钮
-                                    with gr.Column(scale=3, elem_classes="info-column-card"):
-                                        gr.Markdown(f"**{student_name}**", elem_classes="card-student-name")
-                                        gr.Markdown(f"{profile['age']} years old • {profile['sex']} • {profile['grade']}", 
-                                                   elem_classes="card-student-info")
-                                        
-                                        chat_btn = gr.Button("Start Chat", elem_classes="card-chat-btn", 
-                                                           elem_id=f"chat-btn-{student_id}")
-                                        
-                                        # 绑定点击事件
-                                        chat_btn.click(
-                                            select_student_direct,
-                                            inputs=[
-                                                gr.Textbox(value=student_id, visible=False),
-                                                history_dict_state,
-                                                session_id_state
-                                            ],
-                                            outputs=[
-                                                selection_page, 
-                                                chat_page, 
-                                                selected_id_state, 
-                                                student_name_display,
-                                                student_profile_text,
-                                                student_profile_image,
-                                                chatbot,
-                                                session_id_state
-                                            ]
-                                        )
+                        with gr.Column(elem_classes="character-card"):
+                            # Avatar container - circular and centered
+                            with gr.Column(elem_classes="avatar-container"):
+                                gr.Image(
+                                    value=f"avatar/{student_id}.png",
+                                    show_label=False,
+                                    elem_classes="avatar-img",
+                                    show_download_button=False,
+                                    show_fullscreen_button=False,
+                                    show_share_button=False 
+                                )
+                            
+                            # Student name - prominent and bold
+                            gr.Markdown(f"## {student_name}", elem_classes="student-name")
+                            gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                            
+                            chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
+                            chat_btn.click(
+                                select_student_direct,
+                                inputs=[
+                                    gr.Textbox(value=student_id, visible=False),
+                                    history_dict_state,
+                                    session_id_state
+                                ],
+                                outputs=[
+                                    selection_page, 
+                                    chat_page, 
+                                    selected_id_state, 
+                                    student_name_display,
+                                    student_profile_text,
+                                    student_profile_image,
+                                    chatbot,
+                                    session_id_state
+                                ]
+                            )
+            
+            # 无心理健康问题的子组 - 横向排列
+            if middle_adolescence["no_mental_health_issues"]:
+                gr.Markdown("### No self-reported mental health issues", elem_classes="subgroup-title no-mental-health-issues")
                 
-                # 无心理健康问题的子组
-                if middle_adolescence["no_mental_health_issues"]:
-                    with gr.Group(elem_classes="mental-health-subgroup"):
-                        gr.Markdown("### No self-reported mental health issues", 
-                                   elem_classes="subgroup-title no-mental-health-issues")
+                with gr.Row(elem_classes="character-grid-row"):
+                    for student_id in middle_adolescence["no_mental_health_issues"]:
+                        student_name = name_dict[student_id]
                         
-                        with gr.Column(elem_classes="student-cards-container"):
-                            for student_id in middle_adolescence["no_mental_health_issues"]:
-                                student_name = name_dict[student_id]
-                                profile = student_profiles[student_id]
-                                
-                                with gr.Row(elem_classes="student-card-row"):
-                                    # 左侧：头像
-                                    with gr.Column(scale=1, elem_classes="avatar-column"):
-                                        gr.Image(
-                                            value=f"avatar/{student_id}.png",
-                                            show_label=False,
-                                            elem_classes="card-avatar",
-                                            show_download_button=False,
-                                            show_fullscreen_button=False,
-                                            show_share_button=False,
-                                            height=80
-                                        )
-                                    
-                                    # 右侧：信息和按钮
-                                    with gr.Column(scale=3, elem_classes="info-column-card"):
-                                        gr.Markdown(f"**{student_name}**", elem_classes="card-student-name")
-                                        gr.Markdown(f"{profile['age']} years old • {profile['sex']} • {profile['grade']}", 
-                                                   elem_classes="card-student-info")
-                                        
-                                        chat_btn = gr.Button("Start Chat", elem_classes="card-chat-btn", 
-                                                           elem_id=f"chat-btn-{student_id}")
-                                        
-                                        # 绑定点击事件
-                                        chat_btn.click(
-                                            select_student_direct,
-                                            inputs=[
-                                                gr.Textbox(value=student_id, visible=False),
-                                                history_dict_state,
-                                                session_id_state
-                                            ],
-                                            outputs=[
-                                                selection_page, 
-                                                chat_page, 
-                                                selected_id_state, 
-                                                student_name_display,
-                                                student_profile_text,
-                                                student_profile_image,
-                                                chatbot,
-                                                session_id_state
-                                            ]
-                                        )
+                        with gr.Column(elem_classes="character-card"):
+                            # Avatar container - circular and centered
+                            with gr.Column(elem_classes="avatar-container"):
+                                gr.Image(
+                                    value=f"avatar/{student_id}.png",
+                                    show_label=False,
+                                    elem_classes="avatar-img",
+                                    show_download_button=False,
+                                    show_fullscreen_button=False,
+                                    show_share_button=False 
+                                )
+                            
+                            # Student name - prominent and bold
+                            gr.Markdown(f"## {student_name}", elem_classes="student-name")
+                            gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                            
+                            chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
+                            chat_btn.click(
+                                select_student_direct,
+                                inputs=[
+                                    gr.Textbox(value=student_id, visible=False),
+                                    history_dict_state,
+                                    session_id_state
+                                ],
+                                outputs=[
+                                    selection_page, 
+                                    chat_page, 
+                                    selected_id_state, 
+                                    student_name_display,
+                                    student_profile_text,
+                                    student_profile_image,
+                                    chatbot,
+                                    session_id_state
+                                ]
+                            )
             
             # 晚期青少年组 (16-17岁)
-            with gr.Group(elem_classes="age-group"):
-                gr.Markdown("## Late Adolescence (16-17 years)", elem_classes="age-group-title")
+            gr.Markdown("## Late Adolescence (16-17 years)", elem_classes="age-group-title")
+            
+            # 有心理健康问题的子组 - 横向排列
+            if late_adolescence["with_mental_health_issues"]:
+                gr.Markdown("### Self-reported mental health issues", elem_classes="subgroup-title mental-health-issues")
                 
-                # 有心理健康问题的子组
-                if late_adolescence["with_mental_health_issues"]:
-                    with gr.Group(elem_classes="mental-health-subgroup"):
-                        gr.Markdown("### Self-reported mental health issues", 
-                                   elem_classes="subgroup-title mental-health-issues")
+                with gr.Row(elem_classes="character-grid-row"):
+                    for student_id in late_adolescence["with_mental_health_issues"]:
+                        student_name = name_dict[student_id]
                         
-                        with gr.Column(elem_classes="student-cards-container"):
-                            for student_id in late_adolescence["with_mental_health_issues"]:
-                                student_name = name_dict[student_id]
-                                profile = student_profiles[student_id]
-                                
-                                with gr.Row(elem_classes="student-card-row"):
-                                    # 左侧：头像
-                                    with gr.Column(scale=1, elem_classes="avatar-column"):
-                                        gr.Image(
-                                            value=f"avatar/{student_id}.png",
-                                            show_label=False,
-                                            elem_classes="card-avatar",
-                                            show_download_button=False,
-                                            show_fullscreen_button=False,
-                                            show_share_button=False,
-                                            height=80
-                                        )
-                                    
-                                    # 右侧：信息和按钮
-                                    with gr.Column(scale=3, elem_classes="info-column-card"):
-                                        gr.Markdown(f"**{student_name}**", elem_classes="card-student-name")
-                                        gr.Markdown(f"{profile['age']} years old • {profile['sex']} • {profile['grade']}", 
-                                                   elem_classes="card-student-info")
-                                        
-                                        chat_btn = gr.Button("Start Chat", elem_classes="card-chat-btn", 
-                                                           elem_id=f"chat-btn-{student_id}")
-                                        
-                                        # 绑定点击事件
-                                        chat_btn.click(
-                                            select_student_direct,
-                                            inputs=[
-                                                gr.Textbox(value=student_id, visible=False),
-                                                history_dict_state,
-                                                session_id_state
-                                            ],
-                                            outputs=[
-                                                selection_page, 
-                                                chat_page, 
-                                                selected_id_state, 
-                                                student_name_display,
-                                                student_profile_text,
-                                                student_profile_image,
-                                                chatbot,
-                                                session_id_state
-                                            ]
-                                        )
+                        with gr.Column(elem_classes="character-card"):
+                            # Avatar container - circular and centered
+                            with gr.Column(elem_classes="avatar-container"):
+                                gr.Image(
+                                    value=f"avatar/{student_id}.png",
+                                    show_label=False,
+                                    elem_classes="avatar-img",
+                                    show_download_button=False,
+                                    show_fullscreen_button=False,
+                                    show_share_button=False 
+                                )
+                            
+                            # Student name - prominent and bold
+                            gr.Markdown(f"## {student_name}", elem_classes="student-name")
+                            gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                            
+                            chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
+                            chat_btn.click(
+                                select_student_direct,
+                                inputs=[
+                                    gr.Textbox(value=student_id, visible=False),
+                                    history_dict_state,
+                                    session_id_state
+                                ],
+                                outputs=[
+                                    selection_page, 
+                                    chat_page, 
+                                    selected_id_state, 
+                                    student_name_display,
+                                    student_profile_text,
+                                    student_profile_image,
+                                    chatbot,
+                                    session_id_state
+                                ]
+                            )
+            
+            # 无心理健康问题的子组 - 横向排列
+            if late_adolescence["no_mental_health_issues"]:
+                gr.Markdown("### No self-reported mental health issues", elem_classes="subgroup-title no-mental-health-issues")
                 
-                # 无心理健康问题的子组  
-                if late_adolescence["no_mental_health_issues"]:
-                    with gr.Group(elem_classes="mental-health-subgroup"):
-                        gr.Markdown("### No self-reported mental health issues", 
-                                   elem_classes="subgroup-title no-mental-health-issues")
+                with gr.Row(elem_classes="character-grid-row"):
+                    for student_id in late_adolescence["no_mental_health_issues"]:
+                        student_name = name_dict[student_id]
                         
-                        with gr.Column(elem_classes="student-cards-container"):
-                            for student_id in late_adolescence["no_mental_health_issues"]:
-                                student_name = name_dict[student_id]
-                                profile = student_profiles[student_id]
-                                
-                                with gr.Row(elem_classes="student-card-row"):
-                                    # 左侧：头像
-                                    with gr.Column(scale=1, elem_classes="avatar-column"):
-                                        gr.Image(
-                                            value=f"avatar/{student_id}.png",
-                                            show_label=False,
-                                            elem_classes="card-avatar",
-                                            show_download_button=False,
-                                            show_fullscreen_button=False,
-                                            show_share_button=False,
-                                            height=80
-                                        )
-                                    
-                                    # 右侧：信息和按钮
-                                    with gr.Column(scale=3, elem_classes="info-column-card"):
-                                        gr.Markdown(f"**{student_name}**", elem_classes="card-student-name")
-                                        gr.Markdown(f"{profile['age']} years old • {profile['sex']} • {profile['grade']}", 
-                                                   elem_classes="card-student-info")
-                                        
-                                        chat_btn = gr.Button("Start Chat", elem_classes="card-chat-btn", 
-                                                           elem_id=f"chat-btn-{student_id}")
-                                        
-                                        # 绑定点击事件
-                                        chat_btn.click(
-                                            select_student_direct,
-                                            inputs=[
-                                                gr.Textbox(value=student_id, visible=False),
-                                                history_dict_state,
-                                                session_id_state
-                                            ],
-                                            outputs=[
-                                                selection_page, 
-                                                chat_page, 
-                                                selected_id_state, 
-                                                student_name_display,
-                                                student_profile_text,
-                                                student_profile_image,
-                                                chatbot,
-                                                session_id_state
-                                            ]
-                                        )
+                        with gr.Column(elem_classes="character-card"):
+                            # Avatar container - circular and centered
+                            with gr.Column(elem_classes="avatar-container"):
+                                gr.Image(
+                                    value=f"avatar/{student_id}.png",
+                                    show_label=False,
+                                    elem_classes="avatar-img",
+                                    show_download_button=False,
+                                    show_fullscreen_button=False,
+                                    show_share_button=False 
+                                )
+                            
+                            # Student name - prominent and bold
+                            gr.Markdown(f"## {student_name}", elem_classes="student-name")
+                            gr.Markdown(student_descriptions[student_id], elem_classes="student-description")
+                            
+                            chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_id}")
+                            chat_btn.click(
+                                select_student_direct,
+                                inputs=[
+                                    gr.Textbox(value=student_id, visible=False),
+                                    history_dict_state,
+                                    session_id_state
+                                ],
+                                outputs=[
+                                    selection_page, 
+                                    chat_page, 
+                                    selected_id_state, 
+                                    student_name_display,
+                                    student_profile_text,
+                                    student_profile_image,
+                                    chatbot,
+                                    session_id_state
+                                ]
+                            )
 
     # Function to update avatar images in chatbot based on selected student
     def update_chatbot_avatars(student_id):
@@ -1147,15 +1109,15 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
             });
         }
         
-        // Make student card rows clickable
+        // Make character cards clickable
         function makeCardsClickable() {
-            document.querySelectorAll('.student-card-row').forEach(card => {
+            document.querySelectorAll('.character-card').forEach(card => {
                 if (!card.dataset.handlerAttached) {
                     card.dataset.handlerAttached = 'true';
                     card.style.cursor = 'pointer';
                     card.addEventListener('click', function(e) {
-                        if (!e.target.classList.contains('card-chat-btn') && !e.target.closest('.card-chat-btn')) {
-                            const chatBtn = this.querySelector('.card-chat-btn');
+                        if (!e.target.classList.contains('chat-btn') && !e.target.closest('.chat-btn')) {
+                            const chatBtn = this.querySelector('.chat-btn');
                             if (chatBtn) chatBtn.click();
                         }
                     });
