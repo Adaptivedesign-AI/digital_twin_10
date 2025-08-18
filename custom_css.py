@@ -520,3 +520,171 @@ select, textarea, input {
     padding: 20px !important;
     border: 1px solid #bdbad4 !important;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
+    margin-bottom: 20px !important;
+}
+
+.main-chat-container .info-column .gr-markdown,
+.main-chat-container .info-column .gradio-markdown {
+    background-color: white !important;
+    color: #2e285c !important;
+}
+
+.main-chat-container .info-column select,
+.main-chat-container .info-column textarea,
+.main-chat-container .info-column input {
+    background-color: white !important;
+    border: 1px solid #bdbad4 !important;
+    border-radius: 8px !important;
+    color: #2e285c !important;
+}
+
+/* Responsive design for horizontal layout */
+@media (max-width: 1200px) {
+    .student-card-wrapper {
+        max-width: calc(25% - 11.25px) !important;
+    }
+    
+    .students-row {
+        flex-wrap: wrap !important;
+    }
+    
+    .main-chat-container {
+        flex-direction: column;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .student-card-wrapper {
+        max-width: calc(33.333% - 10px) !important;
+    }
+    
+    .student-card-horizontal {
+        height: 90px !important;
+        padding: 10px !important;
+    }
+    
+    .square-avatar {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    .avatar-section {
+        width: 50px !important;
+    }
+    
+    .student-name-horizontal {
+        font-size: 14px !important;
+    }
+    
+    .student-info-horizontal {
+        font-size: 11px !important;
+    }
+    
+    .chat-btn-horizontal {
+        font-size: 10px !important;
+        padding: 3px 6px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .student-card-wrapper {
+        max-width: calc(50% - 7.5px) !important;
+    }
+    
+    .age-section-title {
+        font-size: 18px !important;
+        margin: 25px 0 12px 0 !important;
+    }
+    
+    .health-section-label {
+        font-size: 13px !important;
+        margin: 12px 0 8px 0 !important;
+    }
+    
+    .main-chat-container {
+        flex-direction: column;
+        padding: 0 10px;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .student-card-wrapper {
+        max-width: 100% !important;
+    }
+    
+    .students-row {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .student-card-horizontal {
+        height: 80px !important;
+        width: 100% !important;
+    }
+    
+    .selection-heading {
+        font-size: 20px !important;
+    }
+    
+    .project-description {
+        font-size: 13px !important;
+        margin: 0 auto 25px !important;
+    }
+}
+
+/* Make card rows clickable */
+.student-card-horizontal:hover .chat-btn-horizontal {
+    background-color: #2e285c !important;
+}
+
+/* Fix Gradio's default scaling */
+.students-row > div {
+    flex: 1 !important;
+    max-width: calc(20% - 12px) !important;
+    min-width: 180px !important;
+}
+
+/* Remove any conflicting old styles */
+.character-grid,
+.character-card,
+.character-grid-row {
+    display: none !important;
+}
+
+/* Ensure proper alignment */
+.students-row {
+    align-items: stretch !important;
+}
+
+.student-card-horizontal {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+}
+
+/* Fix avatar container in horizontal layout */
+.avatar-section .gradio-image,
+.avatar-section [data-testid="image"] {
+    background-color: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.square-avatar.gradio-image img {
+    border-radius: 6px !important;
+    object-fit: cover !important;
+}
+"""
