@@ -249,11 +249,11 @@ body {
 .character-row {
     display: flex;
     gap: 15px;
-    justify-content: center;
+    justify-content: flex-start; /* 👈 改为左对齐，不再居中 */
     flex-wrap: wrap;
 }
 
-/* Updated character card styling - more compact */
+/* Updated character card styling - horizontal layout with avatar on right */
 .character-card {
     background: #bdbad4 !important;
     background-color: #bdbad4 !important;
@@ -262,13 +262,12 @@ body {
     box-shadow: 0 3px 8px rgba(46, 40, 92, 0.15);
     transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #bdbad4;
-    height: auto;
-    display: flex;
-    flex-direction: column;
+    height: 120px; /* 👈 固定高度 */
+    display: flex; /* 👈 改为水平布局 */
+    flex-direction: row; /* 👈 水平排列 */
     cursor: pointer;
-    max-width: 200px;
-    min-width: 180px;
-    margin: 0 auto;
+    width: 320px; /* 👈 固定宽度，更宽以容纳水平布局 */
+    margin: 0;
     flex: 0 0 auto;
 }
 
@@ -282,29 +281,35 @@ body {
     display: none;
 }
 
-/* Student info styling - compact and readable */
+/* 👈 NEW: Left content area for text */
+.character-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px;
+}
+
+/* Student info styling - left aligned */
 .student-name {
     font-size: 18px !important;
     font-weight: 900 !important;
-    margin: 12px 0 6px !important;
-    text-align: center;
+    margin: 0 0 8px 0 !important;
+    text-align: left !important; /* 👈 左对齐 */
     color: #2e285c !important;
     letter-spacing: 0.5px;
 }
 
 .student-description {
-    padding: 0 10px;
-    text-align: center;
+    text-align: left !important; /* 👈 左对齐 */
     color: #2e285c;
     font-size: 12px;
-    min-height: 40px;
-    overflow: hidden;
-    flex-grow: 1;
-    margin-bottom: 6px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
     line-height: 1.3;
+    margin: 0 0 10px 0 !important;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 /* Hide model tag for cleaner interface */
@@ -312,16 +317,17 @@ body {
     display: none;
 }
 
-/* NEW: Avatar styling - RECTANGULAR with rounded corners (not circular) */
+/* NEW: Avatar styling - positioned on the right side */
 .character-card .avatar-container {
-    width: 60% !important; /* 👈 从85%调整到60%，让头像变窄 */
-    height: 100px !important;
+    width: 100px !important; /* 👈 固定宽度 */
+    height: 100px !important; /* 👈 固定高度 */
     overflow: hidden !important;
-    margin: 15px auto 8px auto !important;
+    margin: 10px 15px 10px 0 !important; /* 👈 右边距，放在右侧 */
     border: 2px solid #2e285c !important;
-    border-radius: 12px !important; /* 👈 圆角矩形，不是50%的圆形 */
+    border-radius: 12px !important;
     box-shadow: 0 3px 6px rgba(46, 40, 92, 0.1) !important;
     background-color: transparent !important;
+    flex-shrink: 0 !important; /* 👈 防止头像被压缩 */
 }
 
 .character-card .avatar-container img,
@@ -338,23 +344,24 @@ body {
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
-    border-radius: 10px !important; /* 👈 内部图片也用圆角矩形 */
+    border-radius: 10px !important;
 }
 
-/* Chat button styling - white background with purple text, more compact */
+/* Chat button styling - positioned in content area */
 .chat-btn {
     background-color: white !important;
     color: #2e285c !important;
     border: 2px solid #bdbad4 !important;
     border-radius: 16px !important;
-    padding: 6px 0 !important;
-    margin: 8px auto 12px !important;
-    width: 80% !important;
+    padding: 6px 12px !important;
+    margin: 0 !important; /* 👈 移除margin，由父容器控制位置 */
+    width: 80px !important; /* 👈 固定宽度 */
     display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    font-size: 13px !important;
+    font-size: 12px !important;
     transition: all 0.2s !important;
+    align-self: flex-start !important; /* 👈 左对齐 */
 }
 
 .chat-btn:hover {
