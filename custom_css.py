@@ -47,22 +47,22 @@ body {
     border-radius: 8px 8px 0 0;
 }
 
-/* Chat page header styling - 改成紫色背景 */
+/* Chat page header styling */
 .chat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
     border-bottom: 1px solid #bdbad4;
-    background-color: #bdbad4 !important;  /* 👈 white → #bdbad4 */
-    color: white !important;               /* 👈 #2e285c → white */
+    background-color: #bdbad4 !important;
+    color: white !important;
     border-radius: 12px 12px 0 0;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(46, 40, 92, 0.1);
 }
 
 .page-title {
-    color: white !important;  /* 👈 #2e285c → white */
+    color: white !important;
     margin: 0 !important;
     text-align: center;
     flex-grow: 1;
@@ -77,7 +77,7 @@ body {
     margin: 0 auto;
 }
 
-/* Left column: Chat interface - 加长高度与右边对齐 */
+/* Left column: Chat interface */
 .chat-column {
     background-color: white;
     border-radius: 12px;
@@ -90,13 +90,11 @@ body {
     justify-content: space-between !important;
 }
 
-/* 确保聊天框占用大部分空间，输入框在底部 */
 .chat-column .gradio-chatbot {
     flex: 1 !important;
     min-height: 1150px !important;
 }
 
-/* 输入框区域固定在底部 */
 .chat-column > div:last-child {
     margin-top: auto !important;
     flex-shrink: 0 !important;
@@ -109,7 +107,7 @@ body {
     gap: 20px;
 }
 
-/* Profile box styling - 保持白色不透明 */
+/* Profile box styling */
 .profile-box {
     background-color: white !important;
     border-radius: 12px;
@@ -137,7 +135,7 @@ body {
     margin: 0 !important;
 }
 
-/* Instructions box styling - 保持白色不透明 */
+/* Instructions box styling */
 .instructions-box {
     background-color: white !important;
     border-radius: 12px;
@@ -153,7 +151,7 @@ body {
     margin: 0 !important;
 }
 
-/* Scene box styling - 保持白色不透明 */
+/* Scene box styling */
 .scene-box {
     background-color: white !important;
     border-radius: 12px;
@@ -201,164 +199,147 @@ body {
     min-height: 60px;
 }
 
-/* Character.ai style grid for selection page - 5 columns by default */
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: transparent !important;
+/* ============================================
+   NEW COMPACT CARD-BASED LAYOUT
+============================================ */
+
+/* Age group containers */
+.age-group {
+    background-color: #f8f9fc !important;
+    border-radius: 16px !important;
+    padding: 25px !important;
+    margin: 20px 0 !important;
+    border: 2px solid #e6e8f2 !important;
 }
 
-/* Responsive breakpoints for character grid at different screen sizes */
-@media (max-width: 1200px) {
-    .character-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .main-chat-container {
-        flex-direction: column;
-    }
-    
-    .chat-column, .info-column {
-        width: 100%;
-    }
-}
-
-@media (max-width: 992px) {
-    .character-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .character-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .main-chat-container {
-        padding: 0 10px;
-    }
-    
-    .profile-box, .instructions-box, .scene-box {
-        padding: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .character-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* 重要：Card styling - 强制保持紫色背景 */
-.character-card {
-    background: #bdbad4 !important;
-    background-color: #bdbad4 !important;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #bdbad4;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    max-width: 220px;
-    margin: 0 auto;
-}
-
-.character-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(46, 40, 92, 0.25);
-}
-
-/* Remove card header - show student name directly */
-.card-header {
-    display: none;
-}
-
-/* Student info styling - compact and readable */
-.student-name {
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    margin: 15px 0 8px !important;
-    text-align: center;
+.age-group-title {
     color: #2e285c !important;
-    letter-spacing: 0.5px;
+    margin: 0 0 20px 0 !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    font-size: 24px !important;
+    border-bottom: 2px solid #bdbad4 !important;
+    padding-bottom: 10px !important;
 }
 
-.student-description {
-    padding: 0 12px;
-    text-align: center;
-    color: #2e285c;
-    font-size: 13px;
-    min-height: 45px;
-    overflow: hidden;
-    flex-grow: 1;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+/* Mental health subgroups */
+.mental-health-subgroup {
+    background-color: white !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin: 15px 0 !important;
+    border: 1px solid #bdbad4 !important;
+    box-shadow: 0 2px 8px rgba(46, 40, 92, 0.05) !important;
 }
 
-/* Hide model tag for cleaner interface */
-.model-tag {
-    display: none;
+.subgroup-title {
+    color: #2e285c !important;
+    margin: 0 0 15px 0 !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+    text-align: center !important;
 }
 
-/* Avatar styling - circular and centered, 80% width */
-.character-card .avatar-container {
-    width: 80% !important;
-    height: 120px !important;
-    overflow: hidden !important;
-    margin: 20px auto 10px auto !important;
-    border: 3px solid #bdbad4 !important;
-    border-radius: 50% !important;
-    box-shadow: 0 4px 8px rgba(46, 40, 92, 0.1) !important;
-    background-color: transparent !important;
+.mental-health-issues {
+    border-left: 4px solid #dc3545 !important;
+    padding-left: 15px !important;
 }
 
-.character-card .avatar-container img,
-.character-card .avatar-container > div,
-.character-card .avatar-img,
-.character-card [data-testid="image"],
-.character-card [data-testid="image"] > div {
+.no-mental-health-issues {
+    border-left: 4px solid #28a745 !important;
+    padding-left: 15px !important;
+}
+
+/* Student cards container */
+.student-cards-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+/* Individual student card row */
+.student-card-row {
+    background-color: #fafbfd !important;
+    border: 1px solid #e6e8f2 !important;
+    border-radius: 12px !important;
+    padding: 15px !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+}
+
+.student-card-row:hover {
+    background-color: #f0f2f8 !important;
+    border-color: #bdbad4 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
+}
+
+/* Avatar column in card */
+.avatar-column {
+    flex-shrink: 0 !important;
+    width: 80px !important;
+}
+
+.card-avatar {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 12px !important;
+    border: 2px solid #bdbad4 !important;
+    object-fit: cover !important;
+    background-color: white !important;
+}
+
+.card-avatar img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    display: block !important;
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    border-radius: 10px !important;
 }
 
-/* Chat button styling - white background with purple text */
-.chat-btn {
-    background-color: white !important;
+/* Info column in card */
+.info-column-card {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.card-student-name {
     color: #2e285c !important;
-    border: 2px solid #bdbad4 !important;
-    border-radius: 20px !important;
-    padding: 8px 0 !important;
-    margin: 10px auto 16px !important;
-    width: 85% !important;
-    display: block !important;
+    margin: 0 !important;
+    font-weight: bold !important;
+    font-size: 18px !important;
+}
+
+.card-student-info {
+    color: #666 !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+}
+
+.card-chat-btn {
+    background-color: #bdbad4 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    font-size: 14px !important;
     transition: all 0.2s !important;
+    align-self: flex-start !important;
+    font-size: 14px !important;
 }
 
-.chat-btn:hover {
-    background-color: #f0edfe !important;
-    border-color: #2e285c !important;
+.card-chat-btn:hover {
+    background-color: #2e285c !important;
+    transform: translateY(-1px) !important;
 }
 
-/* Back button styling - 改成紫色 */
+/* Back button styling */
 .back-btn {
     background-color: white !important;
     border: 2px solid #bdbad4 !important;
@@ -386,7 +367,6 @@ body {
     resize: none !important;
 }
 
-/* Button container for vertical layout */
 .button-container {
     display: flex;
     flex-direction: column;
@@ -437,7 +417,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 5px;
+    margin: 0 auto 25px;
     max-width: 800px;
     color: #2e285c;
     font-size: 14px;
@@ -446,7 +426,7 @@ body {
     font-style: italic;
 }
 
-/* Selection heading styling for clear hierarchy */
+/* Selection heading styling */
 .selection-heading {
     text-align: center;
     margin: 1px 0 10px;
@@ -455,15 +435,15 @@ body {
     font-weight: bold;
 }
 
-/* Container for main content with reasonable max width */
+/* Container for main content */
 .container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 0 24px;
     background-color: transparent !important;
 }
 
-/* 🎯 CRITICAL FIX: 页面背景修复 */
+/* Page background fixes */
 html, body, #root,
 .gradio-app, .app, .main,
 .gradio-container {
@@ -480,7 +460,7 @@ html, body, #root,
   --color-background-secondary: #ffffff !important;
 }
 
-/* 确保所有dropdown和textbox有白色背景 */
+/* Ensure dropdowns and textboxes have white backgrounds */
 .gradio-dropdown, 
 .gradio-textbox,
 .gradio-dropdown > div,
@@ -488,15 +468,11 @@ html, body, #root,
     background-color: white !important;
 }
 
-/* 确保所有表单元素有白色背景 */
 select, textarea, input {
     background-color: white !important;
 }
 
-/* 🎯 Precise fix for chat page only */
-
-/* 1. Fix left chat column height only on chat page */
-.chat-page .chat-column,
+/* Chat page specific fixes */
 .main-chat-container .chat-column {
     min-height: 1029px !important;
     height: auto !important;
@@ -510,7 +486,6 @@ select, textarea, input {
     justify-content: space-between !important;
 }
 
-/* 确保聊天框在聊天页面占用大部分空间，并且可以随内容扩展 */
 .main-chat-container .chat-column .gradio-chatbot {
     flex: 1 !important;
     min-height: 850px !important;
@@ -518,7 +493,6 @@ select, textarea, input {
     overflow-y: auto !important;
 }
 
-/* 强制chatbot容器也跟着拉长 */
 .main-chat-container .gradio-chatbot,
 .chat-column .gradio-chatbot,
 .gradio-chatbot,
@@ -530,7 +504,6 @@ select, textarea, input {
     flex: 1 !important;
 }
 
-/* 更强力的chatbot内容区域控制 */
 .gradio-chatbot > div,
 .gradio-chatbot .chatbot,
 .gradio-chatbot .chat-container,
@@ -540,7 +513,6 @@ select, textarea, input {
     max-height: none !important;
 }
 
-/* 针对可能的chatbot wrapper */
 .gradio-chatbot .overflow-y-auto,
 .gradio-chatbot [class*="overflow"],
 .gradio-chatbot [class*="scroll"] {
@@ -548,17 +520,14 @@ select, textarea, input {
     height: 850px !important;
 }
 
-/* 确保输入框区域在聊天页面底部 */
 .main-chat-container .chat-column > div:last-child {
     margin-top: auto !important;
     flex-shrink: 0 !important;
 }
 
-/* 2. Fix right info column only on chat page */
-.chat-page .info-column > div,
 .main-chat-container .info-column > div,
-.chat-page .info-column .gr-box,
-.chat-page .info-column .gradio-group {
+.main-chat-container .info-column .gr-box,
+.main-chat-container .info-column .gradio-group {
     background-color: white !important;
     border-radius: 12px !important;
     padding: 20px !important;
@@ -567,19 +536,12 @@ select, textarea, input {
     margin-bottom: 20px !important;
 }
 
-/* 3. Fix text content only on chat page */
-.chat-page .info-column div,
-.chat-page .info-column p,
-.chat-page .info-column span,
 .main-chat-container .info-column .gr-markdown,
 .main-chat-container .info-column .gradio-markdown {
     background-color: white !important;
     color: #2e285c !important;
 }
 
-/* 4. Fix input fields only on chat page */
-.chat-page .info-column .gradio-dropdown,
-.chat-page .info-column .gradio-textbox,
 .main-chat-container .info-column select,
 .main-chat-container .info-column textarea,
 .main-chat-container .info-column input {
@@ -589,20 +551,72 @@ select, textarea, input {
     color: #2e285c !important;
 }
 
-/* 5. Ensure selection page cards remain purple */
-.selection-page .character-card,
-.character-grid .character-card {
-    background: #bdbad4 !important;
-    background-color: #bdbad4 !important;
+/* Remove old grid styles for selection page */
+.character-grid {
+    display: none !important;
 }
 
-/* 6. Protect selection page from changes */
-.selection-page *:not(.character-card) {
-    background-color: transparent !important;
+.character-card {
+    display: none !important;
 }
 
-/* 7. More specific chat page targeting */
-.main-chat-container .info-column *:not(img):not(.gradio-image) {
-    background-color: white !important;
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    
+    .age-group {
+        padding: 15px !important;
+        margin: 15px 0 !important;
+    }
+    
+    .mental-health-subgroup {
+        padding: 15px !important;
+    }
+    
+    .student-card-row {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 10px !important;
+    }
+    
+    .avatar-column {
+        width: 100% !important;
+    }
+    
+    .card-avatar {
+        width: 60px !important;
+        height: 60px !important;
+        margin: 0 auto !important;
+    }
+    
+    .main-chat-container {
+        flex-direction: column;
+        padding: 0 10px;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
+    
+    .age-group-title {
+        font-size: 20px !important;
+    }
+    
+    .subgroup-title {
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-chat-container {
+        flex-direction: column;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
 }
 """
