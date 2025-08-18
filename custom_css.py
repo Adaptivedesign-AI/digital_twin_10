@@ -35,18 +35,6 @@ body {
     background-color: transparent !important;
 }
 
-/* Header styling with updated purple theme */
-.main-title {
-    background-color: #2e285c;
-    color: white;
-    padding: 15px;
-    margin: 0;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 8px 8px 0 0;
-}
-
 /* Chat page header styling */
 .chat-header {
     display: flex;
@@ -200,158 +188,149 @@ body {
 }
 
 /* ============================================
-   CHARACTER.AI STYLE HORIZONTAL LAYOUT
+   CHARACTER.AI STYLE TRUE HORIZONTAL LAYOUT
 ============================================ */
 
-/* Age group titles */
-.age-group-title {
+/* Age section titles - smaller and left aligned */
+.age-section-title {
     color: #2e285c !important;
-    margin: 40px 0 20px 0 !important;
-    text-align: center !important;
-    font-weight: bold !important;
-    font-size: 28px !important;
-    border-bottom: 3px solid #bdbad4 !important;
-    padding-bottom: 15px !important;
-}
-
-/* Subgroup titles with color coding */
-.subgroup-title {
-    color: #2e285c !important;
-    margin: 30px 0 20px 0 !important;
-    font-weight: 600 !important;
-    font-size: 20px !important;
+    margin: 30px 0 15px 0 !important;
     text-align: left !important;
-    padding-left: 15px !important;
+    font-weight: bold !important;
+    font-size: 20px !important;
+    border-bottom: 2px solid #bdbad4 !important;
+    padding-bottom: 8px !important;
 }
 
-.mental-health-issues {
-    border-left: 5px solid #dc3545 !important;
-    background: linear-gradient(90deg, rgba(220, 53, 69, 0.1) 0%, transparent 100%) !important;
-    padding: 10px 0 10px 15px !important;
-    border-radius: 0 8px 8px 0 !important;
+/* Health section labels - small left-aligned text */
+.health-section-label {
+    color: #666 !important;
+    margin: 15px 0 10px 0 !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    text-align: left !important;
+    padding-left: 10px !important;
 }
 
-.no-mental-health-issues {
-    border-left: 5px solid #28a745 !important;
-    background: linear-gradient(90deg, rgba(40, 167, 69, 0.1) 0%, transparent 100%) !important;
-    padding: 10px 0 10px 15px !important;
-    border-radius: 0 8px 8px 0 !important;
+.mental-issues {
+    border-left: 3px solid #dc3545 !important;
+    background: rgba(220, 53, 69, 0.05) !important;
+    padding: 5px 0 5px 10px !important;
+    border-radius: 0 4px 4px 0 !important;
 }
 
-/* Character grid row - horizontal layout like Character.AI */
-.character-grid-row {
+.no-mental-issues {
+    border-left: 3px solid #28a745 !important;
+    background: rgba(40, 167, 69, 0.05) !important;
+    padding: 5px 0 5px 10px !important;
+    border-radius: 0 4px 4px 0 !important;
+}
+
+/* Students row - horizontal layout 5 per row */
+.students-row {
     display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 20px !important;
+    gap: 15px !important;
+    margin: 10px 0 !important;
     justify-content: flex-start !important;
     align-items: stretch !important;
-    margin: 0 0 30px 0 !important;
-    padding: 0 !important;
 }
 
-/* Individual character cards - Character.AI style */
-.character-card {
-    background: #bdbad4 !important;
-    background-color: #bdbad4 !important;
-    border-radius: 16px !important;
-    overflow: hidden !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.15) !important;
-    transition: all 0.3s ease !important;
-    border: 2px solid transparent !important;
-    height: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
+/* Student card wrapper */
+.student-card-wrapper {
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: calc(20% - 12px) !important;
+}
+
+/* Horizontal student card */
+.student-card-horizontal {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    transition: all 0.2s ease !important;
     cursor: pointer !important;
-    width: 220px !important;
-    min-height: 320px !important;
+    height: 100px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.student-card-horizontal:hover {
+    background-color: #e9ecef !important;
+    border-color: #bdbad4 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
+}
+
+/* Avatar section */
+.avatar-section {
     flex-shrink: 0 !important;
+    width: 60px !important;
 }
 
-.character-card:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 8px 20px rgba(46, 40, 92, 0.25) !important;
-    border-color: #2e285c !important;
-}
-
-/* Avatar styling - circular and centered */
-.character-card .avatar-container {
-    width: 80% !important;
-    height: 140px !important;
-    overflow: hidden !important;
-    margin: 20px auto 15px auto !important;
-    border: 3px solid white !important;
-    border-radius: 50% !important;
-    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.2) !important;
+/* Square avatar with rounded corners */
+.square-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 8px !important;
+    border: 2px solid #bdbad4 !important;
+    object-fit: cover !important;
     background-color: white !important;
-    position: relative !important;
 }
 
-.character-card .avatar-container img,
-.character-card .avatar-container > div,
-.character-card .avatar-img,
-.character-card [data-testid="image"],
-.character-card [data-testid="image"] > div {
+.square-avatar img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    display: block !important;
-    background-color: white !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border-radius: 50% !important;
+    border-radius: 6px !important;
 }
 
-/* Student info styling - compact and readable */
-.student-name {
-    font-size: 22px !important;
-    font-weight: 900 !important;
-    margin: 0 0 10px !important;
-    text-align: center !important;
-    color: white !important;
-    letter-spacing: 0.5px !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-}
-
-.student-description {
-    padding: 0 15px !important;
-    text-align: center !important;
-    color: white !important;
-    font-size: 14px !important;
-    line-height: 1.4 !important;
-    min-height: 50px !important;
-    overflow: hidden !important;
+/* Info section */
+.info-section {
     flex-grow: 1 !important;
-    margin-bottom: 15px !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important;
-    -webkit-box-orient: vertical !important;
-    font-weight: 500 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-width: 0 !important;
 }
 
-/* Chat button styling */
-.chat-btn {
-    background-color: white !important;
+/* Student name in horizontal layout */
+.student-name-horizontal {
     color: #2e285c !important;
-    border: 2px solid transparent !important;
-    border-radius: 25px !important;
-    padding: 10px 0 !important;
-    margin: 0 auto 20px auto !important;
-    width: 85% !important;
-    display: block !important;
+    margin: 0 0 4px 0 !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+}
+
+/* Student info in horizontal layout */
+.student-info-horizontal {
+    color: #666 !important;
+    margin: 0 0 8px 0 !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+}
+
+/* Chat button in horizontal layout */
+.chat-btn-horizontal {
+    background-color: #bdbad4 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    font-size: 15px !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    font-size: 11px !important;
+    transition: all 0.2s !important;
+    align-self: flex-start !important;
+    width: auto !important;
 }
 
-.chat-btn:hover {
-    background-color: #f0edfe !important;
-    border-color: #2e285c !important;
+.chat-btn-horizontal:hover {
+    background-color: #2e285c !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
 }
 
 /* Back button styling */
@@ -432,7 +411,7 @@ body {
 /* Project description styling */
 .project-description {
     text-align: center;
-    margin: 0 auto 40px;
+    margin: 0 auto 30px;
     max-width: 800px;
     color: #2e285c;
     font-size: 14px;
@@ -528,13 +507,6 @@ select, textarea, input {
     max-height: none !important;
 }
 
-.gradio-chatbot .overflow-y-auto,
-.gradio-chatbot [class*="overflow"],
-.gradio-chatbot [class*="scroll"] {
-    min-height: 850px !important;
-    height: 850px !important;
-}
-
 .main-chat-container .chat-column > div:last-child {
     margin-top: auto !important;
     flex-shrink: 0 !important;
@@ -548,145 +520,3 @@ select, textarea, input {
     padding: 20px !important;
     border: 1px solid #bdbad4 !important;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1) !important;
-    margin-bottom: 20px !important;
-}
-
-.main-chat-container .info-column .gr-markdown,
-.main-chat-container .info-column .gradio-markdown {
-    background-color: white !important;
-    color: #2e285c !important;
-}
-
-.main-chat-container .info-column select,
-.main-chat-container .info-column textarea,
-.main-chat-container .info-column input {
-    background-color: white !important;
-    border: 1px solid #bdbad4 !important;
-    border-radius: 8px !important;
-    color: #2e285c !important;
-}
-
-/* Responsive design for horizontal layout */
-@media (max-width: 1200px) {
-    .character-grid-row {
-        justify-content: center !important;
-    }
-    
-    .character-card {
-        width: 200px !important;
-    }
-    
-    .main-chat-container {
-        flex-direction: column;
-    }
-    
-    .chat-column, .info-column {
-        width: 100%;
-    }
-}
-
-@media (max-width: 992px) {
-    .character-grid-row {
-        gap: 15px !important;
-    }
-    
-    .character-card {
-        width: 180px !important;
-        min-height: 300px !important;
-    }
-    
-    .avatar-container {
-        height: 120px !important;
-    }
-    
-    .student-name {
-        font-size: 20px !important;
-    }
-    
-    .student-description {
-        font-size: 13px !important;
-        min-height: 45px !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 0 15px;
-    }
-    
-    .character-grid-row {
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 20px !important;
-    }
-    
-    .character-card {
-        width: 250px !important;
-        max-width: 90vw !important;
-    }
-    
-    .age-group-title {
-        font-size: 24px !important;
-        margin: 30px 0 15px 0 !important;
-    }
-    
-    .subgroup-title {
-        font-size: 18px !important;
-        margin: 20px 0 15px 0 !important;
-    }
-    
-    .main-chat-container {
-        flex-direction: column;
-        padding: 0 10px;
-    }
-    
-    .chat-column, .info-column {
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .character-card {
-        width: 200px !important;
-    }
-    
-    .selection-heading {
-        font-size: 20px !important;
-    }
-    
-    .project-description {
-        font-size: 13px !important;
-        margin: 0 auto 30px !important;
-    }
-}
-
-/* Remove any old grid styles that might conflict */
-.character-grid {
-    display: none !important;
-}
-
-/* Ensure proper spacing between groups */
-.age-group-title:first-of-type {
-    margin-top: 20px !important;
-}
-
-/* Additional hover effects for better UX */
-.character-card:hover .student-name {
-    transform: scale(1.05) !important;
-    transition: transform 0.2s ease !important;
-}
-
-.character-card:hover .avatar-container {
-    transform: scale(1.05) !important;
-    transition: transform 0.3s ease !important;
-    border-color: white !important;
-    box-shadow: 0 6px 16px rgba(46, 40, 92, 0.3) !important;
-}
-
-/* Fix for Gradio's default row behavior */
-.character-grid-row > div {
-    flex: none !important;
-    width: auto !important;
-    min-width: 220px !important;
-}
-"""
