@@ -894,23 +894,25 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                             with gr.Row(elem_classes="character-row"):
                                 for student_data in student_groups['middle_adolescence']['with_mental_health_issues']:
                                     with gr.Column(elem_classes="character-card"):
-                                        # Avatar container - rectangular with rounded corners
-                                        with gr.Column(elem_classes="avatar-container"):
-                                            gr.Image(
-                                                value=f"avatar/{student_data['id']}.png",
-                                                show_label=False,
-                                                elem_classes="avatar-img",
-                                                show_download_button=False,
-                                                show_fullscreen_button=False,
-                                                show_share_button=False 
-                                            )
+                                        # Content area (left side) and avatar area (right side)
+                                        with gr.Row():
+                                            # Left: Text content
+                                            with gr.Column(elem_classes="character-card-content", scale=2):
+                                                gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
+                                                gr.Markdown(student_data['description'], elem_classes="student-description")
+                                                chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
+                                            
+                                            # Right: Avatar
+                                            with gr.Column(elem_classes="avatar-container", scale=1):
+                                                gr.Image(
+                                                    value=f"avatar/{student_data['id']}.png",
+                                                    show_label=False,
+                                                    elem_classes="avatar-img",
+                                                    show_download_button=False,
+                                                    show_fullscreen_button=False,
+                                                    show_share_button=False 
+                                                )
                                         
-                                        # Student name and description
-                                        gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
-                                        gr.Markdown(student_data['description'], elem_classes="student-description")
-                                        
-                                        # Chat button
-                                        chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
                                         chat_btn.click(
                                             select_student_direct,
                                             inputs=[
@@ -937,23 +939,25 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                             with gr.Row(elem_classes="character-row"):
                                 for student_data in student_groups['middle_adolescence']['no_mental_health_issues']:
                                     with gr.Column(elem_classes="character-card"):
-                                        # Avatar container - rectangular with rounded corners
-                                        with gr.Column(elem_classes="avatar-container"):
-                                            gr.Image(
-                                                value=f"avatar/{student_data['id']}.png",
-                                                show_label=False,
-                                                elem_classes="avatar-img",
-                                                show_download_button=False,
-                                                show_fullscreen_button=False,
-                                                show_share_button=False 
-                                            )
+                                        # Content area (left side) and avatar area (right side)
+                                        with gr.Row():
+                                            # Left: Text content
+                                            with gr.Column(elem_classes="character-card-content", scale=2):
+                                                gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
+                                                gr.Markdown(student_data['description'], elem_classes="student-description")
+                                                chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
+                                            
+                                            # Right: Avatar
+                                            with gr.Column(elem_classes="avatar-container", scale=1):
+                                                gr.Image(
+                                                    value=f"avatar/{student_data['id']}.png",
+                                                    show_label=False,
+                                                    elem_classes="avatar-img",
+                                                    show_download_button=False,
+                                                    show_fullscreen_button=False,
+                                                    show_share_button=False 
+                                                )
                                         
-                                        # Student name and description
-                                        gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
-                                        gr.Markdown(student_data['description'], elem_classes="student-description")
-                                        
-                                        # Chat button
-                                        chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
                                         chat_btn.click(
                                             select_student_direct,
                                             inputs=[
@@ -984,23 +988,25 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                             with gr.Row(elem_classes="character-row"):
                                 for student_data in student_groups['late_adolescence']['with_mental_health_issues']:
                                     with gr.Column(elem_classes="character-card"):
-                                        # Avatar container - rectangular with rounded corners
-                                        with gr.Column(elem_classes="avatar-container"):
-                                            gr.Image(
-                                                value=f"avatar/{student_data['id']}.png",
-                                                show_label=False,
-                                                elem_classes="avatar-img",
-                                                show_download_button=False,
-                                                show_fullscreen_button=False,
-                                                show_share_button=False 
-                                            )
+                                        # Content area (left side) and avatar area (right side)
+                                        with gr.Row():
+                                            # Left: Text content
+                                            with gr.Column(elem_classes="character-card-content", scale=2):
+                                                gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
+                                                gr.Markdown(student_data['description'], elem_classes="student-description")
+                                                chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
+                                            
+                                            # Right: Avatar
+                                            with gr.Column(elem_classes="avatar-container", scale=1):
+                                                gr.Image(
+                                                    value=f"avatar/{student_data['id']}.png",
+                                                    show_label=False,
+                                                    elem_classes="avatar-img",
+                                                    show_download_button=False,
+                                                    show_fullscreen_button=False,
+                                                    show_share_button=False 
+                                                )
                                         
-                                        # Student name and description
-                                        gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
-                                        gr.Markdown(student_data['description'], elem_classes="student-description")
-                                        
-                                        # Chat button
-                                        chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
                                         chat_btn.click(
                                             select_student_direct,
                                             inputs=[
@@ -1027,23 +1033,25 @@ with gr.Blocks(css=custom_css, title="Digital Twins") as demo:
                             with gr.Row(elem_classes="character-row"):
                                 for student_data in student_groups['late_adolescence']['no_mental_health_issues']:
                                     with gr.Column(elem_classes="character-card"):
-                                        # Avatar container - rectangular with rounded corners
-                                        with gr.Column(elem_classes="avatar-container"):
-                                            gr.Image(
-                                                value=f"avatar/{student_data['id']}.png",
-                                                show_label=False,
-                                                elem_classes="avatar-img",
-                                                show_download_button=False,
-                                                show_fullscreen_button=False,
-                                                show_share_button=False 
-                                            )
+                                        # Content area (left side) and avatar area (right side)
+                                        with gr.Row():
+                                            # Left: Text content
+                                            with gr.Column(elem_classes="character-card-content", scale=2):
+                                                gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
+                                                gr.Markdown(student_data['description'], elem_classes="student-description")
+                                                chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
+                                            
+                                            # Right: Avatar
+                                            with gr.Column(elem_classes="avatar-container", scale=1):
+                                                gr.Image(
+                                                    value=f"avatar/{student_data['id']}.png",
+                                                    show_label=False,
+                                                    elem_classes="avatar-img",
+                                                    show_download_button=False,
+                                                    show_fullscreen_button=False,
+                                                    show_share_button=False 
+                                                )
                                         
-                                        # Student name and description
-                                        gr.Markdown(f"## {student_data['name']}", elem_classes="student-name")
-                                        gr.Markdown(student_data['description'], elem_classes="student-description")
-                                        
-                                        # Chat button
-                                        chat_btn = gr.Button("Start Chat", elem_classes="chat-btn", elem_id=f"chat-btn-{student_data['id']}")
                                         chat_btn.click(
                                             select_student_direct,
                                             inputs=[
