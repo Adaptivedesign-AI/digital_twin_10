@@ -262,13 +262,12 @@ body {
     box-shadow: 0 3px 8px rgba(46, 40, 92, 0.15);
     transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #bdbad4;
-    height: 120px; /* 👈 固定高度 */
-    display: flex; /* 👈 改为水平布局 */
-    flex-direction: row; /* 👈 水平排列 */
+    height: 120px;
     cursor: pointer;
-    width: 320px; /* 👈 固定宽度，更宽以容纳水平布局 */
+    width: 320px;
     margin: 0;
     flex: 0 0 auto;
+    padding: 15px;
 }
 
 .character-card:hover {
@@ -281,27 +280,18 @@ body {
     display: none;
 }
 
-/* 👈 NEW: Left content area for text */
-.character-card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 15px;
-}
-
 /* Student info styling - left aligned */
 .student-name {
     font-size: 18px !important;
     font-weight: 900 !important;
     margin: 0 0 8px 0 !important;
-    text-align: left !important; /* 👈 左对齐 */
+    text-align: left !important;
     color: #2e285c !important;
     letter-spacing: 0.5px;
 }
 
 .student-description {
-    text-align: left !important; /* 👈 左对齐 */
+    text-align: left !important;
     color: #2e285c;
     font-size: 12px;
     line-height: 1.3;
@@ -317,34 +307,28 @@ body {
     display: none;
 }
 
-/* NEW: Avatar styling - positioned on the right side */
-.character-card .avatar-container {
-    width: 100px !important; /* 👈 固定宽度 */
-    height: 100px !important; /* 👈 固定高度 */
-    overflow: hidden !important;
-    margin: 10px 15px 10px 0 !important; /* 👈 右边距，放在右侧 */
-    border: 2px solid #2e285c !important;
+/* Avatar styling - ensure images show up */
+.character-card [data-testid="image"],
+.character-card .gradio-image,
+.character-card img {
+    width: 100px !important;
+    height: 100px !important;
     border-radius: 12px !important;
-    box-shadow: 0 3px 6px rgba(46, 40, 92, 0.1) !important;
+    border: 2px solid #2e285c !important;
+    object-fit: cover !important;
     background-color: transparent !important;
-    flex-shrink: 0 !important; /* 👈 防止头像被压缩 */
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-.character-card .avatar-container img,
-.character-card .avatar-container > div,
-.character-card .avatar-img,
-.character-card [data-testid="image"],
+/* More specific image container targeting */
+.character-card .gradio-image > div,
 .character-card [data-testid="image"] > div {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    display: block !important;
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
     background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border-radius: 10px !important;
 }
 
 /* Chat button styling - positioned in content area */
@@ -354,14 +338,14 @@ body {
     border: 2px solid #bdbad4 !important;
     border-radius: 16px !important;
     padding: 6px 12px !important;
-    margin: 0 !important; /* 👈 移除margin，由父容器控制位置 */
-    width: 80px !important; /* 👈 固定宽度 */
+    margin: 0 !important;
+    width: 80px !important;
     display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
     font-size: 12px !important;
     transition: all 0.2s !important;
-    align-self: flex-start !important; /* 👈 左对齐 */
+    align-self: flex-start !important;
 }
 
 .chat-btn:hover {
