@@ -1,6 +1,6 @@
 """
 Independent monitoring application for Digital Twins system
-Uses JSON file as data source
+Uses JSON file as data source with detailed chat log viewing
 """
 
 import gradio as gr
@@ -12,6 +12,7 @@ from datetime import timedelta
 from collections import Counter, defaultdict
 import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
 
 class JSONMonitoringDashboard:
     def __init__(self):
@@ -89,6 +90,152 @@ class JSONMonitoringDashboard:
         
         return False
     
+    def get_chat_conversations(self, days=7, student_filter="", search_keyword="", limit=50):
+        """Get detailed chat conversations with filtering"""
+        data = self.load_data()
+        
+        if not data.get('conversations'):
+            return [], "No conversation data available"
+        
+        since_date = datetime.datetime.now() - timedelta(days=days)
+        
+        # Filter conversations
+        filtered_conversations = []
+        for conv in data['conversations']:
+            conv_date = datetime.datetime.fromisoformat(conv['timestamp'])
+            
+            # Date filter
+            if conv_date < since_date:
+                continue
+            
+            # Student filter
+            if student_filter and student_filter != "All Students" and conv['student_id'] != student_filter:
+                continue
+            
+            # Keyword search
+            if search_keyword:
+                search_text = f"{conv['user_message']} {conv['ai_response']}".lower()
+                if search_keyword.lower() not in search_text:
+                    continue
+            
+            filtered_conversations.append(conv)
+        
+        # Sort by timestamp (newest first)
+        filtered_conversations.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        # Limit results
+        limited_conversations = filtered_conversations[:limit]
+        
+        # Format for display
+        chat_data = []
+        name_mapping = {
+            "student001": "Jaden", "student002": "Ethan", "student003": "Emily",
+            "student004": "Malik", "student005": "Aaliyah", "student006": "Brian",
+            "student007": "Grace", "student008": "Brianna", "student009": "Leilani",
+            "student010": "Tyler"
+        }
+        
+        for conv in limited_conversations:
+            timestamp = datetime.datetime.fromisoformat(conv['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
+            student_name = name_mapping.get(conv['student_id'], conv['student_id'])
+            
+            chat_data.append([
+                conv['id'],
+                timestamp,
+                student_name,
+                conv['student_id'],
+                conv['user_message'][:100] + ('...' if len(conv['user_message']) > 100 else ''),
+                conv['ai_response'][:100] + ('...' if len(conv['ai_response']) > 100 else ''),
+                conv.get('scene_context', 'No scene')[:50] + ('...' if len(conv.get('scene_context', '')) > 50 else ''),
+                f"{conv.get('response_time_ms', 0)}ms"
+            ])
+        
+        summary = f"Found {len(filtered_conversations)} conversations (showing {len(limited_conversations)})"
+        return chat_data, summary
+    
+    def get_detailed_conversation(self, conversation_id):
+        """Get full details of a specific conversation"""
+        data = self.load_data()
+        
+        for conv in data.get('conversations', []):
+            if conv['id'] == conversation_id:
+                timestamp = datetime.datetime.fromisoformat(conv['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
+                
+                name_mapping = {
+                    "student001": "Jaden", "student002": "Ethan", "student003": "Emily",
+                    "student004": "Malik", "student005": "Aaliyah", "student006": "Brian",
+                    "student007": "Grace", "student008": "Brianna", "student009": "Leilani",
+                    "student010": "Tyler"
+                }
+                
+                student_name = name_mapping.get(conv['student_id'], conv['student_id'])
+                
+                details = f"""
+## 💬 聊天记录详情 (ID: {conversation_id})
+
+**🕐 时间:** {timestamp}
+**👤 学生:** {student_name} ({conv['student_id']})
+**📍 会话ID:** {conv['session_id']}
+**🎭 场景:** {conv.get('scene_context', 'No scene context')}
+**⏱️ 响应时间:** {conv.get('response_time_ms', 0)}ms
+**📏 消息长度:** {conv.get('message_length', 0)} 字符
+
+---
+
+### 👤 用户消息:
+{conv['user_message']}
+
+---
+
+### 🤖 AI回复:
+{conv['ai_response']}
+                """
+                
+                return details
+        
+        return "❌ 未找到该对话记录"
+    
+    def export_conversations_to_csv(self, days=7, student_filter="", search_keyword=""):
+        """Export conversations to CSV"""
+        data = self.load_data()
+        
+        if not data.get('conversations'):
+            return None, "No conversation data to export"
+        
+        since_date = datetime.datetime.now() - timedelta(days=days)
+        
+        # Filter and prepare data
+        filtered_conversations = []
+        for conv in data['conversations']:
+            conv_date = datetime.datetime.fromisoformat(conv['timestamp'])
+            
+            if conv_date < since_date:
+                continue
+            
+            if student_filter and student_filter != "All Students" and conv['student_id'] != student_filter:
+                continue
+            
+            if search_keyword:
+                search_text = f"{conv['user_message']} {conv['ai_response']}".lower()
+                if search_keyword.lower() not in search_text:
+                    continue
+            
+            filtered_conversations.append(conv)
+        
+        if not filtered_conversations:
+            return None, "No conversations match the filter criteria"
+        
+        # Create DataFrame
+        df = pd.DataFrame(filtered_conversations)
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df = df.sort_values('timestamp', ascending=False)
+        
+        # Save to CSV
+        filename = f"chat_logs_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        df.to_csv(filename, index=False, encoding='utf-8-sig')
+        
+        return filename, f"✅ Exported {len(filtered_conversations)} conversations to {filename}"
+
     def get_basic_stats(self, days=7):
         """Get basic statistics"""
         data = self.load_data()
@@ -240,108 +387,6 @@ class JSONMonitoringDashboard:
         )
         return fig
     
-    def get_response_time_analysis(self, days=7):
-        """Response time analysis"""
-        data = self.load_data()
-        
-        if not data.get('conversations'):
-            return self._create_empty_figure("No conversation data available")
-        
-        since_date = datetime.datetime.now() - timedelta(days=days)
-        
-        response_times = [
-            conv['response_time_ms'] for conv in data['conversations']
-            if (datetime.datetime.fromisoformat(conv['timestamp']) >= since_date and 
-                conv['response_time_ms'] > 0 and conv['response_time_ms'] < 30000)
-        ]
-        
-        if not response_times:
-            return self._create_empty_figure("No response time data available")
-        
-        fig = px.histogram(
-            x=response_times,
-            nbins=20,
-            title='API Response Time Distribution',
-            labels={'x': 'Response Time (ms)', 'y': 'Frequency'},
-            color_discrete_sequence=['#2E8B57']
-        )
-        fig.update_layout(showlegend=False)
-        return fig
-    
-    def get_scene_usage(self, days=7):
-        """Scene usage statistics"""
-        data = self.load_data()
-        
-        if not data.get('conversations'):
-            return self._create_empty_figure("No conversation data available")
-        
-        since_date = datetime.datetime.now() - timedelta(days=days)
-        
-        scene_counts = Counter()
-        for conv in data['conversations']:
-            if datetime.datetime.fromisoformat(conv['timestamp']) >= since_date:
-                scene = conv.get('scene_context', '')
-                if not scene or scene == '':
-                    scene = 'Default Scene'
-                elif len(scene) > 30:
-                    scene = scene[:30] + '...'
-                scene_counts[scene] += 1
-        
-        if not scene_counts:
-            return self._create_empty_figure("No scene usage data available")
-        
-        scenes = list(scene_counts.keys())[:8]  # Top 8
-        counts = [scene_counts[scene] for scene in scenes]
-        
-        fig = px.pie(
-            values=counts,
-            names=scenes,
-            title='Scene Usage Distribution',
-            color_discrete_sequence=px.colors.qualitative.Set3
-        )
-        fig.update_traces(textposition='inside', textinfo='percent+label')
-        return fig
-    
-    def get_user_actions_summary(self, days=7):
-        """User actions statistics"""
-        data = self.load_data()
-        
-        if not data.get('user_actions'):
-            return self._create_empty_figure("No user action data available")
-        
-        since_date = datetime.datetime.now() - timedelta(days=days)
-        
-        action_counts = Counter()
-        for action in data['user_actions']:
-            if datetime.datetime.fromisoformat(action['timestamp']) >= since_date:
-                action_counts[action['action_type']] += 1
-        
-        if not action_counts:
-            return self._create_empty_figure("No recent user action data")
-        
-        # Translate action types
-        action_mapping = {
-            'send_message': 'Send Message',
-            'student_select': 'Select Student',
-            'clear_chat': 'Clear Chat',
-            'scene_change': 'Change Scene',
-            'back_to_selection': 'Back to Selection'
-        }
-        
-        action_names = [action_mapping.get(action, action) for action in action_counts.keys()]
-        counts = list(action_counts.values())
-        
-        fig = px.bar(
-            x=action_names,
-            y=counts,
-            title='User Action Statistics',
-            labels={'x': 'Action Type', 'y': 'Count'},
-            color=counts,
-            color_continuous_scale='blues'
-        )
-        fig.update_layout(showlegend=False)
-        return fig
-    
     def _create_empty_figure(self, message):
         """Create empty figure"""
         fig = go.Figure()
@@ -367,59 +412,114 @@ def create_monitoring_dashboard():
         gr.Markdown("# 🔍 Digital Twin System Monitoring Dashboard")
         gr.Markdown("*Real-time monitoring of user behavior, conversation quality, and system performance*")
         
-        with gr.Row():
-            days_input = gr.Slider(
-                1, 30, 
-                value=7, 
-                step=1, 
-                label="📅 View data for the past N days",
-                info="Select the time range to analyze"
-            )
-            refresh_btn = gr.Button("🔄 Refresh Data", variant="primary", scale=0)
+        with gr.Tabs():
+            # Tab 1: Overview Dashboard
+            with gr.TabItem("📊 Overview Dashboard"):
+                with gr.Row():
+                    days_input = gr.Slider(
+                        1, 30, 
+                        value=7, 
+                        step=1, 
+                        label="📅 View data for the past N days",
+                        info="Select the time range to analyze"
+                    )
+                    refresh_btn = gr.Button("🔄 Refresh Data", variant="primary", scale=0)
+                
+                # Data source info
+                with gr.Row():
+                    data_source_info = gr.Markdown("**Data Source:** JSON file with GitHub sync")
+                
+                # Basic statistics cards
+                gr.Markdown("## 📊 Basic Statistics")
+                with gr.Row():
+                    total_sessions = gr.Number(
+                        label="👥 Total Sessions", 
+                        interactive=False,
+                        container=True
+                    )
+                    total_messages = gr.Number(
+                        label="💬 Total Messages", 
+                        interactive=False,
+                        container=True
+                    )
+                    avg_response_time = gr.Number(
+                        label="⏱️ Avg Response Time (ms)", 
+                        interactive=False,
+                        container=True
+                    )
+                    active_students = gr.Number(
+                        label="🎭 Active Students", 
+                        interactive=False,
+                        container=True
+                    )
+                
+                # Chart areas
+                gr.Markdown("## 📈 Detailed Analysis")
+                with gr.Row():
+                    with gr.Column():
+                        student_plot = gr.Plot(label="🎯 Student Popularity")
+                    with gr.Column():
+                        daily_plot = gr.Plot(label="📅 Daily Usage Trends")
+            
+            # Tab 2: Chat Logs Viewer
+            with gr.TabItem("💬 Chat Logs Viewer"):
+                gr.Markdown("## 🔍 View Detailed Chat Conversations")
+                
+                # Filters
+                with gr.Row():
+                    chat_days_input = gr.Slider(
+                        1, 30, 
+                        value=7, 
+                        step=1, 
+                        label="📅 Days to look back"
+                    )
+                    student_filter = gr.Dropdown(
+                        choices=["All Students", "student001", "student002", "student003", "student004", "student005", 
+                                "student006", "student007", "student008", "student009", "student010"],
+                        value="All Students",
+                        label="👤 Filter by Student"
+                    )
+                    search_keyword = gr.Textbox(
+                        placeholder="Search in messages...",
+                        label="🔎 Search Keyword"
+                    )
+                
+                with gr.Row():
+                    search_btn = gr.Button("🔍 Search Conversations", variant="primary")
+                    export_btn = gr.Button("📥 Export to CSV", variant="secondary")
+                
+                # Results
+                with gr.Row():
+                    search_summary = gr.Markdown("Search results will appear here...")
+                
+                # Chat table
+                chat_table = gr.Dataframe(
+                    headers=["ID", "Time", "Student", "Student ID", "User Message", "AI Response", "Scene", "Response Time"],
+                    datatype=["number", "str", "str", "str", "str", "str", "str", "str"],
+                    label="📋 Chat Conversations",
+                    interactive=False,
+                    height=400
+                )
+                
+                # Detailed view
+                gr.Markdown("## 📖 Conversation Details")
+                conv_id_input = gr.Number(
+                    label="💬 Enter Conversation ID to view details",
+                    info="Click on any ID from the table above"
+                )
+                view_detail_btn = gr.Button("👁️ View Details", variant="primary")
+                
+                conversation_detail = gr.Markdown(
+                    "Select a conversation ID above to view full details...",
+                    elem_classes="conversation-detail"
+                )
+                
+                # Export result
+                export_result = gr.Markdown("")
         
-        # Data source info
-        with gr.Row():
-            data_source_info = gr.Markdown("**Data Source:** JSON file with GitHub sync")
-        
-        # Basic statistics cards
-        gr.Markdown("## 📊 Basic Statistics")
-        with gr.Row():
-            total_sessions = gr.Number(
-                label="👥 Total Sessions", 
-                interactive=False,
-                container=True
-            )
-            total_messages = gr.Number(
-                label="💬 Total Messages", 
-                interactive=False,
-                container=True
-            )
-            avg_response_time = gr.Number(
-                label="⏱️ Avg Response Time (ms)", 
-                interactive=False,
-                container=True
-            )
-            active_students = gr.Number(
-                label="🎭 Active Students", 
-                interactive=False,
-                container=True
-            )
-        
-        # Chart areas
-        gr.Markdown("## 📈 Detailed Analysis")
-        with gr.Row():
-            with gr.Column():
-                student_plot = gr.Plot(label="🎯 Student Popularity")
-                response_time_plot = gr.Plot(label="⚡ Response Time Analysis")
-            with gr.Column():
-                daily_plot = gr.Plot(label="📅 Daily Usage Trends")
-                user_actions_plot = gr.Plot(label="🎮 User Action Statistics")
-        
-        with gr.Row():
-            scene_plot = gr.Plot(label="🎬 Scene Usage Distribution")
-        
-        def update_dashboard(days):
-            """Update dashboard data"""
+        # Event handlers for Overview tab
+        def update_overview_dashboard(days):
+            """Update overview dashboard data"""
             try:
                 stats = dashboard.get_basic_stats(days)
                 last_update = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -431,54 +531,94 @@ def create_monitoring_dashboard():
                     stats.get('active_students', 0),
                     dashboard.get_student_popularity(days),
                     dashboard.get_daily_usage(days),
-                    dashboard.get_response_time_analysis(days),
-                    dashboard.get_scene_usage(days),
-                    dashboard.get_user_actions_summary(days),
                     f"**Data Source:** JSON file with GitHub sync (Last updated: {last_update})"
                 )
             except Exception as e:
                 print(f"Error updating dashboard: {e}")
                 empty_fig = dashboard._create_empty_figure("Data loading failed")
-                return (0, 0, 0, 0, empty_fig, empty_fig, empty_fig, empty_fig, empty_fig, 
-                       "**Data Source:** Error loading data")
+                return (0, 0, 0, 0, empty_fig, empty_fig, "**Data Source:** Error loading data")
         
-        # Event handlers
+        # Event handlers for Chat Logs tab
+        def search_conversations(days, student_filter, search_keyword):
+            """Search and display conversations"""
+            chat_data, summary = dashboard.get_chat_conversations(days, student_filter, search_keyword)
+            return chat_data, summary
+        
+        def view_conversation_detail(conv_id):
+            """View detailed conversation"""
+            if conv_id:
+                return dashboard.get_detailed_conversation(int(conv_id))
+            return "Please enter a valid conversation ID"
+        
+        def export_conversations(days, student_filter, search_keyword):
+            """Export conversations to CSV"""
+            filename, result = dashboard.export_conversations_to_csv(days, student_filter, search_keyword)
+            return result
+        
+        # Bind events - Overview tab
         refresh_btn.click(
-            update_dashboard,
+            update_overview_dashboard,
             inputs=[days_input],
-            outputs=[
-                total_sessions, total_messages, avg_response_time, active_students,
-                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot,
-                data_source_info
-            ]
+            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_plot, daily_plot, data_source_info]
         )
         
         days_input.change(
-            update_dashboard,
+            update_overview_dashboard,
             inputs=[days_input],
-            outputs=[
-                total_sessions, total_messages, avg_response_time, active_students,
-                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot,
-                data_source_info
-            ]
+            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_plot, daily_plot, data_source_info]
+        )
+        
+        # Bind events - Chat Logs tab
+        search_btn.click(
+            search_conversations,
+            inputs=[chat_days_input, student_filter, search_keyword],
+            outputs=[chat_table, search_summary]
+        )
+        
+        view_detail_btn.click(
+            view_conversation_detail,
+            inputs=[conv_id_input],
+            outputs=[conversation_detail]
+        )
+        
+        export_btn.click(
+            export_conversations,
+            inputs=[chat_days_input, student_filter, search_keyword],
+            outputs=[export_result]
+        )
+        
+        # Auto-search when filters change
+        chat_days_input.change(
+            search_conversations,
+            inputs=[chat_days_input, student_filter, search_keyword],
+            outputs=[chat_table, search_summary]
+        )
+        
+        student_filter.change(
+            search_conversations,
+            inputs=[chat_days_input, student_filter, search_keyword],
+            outputs=[chat_table, search_summary]
         )
         
         # Initial load
         demo.load(
-            update_dashboard,
+            update_overview_dashboard,
             inputs=[days_input],
-            outputs=[
-                total_sessions, total_messages, avg_response_time, active_students,
-                student_plot, daily_plot, response_time_plot, scene_plot, user_actions_plot,
-                data_source_info
-            ]
+            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_plot, daily_plot, data_source_info]
+        )
+        
+        demo.load(
+            search_conversations,
+            inputs=[chat_days_input, student_filter, search_keyword],
+            outputs=[chat_table, search_summary]
         )
     
     return demo
 
 if __name__ == "__main__":
-    print("🔍 Starting JSON-based monitoring dashboard...")
+    print("🔍 Starting Enhanced JSON-based monitoring dashboard...")
     print("📊 Data source: monitoring_data.json")
+    print("💬 Now includes detailed chat log viewing!")
     print("🌐 Monitoring dashboard ready")
     
     port = int(os.environ.get("PORT", 7861))
