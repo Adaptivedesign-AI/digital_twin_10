@@ -1,6 +1,6 @@
 """
 Enhanced Digital Twin Monitoring Dashboard with Real-time Chat Viewing
-Real-time monitoring of user interactions with digital twins
+Fixed for Gradio compatibility issues
 """
 
 import gradio as gr
@@ -10,9 +10,16 @@ import datetime
 import requests
 from datetime import timedelta
 from collections import Counter, defaultdict
-import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
+
+# Try importing plotly, fallback if not available
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+    print("⚠️ Plotly not available, charts will be disabled")
 
 class EnhancedJSONMonitoringDashboard:
     def __init__(self):
@@ -102,7 +109,7 @@ class EnhancedJSONMonitoringDashboard:
         data = self.load_data()
         
         if not data.get('conversations'):
-            return [], "No conversation data available", ""
+            return [], "No conversation data available", []
         
         # Get all conversations and sort by timestamp (newest first)
         all_conversations = data['conversations']
@@ -309,12 +316,12 @@ class EnhancedJSONMonitoringDashboard:
             'active_students': active_students
         }
     
-    def get_student_popularity(self, days=7):
-        """Student popularity analysis"""
+    def get_student_popularity_text(self, days=7):
+        """Get student popularity as text (fallback when plotly unavailable)"""
         data = self.load_data()
         
         if not data.get('conversations'):
-            return self._create_empty_figure("No conversation data available")
+            return "No conversation data available"
         
         since_date = datetime.datetime.now() - timedelta(days=days)
         
@@ -324,47 +331,30 @@ class EnhancedJSONMonitoringDashboard:
         ]
         
         if not recent_conversations:
-            return self._create_empty_figure("No recent conversation data")
+            return "No recent conversation data"
         
         student_counts = Counter(conv['student_id'] for conv in recent_conversations)
         
-        # Convert to data format
-        student_data = [
-            {'student_id': student_id, 'message_count': count}
-            for student_id, count in student_counts.most_common(10)
-        ]
+        name_mapping = {
+            "student001": "Jaden", "student002": "Ethan", "student003": "Emily",
+            "student004": "Malik", "student005": "Aaliyah", "student006": "Brian",
+            "student007": "Grace", "student008": "Brianna", "student009": "Leilani",
+            "student010": "Tyler"
+        }
         
-        if student_data:
-            # Map student IDs to names
-            name_mapping = {
-                "student001": "Jaden", "student002": "Ethan", "student003": "Emily",
-                "student004": "Malik", "student005": "Aaliyah", "student006": "Brian",
-                "student007": "Grace", "student008": "Brianna", "student009": "Leilani",
-                "student010": "Tyler"
-            }
-            
-            student_names = [name_mapping.get(item['student_id'], item['student_id']) for item in student_data]
-            message_counts = [item['message_count'] for item in student_data]
-            
-            fig = px.bar(
-                x=student_names, 
-                y=message_counts,
-                title='Student Message Count',
-                labels={'x': 'Student Name', 'y': 'Message Count'},
-                color=message_counts,
-                color_continuous_scale='viridis'
-            )
-            fig.update_layout(showlegend=False)
-            return fig
-        else:
-            return self._create_empty_figure("No student data available")
+        text_result = "## 🎯 Student Popularity (Message Count)\n\n"
+        for student_id, count in student_counts.most_common(10):
+            student_name = name_mapping.get(student_id, student_id)
+            text_result += f"**{student_name}:** {count} messages\n"
+        
+        return text_result
     
-    def get_daily_usage(self, days=7):
-        """Daily usage trends"""
+    def get_daily_usage_text(self, days=7):
+        """Get daily usage as text (fallback when plotly unavailable)"""
         data = self.load_data()
         
         if not data.get('conversations'):
-            return self._create_empty_figure("No conversation data available")
+            return "No conversation data available"
         
         since_date = datetime.datetime.now() - timedelta(days=days)
         
@@ -384,54 +374,14 @@ class EnhancedJSONMonitoringDashboard:
                     processed_sessions.add(session_date_key)
         
         if not daily_data:
-            return self._create_empty_figure("No recent usage data")
+            return "No recent usage data"
         
-        dates = sorted(daily_data.keys())
-        message_counts = [daily_data[date]['message_count'] for date in dates]
-        session_counts = [daily_data[date]['session_count'] for date in dates]
+        text_result = "## 📅 Daily Usage Trends\n\n"
+        for date_str in sorted(daily_data.keys()):
+            data_point = daily_data[date_str]
+            text_result += f"**{date_str}:** {data_point['message_count']} messages, {data_point['session_count']} sessions\n"
         
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=dates, 
-            y=message_counts,
-            mode='lines+markers', 
-            name='Message Count',
-            line=dict(color='#1f77b4')
-        ))
-        fig.add_trace(go.Scatter(
-            x=dates, 
-            y=session_counts,
-            mode='lines+markers', 
-            name='Session Count', 
-            yaxis='y2',
-            line=dict(color='#ff7f0e')
-        ))
-        
-        fig.update_layout(
-            title='Daily Usage Trends',
-            xaxis_title='Date',
-            yaxis_title='Message Count',
-            yaxis2=dict(title='Session Count', overlaying='y', side='right'),
-            hovermode='x unified'
-        )
-        return fig
-    
-    def _create_empty_figure(self, message):
-        """Create empty figure"""
-        fig = go.Figure()
-        fig.add_annotation(
-            text=message,
-            x=0.5, y=0.5,
-            xref="paper", yref="paper",
-            showarrow=False,
-            font=dict(size=16, color="gray")
-        )
-        fig.update_layout(
-            xaxis=dict(visible=False),
-            yaxis=dict(visible=False),
-            plot_bgcolor='white'
-        )
-        return fig
+        return text_result
     
     def export_conversations_to_csv(self, days=7, student_filter="", search_keyword=""):
         """Export conversations to CSV"""
@@ -481,29 +431,25 @@ def create_enhanced_monitoring_dashboard():
     # Store conversation data for real-time view
     recent_conversations_data = gr.State([])
     
-    with gr.Blocks(title="Digital Twin Enhanced Monitoring", theme=gr.themes.Soft()) as demo:
+    with gr.Blocks(title="Digital Twin Enhanced Monitoring") as demo:
         gr.Markdown("# 🔍 Digital Twin Enhanced Monitoring Dashboard")
         gr.Markdown("*Real-time monitoring of user behavior, conversation quality, and system performance*")
         
         with gr.Tabs():
-            # Tab 1: Real-time Chat Viewer (NEW!)
+            # Tab 1: Real-time Chat Viewer
             with gr.TabItem("🔴 Live Chat Viewer"):
                 gr.Markdown("## 📱 Recent Conversation Records (Real-time Updates)")
                 gr.Markdown("*View the latest conversations between users and digital twins*")
                 
                 with gr.Row():
-                    refresh_realtime_btn = gr.Button("🔄 Refresh Latest Chats", variant="primary", scale=1)
-                    auto_refresh_checkbox = gr.Checkbox(label="🔁 Auto-refresh (30s)", value=False, scale=0)
+                    refresh_realtime_btn = gr.Button("🔄 Refresh Latest Chats", variant="primary")
                 
                 realtime_summary = gr.Markdown("Loading...")
                 
-                # Recent conversations table
+                # Recent conversations table (simplified)
                 realtime_table = gr.Dataframe(
-                    headers=["ID", "Time", "Student", "User Message", "AI Response", "Response Time"],
-                    datatype=["number", "str", "str", "str", "str", "str"],
                     label="📋 Latest Conversations",
-                    interactive=False,
-                    height=300
+                    interactive=False
                 )
                 
                 # Detailed conversation view
@@ -511,14 +457,12 @@ def create_enhanced_monitoring_dashboard():
                 with gr.Row():
                     realtime_conv_id = gr.Number(
                         label="💬 Click table ID or enter conversation ID",
-                        placeholder="Enter conversation ID...",
-                        scale=3
+                        placeholder="Enter conversation ID..."
                     )
-                    view_realtime_btn = gr.Button("👁️ View Details", variant="secondary", scale=1)
+                    view_realtime_btn = gr.Button("👁️ View Details", variant="secondary")
                 
                 realtime_detail = gr.Markdown(
-                    "💡 Click on a conversation ID in the table above or manually enter an ID to view full conversation content",
-                    elem_classes="conversation-detail"
+                    "💡 Click on a conversation ID in the table above or manually enter an ID to view full conversation content"
                 )
             
             # Tab 2: Overview Dashboard
@@ -528,10 +472,9 @@ def create_enhanced_monitoring_dashboard():
                         1, 30, 
                         value=7, 
                         step=1, 
-                        label="📅 View data for the past N days",
-                        info="Select the time range to analyze"
+                        label="📅 View data for the past N days"
                     )
-                    refresh_btn = gr.Button("🔄 Refresh Data", variant="primary", scale=0)
+                    refresh_btn = gr.Button("🔄 Refresh Data", variant="primary")
                 
                 # Data source info
                 data_source_info = gr.Markdown("**Data Source:** JSON file with GitHub sync")
@@ -541,32 +484,28 @@ def create_enhanced_monitoring_dashboard():
                 with gr.Row():
                     total_sessions = gr.Number(
                         label="👥 Total Sessions", 
-                        interactive=False,
-                        container=True
+                        interactive=False
                     )
                     total_messages = gr.Number(
                         label="💬 Total Messages", 
-                        interactive=False,
-                        container=True
+                        interactive=False
                     )
                     avg_response_time = gr.Number(
                         label="⏱️ Avg Response Time (ms)", 
-                        interactive=False,
-                        container=True
+                        interactive=False
                     )
                     active_students = gr.Number(
                         label="🎭 Active Students", 
-                        interactive=False,
-                        container=True
+                        interactive=False
                     )
                 
-                # Chart areas
+                # Analysis (text-based for compatibility)
                 gr.Markdown("## 📈 Detailed Analysis")
                 with gr.Row():
                     with gr.Column():
-                        student_plot = gr.Plot(label="🎯 Student Popularity")
+                        student_analysis = gr.Markdown("Loading student popularity...")
                     with gr.Column():
-                        daily_plot = gr.Plot(label="📅 Daily Usage Trends")
+                        daily_analysis = gr.Markdown("Loading daily usage...")
             
             # Tab 3: Advanced Chat Search
             with gr.TabItem("🔍 Advanced Chat Search"):
@@ -598,26 +537,21 @@ def create_enhanced_monitoring_dashboard():
                 # Results
                 search_summary = gr.Markdown("Search results will appear here...")
                 
-                # Chat table
+                # Chat table (simplified)
                 chat_table = gr.Dataframe(
-                    headers=["ID", "Time", "Student", "Student ID", "User Message", "AI Response", "Scene", "Response Time"],
-                    datatype=["number", "str", "str", "str", "str", "str", "str", "str"],
                     label="📋 Search Results",
-                    interactive=False,
-                    height=400
+                    interactive=False
                 )
                 
                 # Detailed view
                 gr.Markdown("## 📖 Conversation Details")
                 conv_id_input = gr.Number(
-                    label="💬 Enter conversation ID to view details",
-                    info="Click ID from the table above"
+                    label="💬 Enter conversation ID to view details"
                 )
                 view_detail_btn = gr.Button("👁️ View Details", variant="primary")
                 
                 conversation_detail = gr.Markdown(
-                    "Select a conversation ID to view full content...",
-                    elem_classes="conversation-detail"
+                    "Select a conversation ID to view full content..."
                 )
                 
                 # Export result
@@ -641,19 +575,22 @@ def create_enhanced_monitoring_dashboard():
                 stats = dashboard.get_basic_stats(days)
                 last_update = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 
+                # Get text-based analysis
+                student_text = dashboard.get_student_popularity_text(days)
+                daily_text = dashboard.get_daily_usage_text(days)
+                
                 return (
                     stats.get('total_sessions', 0),
                     stats.get('total_messages', 0),
                     round(stats.get('avg_response_time', 0), 2),
                     stats.get('active_students', 0),
-                    dashboard.get_student_popularity(days),
-                    dashboard.get_daily_usage(days),
+                    student_text,
+                    daily_text,
                     f"**Data Source:** JSON file with GitHub sync (Last updated: {last_update})"
                 )
             except Exception as e:
                 print(f"Error updating dashboard: {e}")
-                empty_fig = dashboard._create_empty_figure("Data loading failed")
-                return (0, 0, 0, 0, empty_fig, empty_fig, "**Data Source:** Error loading data")
+                return (0, 0, 0, 0, "Error loading student data", "Error loading daily data", "**Data Source:** Error loading data")
         
         def search_conversations(days, student_filter, search_keyword):
             """Search and display conversations"""
@@ -687,13 +624,13 @@ def create_enhanced_monitoring_dashboard():
         refresh_btn.click(
             update_overview_dashboard,
             inputs=[days_input],
-            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_plot, daily_plot, data_source_info]
+            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_analysis, daily_analysis, data_source_info]
         )
         
         days_input.change(
             update_overview_dashboard,
             inputs=[days_input],
-            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_plot, daily_plot, data_source_info]
+            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_analysis, daily_analysis, data_source_info]
         )
         
         # Bind events - Advanced search tab
@@ -737,7 +674,7 @@ def create_enhanced_monitoring_dashboard():
         demo.load(
             update_overview_dashboard,
             inputs=[days_input],
-            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_plot, daily_plot, data_source_info]
+            outputs=[total_sessions, total_messages, avg_response_time, active_students, student_analysis, daily_analysis, data_source_info]
         )
         
         demo.load(
