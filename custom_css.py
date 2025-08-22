@@ -201,78 +201,78 @@ body {
     min-height: 60px;
 }
 
-/* NEW: Main groups container for organized layout */
-.main-groups-container {
+/* Character.ai style grid for selection page - 5 columns by default */
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
     background-color: transparent !important;
 }
 
-/* NEW: Age group container styling */
-.age-group-container {
-    margin-bottom: 40px;
-    padding: 20px;
-    border: 2px solid #bdbad4;
-    border-radius: 16px;
-    background-color: #f8f7ff !important;
+/* Responsive breakpoints for character grid at different screen sizes */
+@media (max-width: 1200px) {
+    .character-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .main-chat-container {
+        flex-direction: column;
+    }
+    
+    .chat-column, .info-column {
+        width: 100%;
+    }
 }
 
-.age-group-title {
-    color: #2e285c !important;
-    text-align: center;
-    margin: 0 0 25px 0 !important;
-    font-weight: bold !important;
-    font-size: 24px !important;
-    border-bottom: 2px solid #bdbad4;
-    padding-bottom: 10px;
+@media (max-width: 992px) {
+    .character-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-/* NEW: Mental health group styling */
-.mental-health-group {
-    margin-bottom: 25px;
-    padding: 15px;
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.7) !important;
+@media (max-width: 768px) {
+    .character-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .main-chat-container {
+        padding: 0 10px;
+    }
+    
+    .profile-box, .instructions-box, .scene-box {
+        padding: 15px;
+    }
 }
 
-.mental-health-subtitle {
-    color: #2e285c !important;
-    margin: 0 0 15px 0 !important;
-    font-weight: 600 !important;
-    font-size: 16px !important;
-    text-align: center;
-    font-style: italic;
+@media (max-width: 480px) {
+    .character-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* NEW: Character row styling for horizontal layout */
-.character-row {
-    display: flex;
-    gap: 15px;
-    justify-content: flex-start; /* 👈 改为左对齐，不再居中 */
-    flex-wrap: wrap;
-}
-
-/* Updated character card styling - horizontal layout with avatar on right */
+/* 重要：Card styling - 强制保持紫色背景 */
 .character-card {
     background: #bdbad4 !important;
     background-color: #bdbad4 !important;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 3px 8px rgba(46, 40, 92, 0.15);
+    box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
     transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #bdbad4;
-    height: 120px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
-    width: 320px;
-    margin: 0;
-    flex: 0 0 auto;
-    padding: 15px;
+    max-width: 220px;
+    margin: 0 auto;
 }
 
 .character-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(46, 40, 92, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(46, 40, 92, 0.25);
 }
 
 /* Remove card header - show student name directly */
@@ -280,25 +280,27 @@ body {
     display: none;
 }
 
-/* Student info styling - left aligned */
+/* Student info styling - compact and readable */
 .student-name {
-    font-size: 18px !important;
+    font-size: 20px !important;
     font-weight: 900 !important;
-    margin: 0 0 8px 0 !important;
-    text-align: left !important;
+    margin: 15px 0 8px !important;
+    text-align: center;
     color: #2e285c !important;
     letter-spacing: 0.5px;
 }
 
 .student-description {
-    text-align: left !important;
+    padding: 0 12px;
+    text-align: center;
     color: #2e285c;
-    font-size: 12px;
-    line-height: 1.3;
-    margin: 0 0 10px 0 !important;
+    font-size: 13px;
+    min-height: 45px;
     overflow: hidden;
+    flex-grow: 1;
+    margin-bottom: 8px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
@@ -307,45 +309,48 @@ body {
     display: none;
 }
 
-/* Avatar styling - ensure images show up */
-.character-card [data-testid="image"],
-.character-card .gradio-image,
-.character-card img {
-    width: 100px !important;
-    height: 100px !important;
-    border-radius: 12px !important;
-    border: 2px solid #2e285c !important;
-    object-fit: cover !important;
-    background-color: transparent !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* More specific image container targeting */
-.character-card .gradio-image > div,
-.character-card [data-testid="image"] > div {
-    width: 100px !important;
-    height: 100px !important;
-    border-radius: 12px !important;
+/* Avatar styling - circular and centered, 80% width */
+.character-card .avatar-container {
+    width: 80% !important;
+    height: 120px !important;
     overflow: hidden !important;
+    margin: 20px auto 10px auto !important;
+    border: 3px solid #bdbad4 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 8px rgba(46, 40, 92, 0.1) !important;
     background-color: transparent !important;
 }
 
-/* Chat button styling - positioned in content area */
+.character-card .avatar-container img,
+.character-card .avatar-container > div,
+.character-card .avatar-img,
+.character-card [data-testid="image"],
+.character-card [data-testid="image"] > div {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Chat button styling - white background with purple text */
 .chat-btn {
     background-color: white !important;
     color: #2e285c !important;
     border: 2px solid #bdbad4 !important;
-    border-radius: 16px !important;
-    padding: 6px 12px !important;
-    margin: 0 !important;
-    width: 80px !important;
+    border-radius: 20px !important;
+    padding: 8px 0 !important;
+    margin: 10px auto 16px !important;
+    width: 85% !important;
     display: block !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
     transition: all 0.2s !important;
-    align-self: flex-start !important;
 }
 
 .chat-btn:hover {
@@ -599,106 +604,5 @@ select, textarea, input {
 /* 7. More specific chat page targeting */
 .main-chat-container .info-column *:not(img):not(.gradio-image) {
     background-color: white !important;
-}
-
-/* Responsive design for grouped layout */
-@media (max-width: 1200px) {
-    .main-chat-container {
-        flex-direction: column;
-    }
-    
-    .chat-column, .info-column {
-        width: 100%;
-    }
-    
-    .character-row {
-        gap: 12px;
-    }
-    
-    .character-card {
-        width: 300px; /* 👈 调整宽度 */
-    }
-}
-
-@media (max-width: 992px) {
-    .character-row {
-        justify-content: flex-start;
-    }
-    
-    .character-card {
-        width: 280px; /* 👈 进一步缩小 */
-    }
-    
-    .age-group-container {
-        padding: 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    .main-chat-container {
-        padding: 0 10px;
-    }
-    
-    .profile-box, .instructions-box, .scene-box {
-        padding: 15px;
-    }
-    
-    .character-row {
-        flex-direction: column;
-        align-items: flex-start; /* 👈 左对齐 */
-    }
-    
-    .character-card {
-        width: 100%; /* 👈 全宽 */
-        max-width: 400px;
-    }
-    
-    .age-group-container {
-        margin-bottom: 25px;
-        padding: 12px;
-    }
-    
-    .age-group-title {
-        font-size: 20px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .main-groups-container {
-        padding: 10px;
-    }
-    
-    .character-card {
-        width: 100%;
-        max-width: none;
-        height: auto; /* 👈 自动高度 */
-        flex-direction: column; /* 👈 小屏幕时改为垂直布局 */
-    }
-    
-    .character-card .avatar-container {
-        width: 80px !important;
-        height: 80px !important;
-        margin: 10px auto !important;
-    }
-    
-    .character-card-content {
-        text-align: center;
-    }
-    
-    .student-name {
-        text-align: center !important;
-    }
-    
-    .student-description {
-        text-align: center !important;
-    }
-    
-    .chat-btn {
-        align-self: center !important;
-    }
-    
-    .mental-health-group {
-        padding: 10px;
-    }
 }
 """
