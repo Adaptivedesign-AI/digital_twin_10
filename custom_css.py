@@ -339,4 +339,10 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
 .card-header, .model-tag {
     display: none;
 }
+/* =============================================================================
+   🎯 最终修复：消除灰色背景容器
+   ============================================================================= */
+div[class*="container"] {
+    background-color: var(--cream-bg) !important;
+}
 """
