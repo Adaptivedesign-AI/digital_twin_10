@@ -14,12 +14,13 @@ custom_css = """
     --shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
 }
 
-/* 暴力覆盖所有可能的背景 - 学习成功案例的方法 */
+/* 暴力覆盖所有可能的背景 - 但排除特定组件 */
 html, body, #root, #app, .app, .main, 
 .gradio-app, .gradio-container,
-.gradio-container *, 
-.gradio-container > *,
-[class*="gradio"], [class*="svelte"], [class*="block"] {
+.gradio-container > div:not(.character-card):not(.profile-box):not(.instructions-box):not(.scene-box):not(.chat-column):not(.info-column),
+[class*="gradio"]:not(.character-card):not(.profile-box):not(.instructions-box):not(.scene-box), 
+[class*="svelte"]:not(.character-card):not(.profile-box):not(.instructions-box):not(.scene-box), 
+[class*="block"]:not(.character-card):not(.profile-box):not(.instructions-box):not(.scene-box) {
     background-color: #FEFCF3 !important;
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
@@ -104,10 +105,12 @@ body {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    background-color: #FEFCF3 !important;
 }
 
 .character-card {
     background: #bdbad4 !important;
+    background-color: #bdbad4 !important;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
@@ -119,6 +122,20 @@ body {
     cursor: pointer;
     max-width: 220px;
     margin: 0 auto;
+}
+
+/* 强制角色卡片内部保持紫色 */
+.character-card *, 
+.character-card > div,
+.character-card .student-name,
+.character-card .student-description {
+    background-color: #bdbad4 !important;
+}
+
+/* 但文字区域需要透明背景以显示卡片颜色 */
+.character-card .student-name,
+.character-card .student-description {
+    background-color: transparent !important;
 }
 
 .character-card:hover {
@@ -253,7 +270,7 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
 }
 
 /* =============================================================================
-   聊天页面布局
+   聊天页面布局 - 右侧面板强制纯白色
    ============================================================================= */
 .main-chat-container {
     gap: 20px !important;
@@ -263,7 +280,7 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
 }
 
 .chat-column {
-    background-color: white;
+    background-color: white !important;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
@@ -278,6 +295,7 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
     flex: 1 !important;
     min-height: 850px !important;
     height: 850px !important;
+    background-color: white !important;
 }
 
 .chat-column > div:last-child {
@@ -291,12 +309,26 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
     gap: 20px;
 }
 
+/* 强制右侧信息面板为纯白色 */
 .info-column > div, .profile-box, .instructions-box, .scene-box {
     background-color: white !important;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
     border: 1px solid #bdbad4 !important;
+}
+
+/* 强制信息面板内部所有元素为白色背景 */
+.info-column *, 
+.profile-box *, 
+.instructions-box *, 
+.scene-box *,
+.info-column > div *,
+.info-column .gradio-group,
+.info-column .gradio-group *,
+.info-column .gr-markdown,
+.info-column .gr-markdown * {
+    background-color: white !important;
 }
 
 .profile-name, .section-title {
