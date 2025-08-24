@@ -15,6 +15,22 @@
       "start_time": "2025-08-24T10:12:15.049231",
       "end_time": null,
       "total_messages": 0
+    },
+    "9f4756f4-341d-40b5-8d71-9bc3151ab655": {
+      "session_id": "9f4756f4-341d-40b5-8d71-9bc3151ab655",
+      "ip_address": "unknown",
+      "user_agent": "unknown",
+      "start_time": "2025-08-24T12:04:55.228638",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "a5bdceb8-c95a-4da8-8096-cb2e6b85ba76": {
+      "session_id": "a5bdceb8-c95a-4da8-8096-cb2e6b85ba76",
+      "ip_address": "unknown",
+      "user_agent": "unknown",
+      "start_time": "2025-08-24T12:04:59.449673",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -86,9 +102,34 @@
         "scene": "Meet with a new friend for the first time"
       },
       "timestamp": "2025-08-24T10:14:33.528169"
+    },
+    {
+      "id": 6,
+      "session_id": "a5bdceb8-c95a-4da8-8096-cb2e6b85ba76",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-24T12:05:00.915991"
+    },
+    {
+      "id": 7,
+      "session_id": "a5bdceb8-c95a-4da8-8096-cb2e6b85ba76",
+      "action_type": "back_to_selection",
+      "action_data": {},
+      "timestamp": "2025-08-24T12:05:05.155318"
+    },
+    {
+      "id": 8,
+      "session_id": "a5bdceb8-c95a-4da8-8096-cb2e6b85ba76",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student005"
+      },
+      "timestamp": "2025-08-24T12:05:31.991228"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-24T10:14:33.528210",
+  "last_updated": "2025-08-24T12:05:31.991241",
   "version": "1.0"
 }
