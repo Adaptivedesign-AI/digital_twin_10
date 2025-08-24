@@ -31,6 +31,22 @@
       "start_time": "2025-08-24T12:04:59.449673",
       "end_time": null,
       "total_messages": 0
+    },
+    "adb6a0bd-7fa3-40c1-945c-19812465fe3a": {
+      "session_id": "adb6a0bd-7fa3-40c1-945c-19812465fe3a",
+      "ip_address": "unknown",
+      "user_agent": "unknown",
+      "start_time": "2025-08-24T12:19:25.601350",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "46c8ba5c-b9b9-4226-81c0-08c327ac75dd": {
+      "session_id": "46c8ba5c-b9b9-4226-81c0-08c327ac75dd",
+      "ip_address": "unknown",
+      "user_agent": "unknown",
+      "start_time": "2025-08-24T12:26:09.838519",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -127,9 +143,34 @@
         "student_id": "student005"
       },
       "timestamp": "2025-08-24T12:05:31.991228"
+    },
+    {
+      "id": 9,
+      "session_id": "adb6a0bd-7fa3-40c1-945c-19812465fe3a",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student005"
+      },
+      "timestamp": "2025-08-24T12:19:52.402118"
+    },
+    {
+      "id": 10,
+      "session_id": "adb6a0bd-7fa3-40c1-945c-19812465fe3a",
+      "action_type": "back_to_selection",
+      "action_data": {},
+      "timestamp": "2025-08-24T12:20:11.222960"
+    },
+    {
+      "id": 11,
+      "session_id": "46c8ba5c-b9b9-4226-81c0-08c327ac75dd",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-24T12:26:09.838943"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-24T12:05:31.991241",
+  "last_updated": "2025-08-24T12:26:09.838951",
   "version": "1.0"
 }
