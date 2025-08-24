@@ -1,348 +1,359 @@
-custom_css = """
-/* =============================================================================
-   全局样式和变量
-   ============================================================================= */
-:root {
-    --primary-purple: #2e285c;
-    --light-purple: #bdbad4;
-    --cream-bg: #FEFCF3;
-    --hover-purple: #f0edfe;
-    --border-radius: 12px;
-    --shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
-    
-    /* 覆盖 Gradio 系统变量（兼容所有主题系统） */
-    --background-fill-primary: #FEFCF3 !important;
-    --background-fill-secondary: #FEFCF3 !important;
-    --block-background-fill: white !important;
-    --panel-background-fill: white !important;
-    --color-background: #FEFCF3 !important;
-    --color-background-secondary: #FEFCF3 !important;
-    --body-background-fill: #FEFCF3 !important; /* ✅ 关键修复 */
+# 完全自定义的HTML结构 + 干净CSS方案
+import gradio as gr
+
+# 干净的自定义CSS - 不依赖Gradio变量系统
+CUSTOM_CSS = """
+/* 重置所有Gradio默认样式 */
+* {
+    box-sizing: border-box;
 }
 
-/* 全局背景色 - 强制覆盖所有层级 */
-html, body, #root, .gradio-app, .app, .main, .gradio-container,
-.gradio-container > div, .gradio-container > div > div, 
-.gradio-container > div > div > div,
-.selection-page, .character-grid {
-    background-color: var(--cream-bg) !important;
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #FEFCF3 !important;
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
 
-/* 统一 Gradio Block 背景为透明 */
-.gr-block {
-    background-color: transparent !important;
+/* 主容器 - 完全自定义 */
+#app-container {
+    background-color: #FEFCF3;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-/* 移除图片容器的背景和边框 */
-.header-image-container, .header-image-container > div, .header-image, 
-.gradio-image, .gradio-image > div, [data-testid="image"], 
-[class*="image"], img {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+/* 角色选择页面 */
+#selection-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #FEFCF3;
 }
 
-/* =============================================================================
-   页面头部样式
-   ============================================================================= */
-.main-title {
-    background-color: var(--primary-purple);
-    color: white;
-    padding: 15px;
+#page-header {
     text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
-    margin: 0;
+    margin-bottom: 30px;
 }
 
-.chat-header {
+#page-title {
+    color: #2e285c;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#page-description {
+    color: #2e285c;
+    font-size: 16px;
+    font-style: italic;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* 聊天页面 */
+#chat-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #FEFCF3;
+}
+
+#chat-header {
+    background-color: #bdbad4;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 20px;
-    background-color: var(--light-purple) !important;
-    color: white !important;
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
     margin-bottom: 20px;
-    box-shadow: var(--shadow);
 }
 
-.page-title, .selection-heading {
-    color: white !important;
-    margin: 0 !important;
-    text-align: center;
-    font-weight: bold !important;
-}
-
-.selection-heading {
-    color: var(--primary-purple) !important;
-    font-size: 22px;
-    margin: 1px 0 10px;
-}
-
-.project-description {
-    text-align: center;
-    max-width: 800px;
-    color: var(--primary-purple);
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 0 20px;
-    font-style: italic;
-    margin: 0 auto 5px;
-}
-
-/* =============================================================================
-   聊天页面布局
-   ============================================================================= */
-.main-chat-container {
-    gap: 20px !important;
-    padding: 0 20px;
-    max-width: 1400px;
-    margin: 0 auto;
+#chat-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 20px;
 }
 
 /* 左侧聊天区域 */
-.chat-column {
+#chat-main {
     background-color: white;
-    border-radius: var(--border-radius);
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--light-purple);
-    min-height: 1029px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    border: 1px solid #bdbad4;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
 }
 
-.chat-column .gradio-chatbot {
-    flex: 1 !important;
-    min-height: 850px !important;
-    height: 850px !important;
+#chatbot-container {
+    flex: 1;
+    min-height: 500px;
+    margin-bottom: 20px;
 }
 
-.chat-column > div:last-child {
-    margin-top: auto !important;
-    flex-shrink: 0 !important;
+#input-area {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
 }
 
-/* 右侧信息区域 */
-.info-column {
+#message-input-container {
+    flex: 1;
+}
+
+#button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100px;
+}
+
+/* 右侧信息面板 */
+#info-sidebar {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.info-column > div, .profile-box, .instructions-box, .scene-box {
-    background-color: white !important;
-    border-radius: var(--border-radius);
+.info-panel {
+    background-color: white;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--light-purple) !important;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    border: 1px solid #bdbad4;
 }
 
-.profile-name, .section-title {
-    color: var(--primary-purple) !important;
-    margin: 0 0 15px 0 !important;
+.panel-title {
+    color: #2e285c;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
     text-align: center;
-    font-weight: bold !important;
 }
 
-.section-title {
-    font-size: 18px !important;
-}
-
-.profile-text, .instructions-text, .scene-instruction {
+.panel-content {
+    color: #2e285c;
     font-size: 14px;
     line-height: 1.6;
-    color: var(--primary-purple);
-    margin: 0 !important;
 }
 
-/* =============================================================================
-   角色选择页面 - 网格布局
-   ============================================================================= */
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+/* 组件样式覆盖 - 针对挂载的Gradio组件 */
+#chatbot-container .gradio-chatbot {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
-.character-card {
-    background: var(--light-purple) !important;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(46, 40, 92, 0.15);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid var(--light-purple);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    max-width: 220px;
-    margin: 0 auto;
-}
-
-.character-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(46, 40, 92, 0.25);
-}
-
-.student-name {
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    margin: 15px 0 8px !important;
-    text-align: center;
-    color: var(--primary-purple) !important;
-    letter-spacing: 0.5px;
-}
-
-.student-description {
-    padding: 0 12px;
-    text-align: center;
-    color: var(--primary-purple);
-    font-size: 13px;
-    min-height: 45px;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* 头像样式 */
-.character-card .avatar-container {
-    width: 80% !important;
-    height: 120px !important;
-    overflow: hidden !important;
-    margin: 20px auto 10px auto !important;
-    border: 3px solid var(--light-purple) !important;
-    border-radius: 50% !important;
-    box-shadow: 0 4px 8px rgba(46, 40, 92, 0.1) !important;
-}
-
-.character-card .avatar-container img,
-.character-card .avatar-container > div,
-.character-card [data-testid="image"] {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-}
-
-/* =============================================================================
-   按钮样式
-   ============================================================================= */
-.chat-btn {
+#message-input-container textarea {
     background-color: white !important;
-    color: var(--primary-purple) !important;
-    border: 2px solid var(--light-purple) !important;
+    border: 1px solid #bdbad4 !important;
     border-radius: 20px !important;
-    padding: 8px 0 !important;
-    margin: 10px auto 16px !important;
-    width: 85% !important;
-    display: block !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
+    padding: 12px 16px !important;
     font-size: 14px !important;
-    transition: all 0.2s !important;
+    color: #2e285c !important;
+    resize: none !important;
 }
 
-.chat-btn:hover, .back-btn:hover, .clear-btn:hover {
-    background-color: var(--hover-purple) !important;
-    border-color: var(--primary-purple) !important;
-}
-
-.back-btn, .clear-btn {
-    background-color: white !important;
-    border: 2px solid var(--light-purple) !important;
-    color: var(--primary-purple) !important;
-    border-radius: 20px !important;
-    padding: 8px 15px !important;
-    width: 100% !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    transition: all 0.2s !important;
-}
-
-.send-btn {
-    background-color: var(--light-purple) !important;
+#send-button button {
+    background-color: #bdbad4 !important;
     color: white !important;
     font-weight: bold !important;
     border-radius: 20px !important;
     padding: 8px 15px !important;
-    width: 100% !important;
     border: none !important;
     cursor: pointer !important;
     transition: background-color 0.2s !important;
 }
 
-.send-btn:hover {
-    background-color: var(--primary-purple) !important;
+#send-button button:hover {
+    background-color: #2e285c !important;
 }
 
-/* =============================================================================
-   表单元素样式
-   ============================================================================= */
-select, textarea, input, .gradio-dropdown, .gradio-textbox,
-.message-input textarea, .scene-dropdown select, 
-.custom-scene-input textarea {
+#clear-button button {
     background-color: white !important;
-    border: 1px solid var(--light-purple) !important;
-    border-radius: 8px !important;
-    padding: 10px !important;
-    font-size: 14px !important;
-    color: var(--primary-purple) !important;
-}
-
-.message-input textarea {
+    color: #2e285c !important;
+    font-weight: bold !important;
     border-radius: 20px !important;
-    padding: 12px 16px !important;
-    resize: none !important;
+    padding: 8px 15px !important;
+    border: 2px solid #bdbad4 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
 }
 
-.scene-description textarea {
-    background-color: var(--hover-purple) !important;
-    min-height: 60px;
+#clear-button button:hover {
+    background-color: #f0edfe !important;
+    border-color: #2e285c !important;
 }
 
-/* =============================================================================
-   响应式设计
-   ============================================================================= */
-@media (max-width: 1200px) {
-    .character-grid { grid-template-columns: repeat(4, 1fr); }
-    .main-chat-container { flex-direction: column; }
-    .chat-column, .info-column { width: 100%; }
+#back-button button {
+    background-color: white !important;
+    color: #2e285c !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    border: 2px solid #bdbad4 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
 }
 
-@media (max-width: 992px) {
-    .character-grid { grid-template-columns: repeat(3, 1fr); }
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    #chat-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    #character-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
-    .character-grid { grid-template-columns: repeat(2, 1fr); }
-    .main-chat-container { padding: 0 10px; }
-    .profile-box, .instructions-box, .scene-box { padding: 15px; }
-}
-
-@media (max-width: 480px) {
-    .character-grid { grid-template-columns: 1fr; }
-}
-
-/* =============================================================================
-   隐藏元素
-   ============================================================================= */
-.card-header, .model-tag {
-    display: none;
-}
-/* =============================================================================
-   🎯 最终修复：消除灰色背景容器
-   ============================================================================= */
-div[class*="container"] {
-    background-color: var(--cream-bg) !important;
+    #app-container {
+        padding: 10px;
+    }
+    
+    #input-area {
+        flex-direction: column;
+    }
+    
+    #button-container {
+        flex-direction: row;
+        width: 100%;
+    }
 }
 """
+
+def create_selection_page():
+    """创建角色选择页面 - 完全自定义HTML结构"""
+    return gr.HTML("""
+        <div id="app-container">
+            <div id="selection-page">
+                <div id="page-header">
+                    <h1 id="page-title">Digital Adolescents Chat</h1>
+                    <p id="page-description">Choose a digital twin to start chatting with</p>
+                </div>
+                <div id="character-grid">
+                    <!-- 角色卡片将通过JavaScript动态插入 -->
+                </div>
+            </div>
+        </div>
+    """)
+
+def create_chat_page():
+    """创建聊天页面 - 完全自定义HTML结构"""
+    with gr.Column():
+        # 自定义HTML结构
+        gr.HTML("""
+            <div id="app-container">
+                <div id="chat-page">
+                    <div id="chat-header">
+                        <div id="back-button-container"></div>
+                        <h2 id="chat-title">Digital Twin Chat</h2>
+                        <div style="width: 100px;"></div> <!-- 占位符保持居中 -->
+                    </div>
+                    <div id="chat-layout">
+                        <div id="chat-main">
+                            <div id="chatbot-container">
+                                <!-- Chatbot组件将挂载到这里 -->
+                            </div>
+                            <div id="input-area">
+                                <div id="message-input-container">
+                                    <!-- Textbox组件将挂载到这里 -->
+                                </div>
+                                <div id="button-container">
+                                    <div id="send-button"></div>
+                                    <div id="clear-button"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="info-sidebar">
+                            <div class="info-panel">
+                                <h3 class="panel-title">Character Profile</h3>
+                                <div class="panel-content" id="character-info">
+                                    <!-- 角色信息将动态插入 -->
+                                </div>
+                            </div>
+                            <div class="info-panel">
+                                <h3 class="panel-title">Scene Setting</h3>
+                                <div class="panel-content" id="scene-controls">
+                                    <!-- 场景控制将挂载到这里 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        """)
+        
+        # Gradio组件 - 通过elem_id精确挂载
+        back_btn = gr.Button("← Back", elem_id="back-button", size="sm")
+        chatbot = gr.Chatbot(elem_id="chatbot-container", show_label=False, height=500)
+        msg_input = gr.Textbox(
+            elem_id="message-input-container", 
+            show_label=False, 
+            placeholder="Type your message here...",
+            lines=2
+        )
+        send_btn = gr.Button("Send", elem_id="send-button", variant="primary")
+        clear_btn = gr.Button("Clear", elem_id="clear-button", variant="secondary")
+        
+        # 场景控制组件
+        scene_dropdown = gr.Dropdown(
+            choices=["School", "Home", "Park", "Custom"],
+            value="School",
+            label="Scene",
+            elem_id="scene-selector"
+        )
+        
+    return back_btn, chatbot, msg_input, send_btn, clear_btn, scene_dropdown
+
+# 主应用
+def create_app():
+    with gr.Blocks(css=CUSTOM_CSS, title="Digital Adolescents Chat") as demo:
+        # 页面状态
+        current_page = gr.State("selection")
+        selected_character = gr.State(None)
+        
+        # 选择页面
+        with gr.Group(visible=True) as selection_interface:
+            create_selection_page()
+            
+        # 聊天页面  
+        with gr.Group(visible=False) as chat_interface:
+            back_btn, chatbot, msg_input, send_btn, clear_btn, scene_dropdown = create_chat_page()
+            
+        # 页面切换逻辑
+        def switch_to_chat(character):
+            return [
+                gr.Group.update(visible=False),  # 隐藏选择页面
+                gr.Group.update(visible=True),   # 显示聊天页面
+                "chat",                          # 更新页面状态
+                character                        # 保存选择的角色
+            ]
+            
+        def switch_to_selection():
+            return [
+                gr.Group.update(visible=True),   # 显示选择页面
+                gr.Group.update(visible=False),  # 隐藏聊天页面
+                "selection",                     # 更新页面状态
+                []                               # 清空聊天记录
+            ]
+        
+        # 绑定事件（这里需要根据实际的角色选择按钮来绑定）
+        back_btn.click(
+            switch_to_selection,
+            outputs=[selection_interface, chat_interface, current_page, chatbot]
+        )
+    
+    return demo
+
+if __name__ == "__main__":
+    app = create_app()
+    app.launch()
