@@ -17,6 +17,7 @@ custom_css = """
     --panel-background-fill: white !important;
     --color-background: #FEFCF3 !important;
     --color-background-secondary: #FEFCF3 !important;
+    --body-background-fill: #FEFCF3 !important; /* ✅ 关键修复 */
 }
 
 /* 全局背景色 - 强制覆盖所有层级 */
@@ -337,22 +338,5 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
    ============================================================================= */
 .card-header, .model-tag {
     display: none;
-}
-/* ✅ Selection 页面中间灰背景区域彻底清除 */
-.selection-page > div,
-.selection-page > div > div,
-.selection-page > div > div > div,
-.selection-page .gr-block,
-.selection-page .gr-column,
-.selection-page .gr-panel {
-    background-color: var(--cream-bg) !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-/* ✅ 彻底移除 Gradio 默认 box 背景灰色 */
-.gr-box {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
 }
 """
