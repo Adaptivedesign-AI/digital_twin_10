@@ -605,4 +605,21 @@ select, textarea, input {
 .main-chat-container .info-column *:not(img):not(.gradio-image) {
     background-color: white !important;
 }
+html, body, .gradio-container, .app, #root, .main {
+    background-color: #FEFCF3 !important;
+}
+
+.selection-page, .character-grid {
+    background-color: #FEFCF3 !important;
+}
+
+:root {
+  --background-fill-primary: #FEFCF3 !important;
+  --background-fill-secondary: #FEFCF3 !important;
+  --block-background-fill: white !important;
+  --panel-background-fill: white !important;
+  --color-background: #FEFCF3 !important;
+  --color-background-secondary: #FEFCF3 !important;
+}
+
 """
