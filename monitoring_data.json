@@ -47,6 +47,14 @@
       "start_time": "2025-08-24T12:26:09.838519",
       "end_time": null,
       "total_messages": 0
+    },
+    "3a048c46-d091-4ef9-b751-e870ca6676d6": {
+      "session_id": "3a048c46-d091-4ef9-b751-e870ca6676d6",
+      "ip_address": "unknown",
+      "user_agent": "unknown",
+      "start_time": "2025-08-24T12:36:21.845008",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -168,9 +176,41 @@
         "student_id": "student003"
       },
       "timestamp": "2025-08-24T12:26:09.838943"
+    },
+    {
+      "id": 12,
+      "session_id": "3a048c46-d091-4ef9-b751-e870ca6676d6",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-24T12:36:25.516217"
+    },
+    {
+      "id": 13,
+      "session_id": "3a048c46-d091-4ef9-b751-e870ca6676d6",
+      "action_type": "back_to_selection",
+      "action_data": {},
+      "timestamp": "2025-08-24T12:36:28.498024"
+    },
+    {
+      "id": 14,
+      "session_id": "3a048c46-d091-4ef9-b751-e870ca6676d6",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student005"
+      },
+      "timestamp": "2025-08-24T12:36:37.606926"
+    },
+    {
+      "id": 15,
+      "session_id": "3a048c46-d091-4ef9-b751-e870ca6676d6",
+      "action_type": "back_to_selection",
+      "action_data": {},
+      "timestamp": "2025-08-24T12:37:22.509101"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-24T12:26:09.838951",
+  "last_updated": "2025-08-24T12:37:22.509113",
   "version": "1.0"
 }
