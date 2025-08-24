@@ -3,27 +3,20 @@
 
 custom_css = """
 /* =============================================================================
-   核弹级背景覆盖 - 不管什么都强制改成米白色
+   智能背景覆盖 - 保护重要元素
    ============================================================================= */
 
-/* 最高优先级覆盖 */
-* {
-    background-color: #FEFCF3 !important;
-}
-
+/* 强制页面背景为米白色 */
 html, body, #root {
     background: #FEFCF3 !important;
     background-color: #FEFCF3 !important;
 }
 
-/* Gradio容器强制覆盖 */
+/* Gradio容器背景覆盖 */
 .gradio-container,
-.gradio-container *,
 .gradio-app,
-.gradio-app *,
-[class*="gradio"],
-[class*="svelte"],
-[id*="gradio"] {
+[class*="gradio"]:not(.character-card),
+[class*="svelte"]:not(.character-card) {
     background: #FEFCF3 !important;
     background-color: #FEFCF3 !important;
 }
@@ -50,8 +43,16 @@ html, body, #root {
     box-shadow: 0 8px 16px rgba(46, 40, 92, 0.25);
 }
 
-/* 聊天页面的白色面板 */
-.chat-column,
+/* 聊天页面的白色面板 - 保持白色但添加边框和阴影 */
+.chat-column {
+    background: white !important;
+    background-color: white !important;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(46, 40, 92, 0.1);
+    border: 1px solid #bdbad4;
+}
+
 .info-column > div {
     background: white !important;
     background-color: white !important;
