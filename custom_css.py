@@ -349,4 +349,10 @@ select, textarea, input, .gradio-dropdown, .gradio-textbox,
     box-shadow: none !important;
     border: none !important;
 }
+/* ✅ 彻底移除 Gradio 默认 box 背景灰色 */
+.gr-box {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
 """
