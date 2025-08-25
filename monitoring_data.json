@@ -191,6 +191,22 @@
       "start_time": "2025-08-25T13:17:37.800313",
       "end_time": null,
       "total_messages": 0
+    },
+    "f2c84fdc-7944-49a3-b7d4-265f1c32d22d": {
+      "session_id": "f2c84fdc-7944-49a3-b7d4-265f1c32d22d",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Go-http-client/1.1",
+      "start_time": "2025-08-25T13:20:16.091769",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "d7bd65e4-7464-449f-b1b6-0eb11c044610": {
+      "session_id": "d7bd65e4-7464-449f-b1b6-0eb11c044610",
+      "ip_address": "10.220.86.3",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+      "start_time": "2025-08-25T13:29:21.533435",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -555,9 +571,36 @@
         "student_id": "student008"
       },
       "timestamp": "2025-08-25T13:17:37.801136"
+    },
+    {
+      "id": 35,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T13:21:36.379366"
+    },
+    {
+      "id": 36,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T13:24:49.831397"
+    },
+    {
+      "id": 37,
+      "session_id": "d7bd65e4-7464-449f-b1b6-0eb11c044610",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student004"
+      },
+      "timestamp": "2025-08-25T13:29:54.237022"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T13:17:37.801142",
+  "last_updated": "2025-08-25T13:29:54.237033",
   "version": "1.0"
 }
