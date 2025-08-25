@@ -444,6 +444,14 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* 新增：移除独立的bot-message类的特殊样式 */
+.bot-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
 /* 输入区域 - 移到底部 */
 .chat-input-area {
     border-top: 1px solid #e5e5e5;
