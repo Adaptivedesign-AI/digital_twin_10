@@ -197,7 +197,7 @@ body {
 }
 
 .chat-btn:hover {
-    background-color: #f0edfe;
+    background-color: #F0DBDB;
     border-color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(46, 40, 92, 0.2);
@@ -277,7 +277,7 @@ body {
 }
 
 .back-btn:hover {
-    background-color: #f0edfe;
+    background-color: #F0DBDB;
     border-color: #2e285c;
     transform: translateY(-1px);
 }
@@ -320,7 +320,7 @@ body {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 20px;
-    border-bottom: 2px solid #f0edfe;
+    border-bottom: 2px solid #F0DBDB;
     padding-bottom: 10px;
 }
 
@@ -399,7 +399,7 @@ body {
 }
 
 .welcome-message .message-bubble {
-    background: linear-gradient(135deg, #f0edfe, #e8f4fd);
+    background: linear-gradient(135deg, #F0DBDB, #e8f4fd);
     border: 1px solid #d6c7ff;
 }
 
@@ -473,7 +473,7 @@ body {
 }
 
 .clear-btn:hover {
-    background-color: #f0edfe;
+    background-color: #F0DBDB;
     border-color: #2e285c;
 }
 
@@ -498,7 +498,7 @@ body {
     font-weight: bold;
     margin-bottom: 15px;
     text-align: center;
-    border-bottom: 2px solid #f0edfe;
+    border-bottom: 2px solid #F0DBDB;
     padding-bottom: 10px;
 }
 
@@ -582,7 +582,7 @@ body {
 }
 
 .scene-display {
-    background-color: #f0edfe;
+    background-color: #F0DBDB;
     padding: 12px;
     border-radius: 8px;
     font-size: 14px;
