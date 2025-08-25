@@ -110,7 +110,7 @@
       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Safari/605.1.15",
       "start_time": "2025-08-25T10:58:10.601516",
       "end_time": null,
-      "total_messages": 5
+      "total_messages": 6
     },
     "4cd58613-a17b-476a-9b3b-8a6a650cb3f2": {
       "session_id": "4cd58613-a17b-476a-9b3b-8a6a650cb3f2",
@@ -223,6 +223,14 @@
       "start_time": "2025-08-25T15:13:12.077570",
       "end_time": null,
       "total_messages": 0
+    },
+    "4de559ac-0ec2-4713-bbfd-0355bac55e18": {
+      "session_id": "4de559ac-0ec2-4713-bbfd-0355bac55e18",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Go-http-client/1.1",
+      "start_time": "2025-08-25T15:21:51.527839",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -312,6 +320,17 @@
       "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
       "timestamp": "2025-08-25T15:14:14.660697",
       "response_time_ms": 2636.953,
+      "message_length": 1
+    },
+    {
+      "id": 9,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "student_id": "student003",
+      "user_message": "1",
+      "ai_response": "Um, what does that mean? Like, are we playing a game or...?  \n\nEmotion tag: confused",
+      "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
+      "timestamp": "2025-08-25T15:24:33.129457",
+      "response_time_ms": 1174.6399999999999,
       "message_length": 1
     }
   ],
@@ -690,9 +709,36 @@
         "student_id": "student007"
       },
       "timestamp": "2025-08-25T15:14:00.217839"
+    },
+    {
+      "id": 44,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T15:24:28.234021"
+    },
+    {
+      "id": 45,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T15:26:03.545182"
+    },
+    {
+      "id": 46,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student001"
+      },
+      "timestamp": "2025-08-25T15:26:22.774438"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T15:14:14.660712",
+  "last_updated": "2025-08-25T15:26:22.774449",
   "version": "1.0"
 }
