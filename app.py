@@ -473,4 +473,13 @@ if __name__ == '__main__':
     print("📊 Starting Flask server...")
     
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    debug = os.environ.get("FLASK_ENV") == "development"
+    
+    # 生产环境使用 gunicorn，开发环境使用 Flask 内置服务器
+    if os.environ.get("RENDER"):
+        # Render 环境，使用 gunicorn
+        print(f"🚀 Running in production mode on port {port}")
+    else:
+        # 本地开发环境
+        print(f"🔧 Running in development mode on port {port}")
+        app.run(host="0.0.0.0", port=port, debug=debug)
