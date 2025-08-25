@@ -110,7 +110,7 @@
       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Safari/605.1.15",
       "start_time": "2025-08-25T10:58:10.601516",
       "end_time": null,
-      "total_messages": 3
+      "total_messages": 4
     },
     "4cd58613-a17b-476a-9b3b-8a6a650cb3f2": {
       "session_id": "4cd58613-a17b-476a-9b3b-8a6a650cb3f2",
@@ -207,6 +207,14 @@
       "start_time": "2025-08-25T13:29:21.533435",
       "end_time": null,
       "total_messages": 0
+    },
+    "bedd4e59-c414-4cd8-936f-ff4dfd623682": {
+      "session_id": "bedd4e59-c414-4cd8-936f-ff4dfd623682",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Go-http-client/1.1",
+      "start_time": "2025-08-25T14:40:01.081167",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -274,6 +282,17 @@
       "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
       "timestamp": "2025-08-25T13:17:30.936516",
       "response_time_ms": 4653.548,
+      "message_length": 2
+    },
+    {
+      "id": 7,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "student_id": "student003",
+      "user_message": "hi",
+      "ai_response": "Uh, hi again. You want to talk or something?  \n\nEmotion tag: bored",
+      "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
+      "timestamp": "2025-08-25T14:41:38.890155",
+      "response_time_ms": 3636.277,
       "message_length": 2
     }
   ],
@@ -598,9 +617,36 @@
         "student_id": "student004"
       },
       "timestamp": "2025-08-25T13:29:54.237022"
+    },
+    {
+      "id": 38,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T14:41:25.854134"
+    },
+    {
+      "id": 39,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T14:42:03.107649"
+    },
+    {
+      "id": 40,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T14:48:13.181787"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T13:29:54.237033",
+  "last_updated": "2025-08-25T14:48:13.181795",
   "version": "1.0"
 }
