@@ -1,5 +1,5 @@
-# app.py - Flask版本完全替换Gradio
-from flask import Flask, render_template, request, jsonify, session, redirect
+# app.py - Flask版本完全替换Gradio (增强版数据监控)
+from flask import Flask, render_template, request, jsonify, session, redirect, Response
 import json
 import os
 import datetime
@@ -7,6 +7,8 @@ import uuid
 from openai import OpenAI
 import requests
 from flask_cors import CORS
+import csv
+from io import StringIO
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "your-secret-key-here")
@@ -20,6 +22,8 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 # 添加调试信息
 print(f"🔑 OpenAI API Key configured: {'Yes' if os.environ.get('OPENAI_API_KEY') else 'No'}")
 print(f"🔐 Secret Key configured: {'Yes' if os.environ.get('SECRET_KEY') else 'No'}")
+print(f"👤 Admin Password configured: {'Yes' if os.environ.get('ADMIN_PASSWORD') else 'No'}")
+print(f"📊 GitHub Data Sync configured: {'Yes' if os.environ.get('GITHUB_TOKEN') else 'No'}")
 
 # ================================
 # 数据定义 (从你的原代码保留)
@@ -149,16 +153,16 @@ scene_options = [
 ]
 
 # ================================
-# JSON数据监控系统 (保留你的完整实现)
+# 增强版数据监控系统
 # ================================
 
-class JSONDataMonitor:
+class EnhancedJSONDataMonitor:
     def __init__(self):
         self.data_file = 'monitoring_data.json'
         self.github_enabled = self.setup_github()
         self.data = self.load_data()
         self.operation_count = 0
-        self.save_frequency = 5
+        self.save_frequency = 1  # 每次对话都保存
     
     def setup_github(self):
         self.github_token = os.environ.get("GITHUB_TOKEN")
@@ -166,7 +170,7 @@ class JSONDataMonitor:
         self.github_branch = os.environ.get("GITHUB_BRANCH", "main")
         enabled = bool(self.github_token and self.github_repo)
         if enabled:
-            print("✅ GitHub sync enabled")
+            print("✅ GitHub sync enabled for data monitoring")
         else:
             print("📁 Using local file storage only")
         return enabled
@@ -179,7 +183,7 @@ class JSONDataMonitor:
             try:
                 with open(self.data_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                    print(f"✅ Loaded {len(data.get('conversations', []))} conversations")
+                    print(f"✅ Loaded monitoring data: {len(data.get('conversations', []))} conversations")
                     return data
             except Exception as e:
                 print(f"❌ Error loading data: {e}")
@@ -190,12 +194,145 @@ class JSONDataMonitor:
             'user_actions': [],
             'system_metrics': [],
             'last_updated': datetime.datetime.now().isoformat(),
-            'version': '1.0'
+            'version': '2.0',
+            'summary': {
+                'total_conversations': 0,
+                'total_users': 0,
+                'most_active_student': None,
+                'total_messages': 0
+            }
         }
         
         self.save_data_to_file(empty_data)
         print("📝 Created new monitoring data file")
         return empty_data
+    
+    def get_student_name(self, student_id):
+        """获取学生姓名"""
+        return name_dict.get(student_id, "Unknown")
+    
+    def log_conversation(self, session_id, student_id, user_message, ai_response, 
+                        scene_context="", response_time_ms=0):
+        """增强版聊天记录"""
+        conversation = {
+            'id': len(self.data['conversations']) + 1,
+            'session_id': session_id,
+            'student_id': student_id,
+            'student_name': self.get_student_name(student_id),
+            'user_message': user_message[:2000],
+            'ai_response': ai_response[:3000],
+            'scene_context': scene_context,
+            'timestamp': datetime.datetime.now().isoformat(),
+            'response_time_ms': response_time_ms,
+            'message_length': len(user_message),
+            'day_of_week': datetime.datetime.now().strftime('%A'),
+            'hour': datetime.datetime.now().hour,
+            'conversation_turn': self.get_conversation_turn(session_id, student_id)
+        }
+        
+        self.data['conversations'].append(conversation)
+        
+        # 更新会话统计
+        if session_id in self.data['sessions']:
+            self.data['sessions'][session_id]['total_messages'] += 1
+            self.data['sessions'][session_id]['last_activity'] = datetime.datetime.now().isoformat()
+        
+        # 更新总体统计
+        self.update_summary()
+        
+        self.save_data()
+    
+    def get_conversation_turn(self, session_id, student_id):
+        """计算这是第几轮对话"""
+        conversations = [c for c in self.data['conversations'] 
+                        if c['session_id'] == session_id and c['student_id'] == student_id]
+        return len(conversations) + 1
+    
+    def update_summary(self):
+        """更新数据摘要"""
+        conversations = self.data['conversations']
+        if not conversations:
+            return
+            
+        # 统计最活跃的学生
+        student_counts = {}
+        for conv in conversations:
+            student_id = conv['student_id']
+            student_counts[student_id] = student_counts.get(student_id, 0) + 1
+        
+        most_active_student_id = max(student_counts.items(), key=lambda x: x[1])[0] if student_counts else None
+        most_active_student = self.get_student_name(most_active_student_id) if most_active_student_id else None
+        
+        self.data['summary'] = {
+            'total_conversations': len(conversations),
+            'total_users': len(self.data['sessions']),
+            'most_active_student': most_active_student,
+            'total_messages': len(conversations),
+            'last_24h_conversations': len([c for c in conversations 
+                                         if (datetime.datetime.now() - datetime.datetime.fromisoformat(c['timestamp'])).days < 1])
+        }
+    
+    def export_to_csv(self):
+        """导出数据为CSV格式"""
+        output = StringIO()
+        if self.data['conversations']:
+            fieldnames = ['id', 'timestamp', 'student_name', 'session_id', 
+                         'user_message', 'ai_response', 'scene_context', 
+                         'response_time_ms', 'conversation_turn', 'day_of_week', 'hour']
+            
+            writer = csv.DictWriter(output, fieldnames=fieldnames)
+            writer.writeheader()
+            
+            for conv in self.data['conversations']:
+                row = {key: conv.get(key, '') for key in fieldnames}
+                writer.writerow(row)
+        
+        return output.getvalue()
+    
+    def get_analytics_dashboard_data(self):
+        """获取分析面板数据"""
+        conversations = self.data['conversations']
+        if not conversations:
+            return {
+                'student_stats': {},
+                'hourly_distribution': {},
+                'total_conversations': 0,
+                'total_sessions': 0,
+                'summary': {}
+            }
+        
+        # 按学生分组统计
+        student_stats = {}
+        for conv in conversations:
+            student = conv['student_name']
+            if student not in student_stats:
+                student_stats[student] = {
+                    'total_conversations': 0,
+                    'avg_response_time': 0,
+                    'total_response_time': 0
+                }
+            
+            student_stats[student]['total_conversations'] += 1
+            student_stats[student]['total_response_time'] += conv.get('response_time_ms', 0)
+        
+        # 计算平均响应时间
+        for student, stats in student_stats.items():
+            if stats['total_conversations'] > 0:
+                stats['avg_response_time'] = stats['total_response_time'] / stats['total_conversations']
+        
+        # 时间分布统计
+        hourly_distribution = {}
+        for conv in conversations:
+            hour = conv.get('hour', 0)
+            hourly_distribution[hour] = hourly_distribution.get(hour, 0) + 1
+        
+        return {
+            'student_stats': student_stats,
+            'hourly_distribution': hourly_distribution,
+            'total_conversations': len(conversations),
+            'total_sessions': len(self.data['sessions']),
+            'summary': self.data.get('summary', {})
+        }
     
     def save_data_to_file(self, data=None):
         if data is None:
@@ -204,7 +341,7 @@ class JSONDataMonitor:
         try:
             with open(self.data_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False, default=str)
-            print(f"💾 Data saved locally ({len(data.get('conversations', []))} conversations)")
+            print(f"💾 Data saved: {len(data.get('conversations', []))} conversations")
             return True
         except Exception as e:
             print(f"❌ Error saving data: {e}")
@@ -256,7 +393,7 @@ class JSONDataMonitor:
                 sha = get_response.json()['sha']
             
             data = {
-                'message': f'Update monitoring data - {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                'message': f'Update chat monitoring data - {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 'content': encoded_content,
                 'branch': self.github_branch
             }
@@ -265,7 +402,7 @@ class JSONDataMonitor:
             
             response = requests.put(url, headers=headers, json=data, timeout=15)
             if response.status_code in [200, 201]:
-                print("✅ Uploaded data to GitHub")
+                print("✅ Data uploaded to GitHub successfully")
                 return True
         except Exception as e:
             print(f"❌ Error uploading to GitHub: {e}")
@@ -275,34 +412,17 @@ class JSONDataMonitor:
         session_id = str(uuid.uuid4())
         session_data = {
             'session_id': session_id,
-            'ip_address': request_info.get('ip', 'unknown') if request_info else request.remote_addr,
-            'user_agent': request_info.get('user_agent', 'unknown') if request_info else request.headers.get('User-Agent', 'unknown'),
+            'ip_address': request.remote_addr if request else 'unknown',
+            'user_agent': request.headers.get('User-Agent', 'unknown') if request else 'unknown',
             'start_time': datetime.datetime.now().isoformat(),
             'end_time': None,
-            'total_messages': 0
+            'total_messages': 0,
+            'last_activity': datetime.datetime.now().isoformat()
         }
         self.data['sessions'][session_id] = session_data
         self.save_data()
         print(f"📝 New session created: {session_id}")
         return session_id
-    
-    def log_conversation(self, session_id, student_id, user_message, ai_response, 
-                        scene_context="", response_time_ms=0):
-        conversation = {
-            'id': len(self.data['conversations']) + 1,
-            'session_id': session_id,
-            'student_id': student_id,
-            'user_message': user_message[:1000],
-            'ai_response': ai_response[:2000],
-            'scene_context': scene_context,
-            'timestamp': datetime.datetime.now().isoformat(),
-            'response_time_ms': response_time_ms,
-            'message_length': len(user_message)
-        }
-        self.data['conversations'].append(conversation)
-        if session_id in self.data['sessions']:
-            self.data['sessions'][session_id]['total_messages'] += 1
-        self.save_data()
     
     def log_user_action(self, session_id, action_type, action_data=None):
         action = {
@@ -315,7 +435,8 @@ class JSONDataMonitor:
         self.data['user_actions'].append(action)
         self.save_data()
 
-monitor = JSONDataMonitor()
+# 初始化监控系统
+monitor = EnhancedJSONDataMonitor()
 
 # ================================
 # 提示加载函数 (保留原实现)
@@ -345,7 +466,7 @@ def load_prompts():
 all_prompts = load_prompts()
 
 # ================================
-# Flask路由定义
+# Flask路由定义 (原有路由)
 # ================================
 
 @app.route('/')
@@ -526,18 +647,34 @@ def get_chat_history(student_id):
     history = session.get(f'history_{student_id}', [])
     return jsonify({'history': history})
 
-if __name__ == '__main__':
-    print("🔍 Data monitoring system started")
-    print("📊 Starting Flask server...")
+# ================================
+# 新增：管理员路由
+# ================================
+
+@app.route('/admin')
+def admin_dashboard():
+    """管理员面板"""
+    # 检查是否已经认证
+    if session.get('admin_authenticated') != True:
+        return redirect('/admin/login')
     
-    port = int(os.environ.get("PORT", 5000))
-    debug = os.environ.get("FLASK_ENV") == "development"
+    # 获取分析数据
+    analytics_data = monitor.get_analytics_dashboard_data()
     
-    # 生产环境使用 gunicorn，开发环境使用 Flask 内置服务器
-    if os.environ.get("RENDER"):
-        # Render 环境，使用 gunicorn
-        print(f"🚀 Running in production mode on port {port}")
-    else:
-        # 本地开发环境
-        print(f"🔧 Running in development mode on port {port}")
-        app.run(host="0.0.0.0", port=port, debug=debug)
+    # 简单的HTML页面
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Chat Data Monitor</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }}
+            .container {{ max-width: 1200px; margin: 0 auto; }}
+            .card {{ background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+            .header {{ background: #4a90e2; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }}
+            .stats {{ display: flex; flex-wrap: wrap; gap: 20px; }}
+            .stat-item {{ flex: 1; min-width: 200px; background: #e8f4fd; padding: 15px; border-radius: 5px; }}
+            .stat-number {{ font-size: 2em; font-weight: bold; color: #4a90e2; }}
+            .student-stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }}
+            .student-card {{ background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #4a90e2; }}
+            .btn {{
