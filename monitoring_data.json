@@ -110,13 +110,29 @@
       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Safari/605.1.15",
       "start_time": "2025-08-25T10:58:10.601516",
       "end_time": null,
-      "total_messages": 0
+      "total_messages": 2
     },
     "4cd58613-a17b-476a-9b3b-8a6a650cb3f2": {
       "session_id": "4cd58613-a17b-476a-9b3b-8a6a650cb3f2",
       "ip_address": "10.220.4.2",
       "user_agent": "Go-http-client/2.0",
       "start_time": "2025-08-25T11:06:49.427409",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "0f434536-1b38-43a4-a184-9ac0336908a6": {
+      "session_id": "0f434536-1b38-43a4-a184-9ac0336908a6",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Go-http-client/1.1",
+      "start_time": "2025-08-25T11:25:33.406606",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "4217a137-51c5-4563-9a0c-4f42136bb781": {
+      "session_id": "4217a137-51c5-4563-9a0c-4f42136bb781",
+      "ip_address": "10.220.97.143",
+      "user_agent": "Go-http-client/2.0",
+      "start_time": "2025-08-25T11:47:29.483372",
       "end_time": null,
       "total_messages": 0
     }
@@ -143,6 +159,28 @@
       "timestamp": "2025-08-16T10:05:00",
       "response_time_ms": 2000,
       "message_length": 18
+    },
+    {
+      "id": 3,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "student_id": "student002",
+      "user_message": "1",
+      "ai_response": "Uh, hey. What’s up? You, like, ready to hang out or whatever? I guess it’s cool meeting new people, I dunno. Just hoping it won’t be super awkward, y’know? \n\nEmotion tag: kinda nervous",
+      "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
+      "timestamp": "2025-08-25T11:32:10.228969",
+      "response_time_ms": 2775.265,
+      "message_length": 1
+    },
+    {
+      "id": 4,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "student_id": "student002",
+      "user_message": "what's up",
+      "ai_response": "Not much, just trying to figure out what to do next. I mean, it’s kinda chill to just hang out, right? Got any plans or ideas? I’m down for anything, honestly. Just trying to vibe. \n\nEmotion tag: lowkey hopeful",
+      "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
+      "timestamp": "2025-08-25T11:32:20.668098",
+      "response_time_ms": 3101.404,
+      "message_length": 9
     }
   ],
   "user_actions": [
@@ -331,9 +369,18 @@
         "student_id": "student004"
       },
       "timestamp": "2025-08-25T10:59:16.586940"
+    },
+    {
+      "id": 23,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student002"
+      },
+      "timestamp": "2025-08-25T11:32:04.440867"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T11:06:49.427421",
+  "last_updated": "2025-08-25T11:47:29.483381",
   "version": "1.0"
 }
