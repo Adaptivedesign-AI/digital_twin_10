@@ -151,6 +151,30 @@
       "start_time": "2025-08-25T13:08:01.482619",
       "end_time": null,
       "total_messages": 0
+    },
+    "b63410c1-0d1f-4839-abe5-9f9f57fde705": {
+      "session_id": "b63410c1-0d1f-4839-abe5-9f9f57fde705",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Go-http-client/1.1",
+      "start_time": "2025-08-25T13:13:04.952977",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "349fc014-c76d-4234-b33a-a23156bc007b": {
+      "session_id": "349fc014-c76d-4234-b33a-a23156bc007b",
+      "ip_address": "10.220.31.194",
+      "user_agent": "Mozilla/5.0 (Linux; Android 15; V2339A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.200 Mobile Safari/537.36 VivoBrowser/25.9.0.0",
+      "start_time": "2025-08-25T13:17:04.756515",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "bdc6be9b-000b-400b-a302-30c53721f9e7": {
+      "session_id": "bdc6be9b-000b-400b-a302-30c53721f9e7",
+      "ip_address": "10.220.127.39",
+      "user_agent": "Mozilla/5.0 (Linux; Android 10; HUAWEI P30 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Mobile Safari/537.36",
+      "start_time": "2025-08-25T13:17:15.321902",
+      "end_time": null,
+      "total_messages": 0
     }
   },
   "conversations": [
@@ -468,9 +492,27 @@
         "student_id": "student003"
       },
       "timestamp": "2025-08-25T13:10:24.541276"
+    },
+    {
+      "id": 31,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student002"
+      },
+      "timestamp": "2025-08-25T13:16:36.174597"
+    },
+    {
+      "id": 32,
+      "session_id": "349fc014-c76d-4234-b33a-a23156bc007b",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student008"
+      },
+      "timestamp": "2025-08-25T13:17:15.958443"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T13:10:24.541285",
+  "last_updated": "2025-08-25T13:17:15.958453",
   "version": "1.0"
 }
