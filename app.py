@@ -1,17 +1,25 @@
 # app.py - Flask版本完全替换Gradio
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect
 import json
 import os
 import datetime
 import uuid
 from openai import OpenAI
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "your-secret-key-here")
 
+# 启用CORS支持
+CORS(app)
+
 # 初始化OpenAI客户端
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+# 添加调试信息
+print(f"🔑 OpenAI API Key configured: {'Yes' if os.environ.get('OPENAI_API_KEY') else 'No'}")
+print(f"🔐 Secret Key configured: {'Yes' if os.environ.get('SECRET_KEY') else 'No'}")
 
 # ================================
 # 数据定义 (从你的原代码保留)
@@ -384,20 +392,37 @@ def chat_page(student_id):
 @app.route('/api/send_message', methods=['POST'])
 def send_message():
     """API端点 - 处理聊天消息"""
-    data = request.json
-    message = data.get('message', '').strip()
-    student_id = data.get('student_id', 'student001')
-    scene_context = data.get('scene_context', '')
-    
-    if not message:
-        return jsonify({'error': 'Empty message'}), 400
-    
-    session_id = session.get('session_id')
-    if not session_id:
-        session_id = monitor.create_session()
-        session['session_id'] = session_id
-    
     try:
+        print(f"🔗 Received request: {request.method} {request.url}")
+        
+        # 检查请求内容类型
+        if not request.is_json:
+            print("❌ Request is not JSON")
+            return jsonify({'error': 'Content-Type must be application/json'}), 400
+        
+        data = request.json
+        print(f"📥 Request data: {data}")
+        
+        message = data.get('message', '').strip()
+        student_id = data.get('student_id', 'student001')
+        scene_context = data.get('scene_context', '')
+        
+        print(f"💬 Processing message for {student_id}: {message[:50]}...")
+        
+        if not message:
+            return jsonify({'error': 'Empty message'}), 400
+        
+        # 检查API密钥
+        if not os.environ.get("OPENAI_API_KEY"):
+            print("❌ OpenAI API key not configured")
+            return jsonify({'error': 'OpenAI API key not configured'}), 500
+        
+        session_id = session.get('session_id')
+        if not session_id:
+            session_id = monitor.create_session()
+            session['session_id'] = session_id
+            print(f"📝 Created new session: {session_id}")
+        
         # 获取系统提示
         base_prompt = all_prompts.get(student_id, "You are a helpful assistant.")
         if scene_context:
@@ -407,23 +432,30 @@ def send_message():
         
         # 获取聊天历史
         chat_history = session.get(f'history_{student_id}', [])
+        print(f"📚 Chat history length: {len(chat_history)}")
         
         # 构建消息
         messages = [{"role": "system", "content": system_prompt}]
-        for user_msg, bot_reply in chat_history:
+        for user_msg, bot_reply in chat_history[-10:]:  # 只保留最近10条对话
             messages.append({"role": "user", "content": user_msg})
             messages.append({"role": "assistant", "content": bot_reply})
         messages.append({"role": "user", "content": message})
+        
+        print(f"🤖 Calling OpenAI API with {len(messages)} messages")
         
         # 调用OpenAI API
         start_time = datetime.datetime.now()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=500
         )
         reply = response.choices[0].message.content.strip()
         response_time_ms = (datetime.datetime.now() - start_time).total_seconds() * 1000
+        
+        print(f"✅ OpenAI API response received in {response_time_ms:.0f}ms")
+        print(f"📤 Bot reply: {reply[:100]}...")
         
         # 保存到会话历史
         chat_history.append([message, reply])
@@ -446,8 +478,24 @@ def send_message():
         })
         
     except Exception as e:
-        print(f"API Error: {e}")
-        return jsonify({'error': f'API Error: {str(e)}'}), 500
+        error_msg = str(e)
+        print(f"❌ API Error: {error_msg}")
+        
+        # 记录错误
+        if 'session_id' in locals():
+            monitor.log_user_action(session_id, "api_error", {"error": error_msg})
+        
+        # 返回用户友好的错误消息
+        if "insufficient_quota" in error_msg:
+            user_error = "OpenAI API quota exceeded. Please check your API usage."
+        elif "invalid_api_key" in error_msg:
+            user_error = "Invalid OpenAI API key. Please check configuration."
+        elif "rate_limit" in error_msg:
+            user_error = "API rate limit exceeded. Please try again in a moment."
+        else:
+            user_error = f"Service temporarily unavailable: {error_msg}"
+        
+        return jsonify({'error': user_error}), 500
 
 @app.route('/api/clear_chat', methods=['POST'])
 def clear_chat():
@@ -461,6 +509,16 @@ def clear_chat():
     
     session[f'history_{student_id}'] = []
     return jsonify({'success': True})
+
+@app.route('/api/test')
+def test_api():
+    """测试API连接"""
+    return jsonify({
+        'status': 'ok',
+        'openai_configured': bool(os.environ.get("OPENAI_API_KEY")),
+        'secret_key_configured': bool(os.environ.get("SECRET_KEY")),
+        'timestamp': datetime.datetime.now().isoformat()
+    })
 
 @app.route('/api/get_chat_history/<student_id>')
 def get_chat_history(student_id):
