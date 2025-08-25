@@ -110,7 +110,7 @@
       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Safari/605.1.15",
       "start_time": "2025-08-25T10:58:10.601516",
       "end_time": null,
-      "total_messages": 2
+      "total_messages": 3
     },
     "4cd58613-a17b-476a-9b3b-8a6a650cb3f2": {
       "session_id": "4cd58613-a17b-476a-9b3b-8a6a650cb3f2",
@@ -141,6 +141,14 @@
       "ip_address": "127.0.0.1",
       "user_agent": "Go-http-client/1.1",
       "start_time": "2025-08-25T12:19:01.915565",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "aefa19e7-2e83-48da-a599-4fdcc78f3d56": {
+      "session_id": "aefa19e7-2e83-48da-a599-4fdcc78f3d56",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Go-http-client/1.1",
+      "start_time": "2025-08-25T13:08:01.482619",
       "end_time": null,
       "total_messages": 0
     }
@@ -189,6 +197,17 @@
       "timestamp": "2025-08-25T11:32:20.668098",
       "response_time_ms": 3101.404,
       "message_length": 9
+    },
+    {
+      "id": 5,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "student_id": "student003",
+      "user_message": "hi",
+      "ai_response": "Hey. What's up?  \n\nEmotion tag: kinda okay",
+      "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
+      "timestamp": "2025-08-25T13:09:19.255167",
+      "response_time_ms": 3203.641,
+      "message_length": 2
     }
   ],
   "user_actions": [
@@ -422,9 +441,36 @@
         "student_id": "student002"
       },
       "timestamp": "2025-08-25T12:26:23.354279"
+    },
+    {
+      "id": 28,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T13:09:08.735029"
+    },
+    {
+      "id": 29,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student002"
+      },
+      "timestamp": "2025-08-25T13:09:56.831636"
+    },
+    {
+      "id": 30,
+      "session_id": "fdc7a3ab-3dc8-4768-8a06-288fb2e620f4",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student003"
+      },
+      "timestamp": "2025-08-25T13:10:24.541276"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T12:26:23.354289",
+  "last_updated": "2025-08-25T13:10:24.541285",
   "version": "1.0"
 }
