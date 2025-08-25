@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ student.name }} - Digital Adolescents{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <!-- 聊天页面头部 -->
+    <div class="chat-header">
+        <button class="back-btn" onclick="window.location.href='/'">
+            ← Back to Selection
+        </button>
+        <h2 class="chat-title">Digital Twin Chat Interface</h2>
+        <div class="header-spacer"></div>
+    </div>
+
+    <!-- 主要聊天区域 -->
+    <div class="chat-main">
+        <!-- 左侧：聊天区域 -->
+        <div class="chat-left">
+            <h3 class="section-title">Chat with Digital Twin</h3>
+            
+            <!-- 聊天消息区域 -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="welcome-message">
+                    <div class="bot-message">
+                        <div class="avatar">
+                            <img src="{{ url_for('static', filename='images/' + student.avatar) }}" alt="{{ student.name }}">
+                        </div>
+                        <div class="message-bubble bot">
+                            Hi! I'm {{ student.name }}. What would you like to talk about?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 输入区域 -->
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <textarea id="message-input" 
+                             placeholder="Type your message here..."
+                             rows="2"
+                             maxlength="1000"></textarea>
+                    <div class="input-actions">
+                        <button id="send-btn" class="send-btn">Send</button>
+                        <button id="clear-btn" class="clear-btn">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：学生信息和场景控制 -->
+        <div class="chat-right">
+            <!-- 学生档案 -->
+            <div class="info-panel student-profile">
+                <h3 class="panel-title">{{ student.name }}</h3>
+                <div class="profile-avatar">
+                    <img src="{{ url_for('static', filename='images/' + student.avatar) }}" alt="{{ student.name }}">
+                </div>
+                <div class="profile-details">
+                    {% if student.profile %}
+                    <p><strong>Age:</strong> {{ student.profile.age }}</p>
+                    <p><strong>Sex:</strong> {{ student.profile.sex }}</p>
+                    <p><strong>Race/Ethnicity:</strong> {{ student.profile.race_ethnicity }}</p>
+                    <p><strong>Grade:</strong> {{ student.profile.grade }}</p>
+                    <p><strong>Emotional Health:</strong> {{ student.profile.emotional_health }}</p>
+                    <p><strong>Mental Health:</strong> {{ student.profile.mental_health }}</p>
+                    {% else %}
+                    <p>Profile information not available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 使用说明 -->
+            <div class="info-panel instructions">
+                <h3 class="panel-title">Instructions & Disclaimer</h3>
+                <p class="disclaimer-text">
+                    You will be able to interact with <strong>{{ student.name }}</strong>, an AI-based digital adolescent. 
+                    We kindly ask you to please keep the conversation respectful and appropriate. 
+                    Remember that this is a simulation designed for research and educational purposes.
+                </p>
+            </div>
+
+            <!-- 场景设置 -->
+            <div class="info-panel scene-control">
+                <h3 class="panel-title">Scene Context</h3>
+                <p class="scene-instruction">Set a scenario to provide context for your conversation:</p>
+                
+                <div class="scene-selector">
+                    <label for="scene-dropdown">Select a scenario:</label>
+                    <select id="scene-dropdown">
+                        {% for option in scene_options %}
+                        <option value="{{ option }}" {% if loop.first %}selected{% endif %}>
+                            {{ option }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="custom-scene" id="custom-scene" style="display: none;">
+                    <label for="custom-input">Custom Scenario:</label>
+                    <textarea id="custom-input" 
+                             placeholder="Describe your custom scenario here..."
+                             rows="3"></textarea>
+                </div>
+                
+                <div class="current-scene">
+                    <label for="scene-display">Current Scene Context:</label>
+                    <div id="scene-display" class="scene-display">
+                        {{ scene_options[0] if scene_options else "Meet with a new friend for the first time" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 输入提示 -->
+<div id="typing-indicator" class="typing-indicator" style="display: none;">
+    <div class="avatar">
+        <img src="{{ url_for('static', filename='images/' + student.avatar) }}" alt="{{ student.name }}">
+    </div>
+    <div class="typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<!-- 错误提示 -->
+<div id="error-toast" class="error-toast" style="display: none;">
+    <div class="toast-content">
+        <span class="toast-icon">⚠️</span>
+        <span class="toast-message">Something went wrong. Please try again.</span>
+        <button class="toast-close" onclick="hideError()">&times;</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+<script>
+// 初始化聊天功能
+document.addEventListener('DOMContentLoaded', function() {
+    initializeChat('{{ student.id }}', '{{ student.name }}');
+});
+</script>
+{% endblock %}
