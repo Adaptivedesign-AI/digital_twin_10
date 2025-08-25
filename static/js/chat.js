@@ -126,7 +126,7 @@ function addMessage(text, sender, isError = false) {
     
     const avatarImg = document.createElement('img');
     if (sender === 'user') {
-        avatarImg.src = '/static/images/user_avatar.png';
+        avatarImg.src = '/static/images/avatar/user_avatar.png';
         avatarImg.alt = 'User';
     } else {
         avatarImg.src = `/static/images/avatar/${currentStudentId}.png`;
@@ -135,7 +135,22 @@ function addMessage(text, sender, isError = false) {
     
     // 头像加载错误处理
     avatarImg.onerror = function() {
-        this.src = '/static/images/default_avatar.png';
+        console.log('Avatar loading failed for:', sender === 'user' ? 'user' : currentStudentId);
+        console.log('Failed URL:', this.src);
+        // 显示一个默认的文字标识
+        this.style.display = 'none';
+        const textFallback = document.createElement('div');
+        textFallback.style.width = '40px';
+        textFallback.style.height = '40px';
+        textFallback.style.borderRadius = '50%';
+        textFallback.style.backgroundColor = '#F0DBDB';
+        textFallback.style.display = 'flex';
+        textFallback.style.alignItems = 'center';
+        textFallback.style.justifyContent = 'center';
+        textFallback.style.fontSize = '12px';
+        textFallback.style.color = '#2e285c';
+        textFallback.textContent = sender === 'user' ? 'U' : currentStudentName.charAt(0);
+        avatar.appendChild(textFallback);
     };
     
     avatar.appendChild(avatarImg);
