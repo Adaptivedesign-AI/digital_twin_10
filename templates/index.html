@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-
 {% block title %}Generative Digital Adolescent Cohort{% endblock %}
-
 {% block content %}
 <div class="container">
     <!-- 页面头部 -->
     <div class="page-header">
         <div class="title-container">
-            <div class="brain-icon">🧠</div>
+            <div class="brain-icon">
+                <img src="{{ url_for('static', filename='images/avatar/brain.png') }}" alt="Brain Icon" onerror="this.style.display='none'; this.parentNode.innerHTML='🧠';">
+            </div>
             <h1 class="page-title">Generative Digital Adolescent Cohort</h1>
         </div>
         <h2 class="page-subtitle">Choose a digital adolescent to chat with</h2>
@@ -18,7 +18,6 @@
             <a href="mailto:jingshenwang@berkeley.edu">jingshenwang@berkeley.edu</a>.
         </p>
     </div>
-
     <!-- 角色网格 -->
     <div class="character-grid">
         {% for character in characters %}
@@ -39,7 +38,6 @@
         {% endfor %}
     </div>
 </div>
-
 <!-- 加载动画 -->
 <div id="loading-overlay" class="loading-overlay" style="display: none;">
     <div class="loading-spinner">
@@ -48,7 +46,6 @@
     </div>
 </div>
 {% endblock %}
-
 {% block scripts %}
 <script>
 function selectStudent(studentId) {
@@ -66,7 +63,6 @@ function selectStudent(studentId) {
         window.location.href = `/chat/${studentId}`;
     }, 500);
 }
-
 // 添加卡片点击效果
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.character-card').forEach(card => {
