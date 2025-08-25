@@ -52,6 +52,12 @@ body {
     box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
 }
 
+.brain-icon img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
 .page-title {
     color: #2e285c;
     font-size: clamp(24px, 4vw, 36px);
@@ -84,15 +90,48 @@ body {
     text-decoration: underline;
 }
 
-/* 角色网格 */
+/* 角色网格 - 修改为最多5列 */
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 25px;
     margin-top: 40px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* 角色卡片 */
+@media (min-width: 1200px) {
+    .character-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 960px) {
+    .character-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 959px) and (min-width: 720px) {
+    .character-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 719px) and (min-width: 480px) {
+    .character-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 479px) {
+    .character-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 角色卡片 - 更新配色 */
 .character-card {
     background-color: #F0DBDB;
     border-radius: 16px;
@@ -124,7 +163,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(189, 186, 212, 0.1), rgba(46, 40, 92, 0.05));
+    background: linear-gradient(135deg, rgba(245, 235, 224, 0.1), rgba(46, 40, 92, 0.05));
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -134,9 +173,9 @@ body {
     opacity: 1;
 }
 
-/* 头像容器 */
+/* 头像容器 - 改为圆形 */
 .avatar-container {
-    width: 80%;
+    width: 140px;
     height: 140px;
     margin: 25px auto 20px;
     border-radius: 50%;
@@ -283,7 +322,7 @@ body {
 }
 
 .chat-title {
-    color: white;
+    color: #2e285c;
     font-size: 24px;
     font-weight: bold;
     margin: 0;
@@ -388,7 +427,7 @@ body {
 .message-bubble.user {
     background-color: #F0DBDB;
     color: white;
-    box-shadow: 0 2px 8px rgba(189, 186, 212, 0.3);
+    box-shadow: 0 2px 8px rgba(240, 219, 219, 0.3);
 }
 
 .message-bubble.bot {
@@ -398,15 +437,18 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* 删除欢迎消息的渐变背景 */
 .welcome-message .message-bubble {
-    background: linear-gradient(135deg, #DBA39A, #e8f4fd);
-    border: 1px solid #DBA39A;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* 输入区域 */
+/* 输入区域 - 移到底部 */
 .chat-input-area {
     border-top: 1px solid #e5e5e5;
     padding-top: 20px;
+    margin-top: auto;
 }
 
 .input-container {
@@ -582,7 +624,7 @@ body {
 }
 
 .scene-display {
-    background-color: #DBA39A;
+    background-color: #F5EBE0;
     padding: 12px;
     border-radius: 8px;
     font-size: 14px;
@@ -690,11 +732,6 @@ body {
         gap: 20px;
     }
     
-    .character-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 20px;
-    }
-    
     .chat-right {
         order: -1;
     }
@@ -704,11 +741,6 @@ body {
     .container,
     .chat-container {
         padding: 15px;
-    }
-    
-    .character-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 15px;
     }
     
     .chat-header {
@@ -753,8 +785,9 @@ body {
         font-size: 20px;
     }
     
-    .character-grid {
-        grid-template-columns: 1fr;
+    .brain-icon img {
+        width: 32px;
+        height: 32px;
     }
     
     .message-bubble {
