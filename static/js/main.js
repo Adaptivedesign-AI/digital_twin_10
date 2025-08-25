@@ -97,12 +97,12 @@ function initializeGlobalEnhancements() {
         select:focus, 
         textarea:focus, 
         input:focus {
-            outline: 2px solid #bdbad4;
+            outline: 2px solid #DBA39A;
             outline-offset: 2px;
         }
         
         .character-card:focus {
-            outline: 3px solid #bdbad4;
+            outline: 3px solid #DBA39A;
             outline-offset: 4px;
         }
     `;
@@ -187,4 +187,113 @@ function selectStudentWithAnimation(studentId, studentName, cardElement) {
     
     // 延迟跳转以显示动画
     setTimeout(() => {
-        window.location.href = `/chat/${
+        window.location.href = `/chat/${studentId}`;
+    }, 800);
+}
+
+// 键盘导航支持
+function initializeKeyboardNavigation() {
+    document.addEventListener('keydown', function(e) {
+        // ESC键关闭错误提示
+        if (e.key === 'Escape') {
+            Utils.hideError();
+        }
+        
+        // 角色选择页面的键盘导航
+        if (document.querySelector('.character-grid')) {
+            const cards = document.querySelectorAll('.character-card');
+            const currentIndex = Array.from(cards).findIndex(card => 
+                document.activeElement === card
+            );
+            
+            let newIndex = currentIndex;
+            
+            switch(e.key) {
+                case 'ArrowRight':
+                    e.preventDefault();
+                    newIndex = (currentIndex + 1) % cards.length;
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    newIndex = (currentIndex - 1 + cards.length) % cards.length;
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    // 计算每行的卡片数量
+                    const cardsPerRow = Math.floor(window.innerWidth / 240); // 大约卡片宽度
+                    newIndex = Math.min(currentIndex + cardsPerRow, cards.length - 1);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    const cardsPerRowUp = Math.floor(window.innerWidth / 240);
+                    newIndex = Math.max(currentIndex - cardsPerRowUp, 0);
+                    break;
+            }
+            
+            if (newIndex !== currentIndex && newIndex >= 0 && newIndex < cards.length) {
+                cards[newIndex].focus();
+            }
+        }
+    });
+}
+
+// 可访问性功能
+function initializeAccessibility() {
+    // 为角色卡片添加ARIA标签
+    const cards = document.querySelectorAll('.character-card');
+    cards.forEach((card, index) => {
+        const studentName = card.querySelector('.student-name').textContent;
+        const description = card.querySelector('.student-description').textContent;
+        
+        card.setAttribute('aria-label', 
+            `Chat with ${studentName}. ${description}. Press Enter to start conversation.`
+        );
+        card.setAttribute('aria-describedby', `card-desc-${index}`);
+        
+        // 添加描述元素
+        const descElement = document.createElement('div');
+        descElement.id = `card-desc-${index}`;
+        descElement.className = 'sr-only';
+        descElement.textContent = `Student ${index + 1} of ${cards.length}`;
+        card.appendChild(descElement);
+    });
+    
+    // 为错误提示添加ARIA属性
+    const errorToast = document.getElementById('error-toast');
+    if (errorToast) {
+        errorToast.setAttribute('role', 'alert');
+        errorToast.setAttribute('aria-live', 'polite');
+    }
+    
+    // 添加屏幕阅读器专用样式
+    const srStyle = document.createElement('style');
+    srStyle.textContent = `
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    `;
+    document.head.appendChild(srStyle);
+}
+
+// 全局函数导出
+window.Utils = Utils;
+window.hideError = Utils.hideError;
+
+// 性能监控
+if ('performance' in window) {
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const perfData = performance.timing;
+            const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+            console.log(`Page loaded in ${loadTime}ms`);
+        }, 0);
+    });
+}
