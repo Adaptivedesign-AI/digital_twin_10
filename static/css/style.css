@@ -419,7 +419,7 @@ body {
 
 .message-bubble.user {
     background-color: #F0DBDB;
-    color: white;
+    color: #2e285c;
     box-shadow: 0 2px 8px rgba(240, 219, 219, 0.3);
 }
 
