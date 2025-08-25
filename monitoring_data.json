@@ -166,13 +166,29 @@
       "user_agent": "Mozilla/5.0 (Linux; Android 15; V2339A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.200 Mobile Safari/537.36 VivoBrowser/25.9.0.0",
       "start_time": "2025-08-25T13:17:04.756515",
       "end_time": null,
-      "total_messages": 0
+      "total_messages": 1
     },
     "bdc6be9b-000b-400b-a302-30c53721f9e7": {
       "session_id": "bdc6be9b-000b-400b-a302-30c53721f9e7",
       "ip_address": "10.220.127.39",
       "user_agent": "Mozilla/5.0 (Linux; Android 10; HUAWEI P30 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Mobile Safari/537.36",
       "start_time": "2025-08-25T13:17:15.321902",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "14ae6c0f-1aaf-4894-baf0-4468c6597fde": {
+      "session_id": "14ae6c0f-1aaf-4894-baf0-4468c6597fde",
+      "ip_address": "10.220.95.51",
+      "user_agent": "Mozilla/5.0 (Linux; Android 11; CPH2185) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36",
+      "start_time": "2025-08-25T13:17:19.498022",
+      "end_time": null,
+      "total_messages": 0
+    },
+    "ce24326a-cdf7-4a01-959b-a4660c9547f7": {
+      "session_id": "ce24326a-cdf7-4a01-959b-a4660c9547f7",
+      "ip_address": "10.220.198.139",
+      "user_agent": "Mozilla/5.0 (Linux; Android 11; CPH2185) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36",
+      "start_time": "2025-08-25T13:17:37.800313",
       "end_time": null,
       "total_messages": 0
     }
@@ -231,6 +247,17 @@
       "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
       "timestamp": "2025-08-25T13:09:19.255167",
       "response_time_ms": 3203.641,
+      "message_length": 2
+    },
+    {
+      "id": 6,
+      "session_id": "349fc014-c76d-4234-b33a-a23156bc007b",
+      "student_id": "student008",
+      "user_message": "hi",
+      "ai_response": "Hey! What’s up? Just chilling or what? \n\nEmotion tag: kinda ok",
+      "scene_context": "\n                        Meet with a new friend for the first time\n                    ",
+      "timestamp": "2025-08-25T13:17:30.936516",
+      "response_time_ms": 4653.548,
       "message_length": 2
     }
   ],
@@ -510,9 +537,27 @@
         "student_id": "student008"
       },
       "timestamp": "2025-08-25T13:17:15.958443"
+    },
+    {
+      "id": 33,
+      "session_id": "349fc014-c76d-4234-b33a-a23156bc007b",
+      "action_type": "clear_chat",
+      "action_data": {
+        "student_id": "student008"
+      },
+      "timestamp": "2025-08-25T13:17:23.311790"
+    },
+    {
+      "id": 34,
+      "session_id": "ce24326a-cdf7-4a01-959b-a4660c9547f7",
+      "action_type": "student_select",
+      "action_data": {
+        "student_id": "student008"
+      },
+      "timestamp": "2025-08-25T13:17:37.801136"
     }
   ],
   "system_metrics": [],
-  "last_updated": "2025-08-25T13:17:15.958453",
+  "last_updated": "2025-08-25T13:17:37.801142",
   "version": "1.0"
 }
