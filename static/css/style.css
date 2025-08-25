@@ -40,21 +40,14 @@ body {
 }
 
 .brain-icon {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #4a90e2, #357abd);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 24px;
-    box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
 }
 
 .brain-icon img {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     object-fit: contain;
 }
 
@@ -787,15 +780,9 @@ body {
         gap: 10px;
     }
     
-    .brain-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-    
     .brain-icon img {
-        width: 32px;
-        height: 32px;
+        width: 48px;
+        height: 48px;
     }
     
     .message-bubble {
