@@ -24,7 +24,7 @@
                 <!-- 打字指示器放在消息区域内 -->
                 <div id="typing-indicator" class="typing-indicator" style="display: none;">
                     <div class="avatar">
-                        <img src="{{ url_for('static', filename='images/' + student.avatar) }}" alt="{{ student.name }}">
+                        <img src="{{ url_for('static', filename='images/avatar/' + student.id + '.png') }}" alt="{{ student.name }}">
                     </div>
                     <div class="typing-dots">
                         <span></span>
@@ -55,7 +55,7 @@
             <div class="info-panel student-profile">
                 <h3 class="panel-title">{{ student.name }}</h3>
                 <div class="profile-avatar">
-                    <img src="{{ url_for('static', filename='images/' + student.avatar) }}" alt="{{ student.name }}">
+                    <img src="{{ url_for('static', filename='images/avatar/' + student.id + '.png') }}" alt="{{ student.name }}">
                 </div>
                 <div class="profile-details">
                     {% if student.profile %}
