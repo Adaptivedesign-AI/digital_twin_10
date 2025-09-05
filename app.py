@@ -224,6 +224,9 @@ class ConversationMonitor:
             try:
                 with open(self.data_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
+                    # 修复点：确保 students_chatted 是 set
+                    if 'students_chatted' in data and isinstance(data['students_chatted'], list):
+                        data['students_chatted'] = set(data['students_chatted'])
                     print(f"Loaded {len(data.get('conversations', []))} conversations")
                     return data
             except Exception as e:
