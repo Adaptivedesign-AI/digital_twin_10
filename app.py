@@ -272,8 +272,11 @@ class ConversationMonitor:
 
         self.data['conversations'].append(conversation)
         self.data['total_conversations'] = len(self.data['conversations'])
+        # 修改后
         if 'students_chatted' not in self.data:
             self.data['students_chatted'] = set()
+        elif isinstance(self.data['students_chatted'], list):
+            self.data['students_chatted'] = set(self.data['students_chatted'])
         self.data['students_chatted'].add(student_id)
 
         self.save_data()
